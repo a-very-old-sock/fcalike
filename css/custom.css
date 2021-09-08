@@ -1,0 +1,110 @@
+.hidden {
+  visibility: hidden;
+  height: 0px;
+}
+
+.hidden-button {
+  visibility: hidden;
+  height: 0px;
+}
+
+.btn-home {
+  margin-left: 10px;
+}
+
+#slave_interact_buttons {
+  border-top: 0.5px solid gray;
+  padding-top: 15px;
+  margin-top: 50px;
+}
+
+.stat-bar{
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 5px;
+  margin-bottom: -24px;
+}
+
+.stat-name {
+  margin-top: 7px;
+  margin-bottom: 0px;
+}
+
+.scale-bar, .scale-bar-neg{
+  background-color: rgba(255,255,255,0.1);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 50%;
+  display: block;
+}
+
+.scale-bar {
+  float: right;
+}
+
+.scale-bar-neg {
+  transform: rotate(180deg);
+  float: left;
+}
+
+.stat-fill, .scale-fill {
+  background-color: #FDF6E3;
+  height: 24px;
+}
+
+.stat-fill {
+  border-radius: 5px;
+}
+
+.scale-fill {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.worst-scale-color {
+  background-color: #CB4B16;
+}
+
+.bad-scale-color {
+  background-color: #B58900;
+}
+
+.good-scale-color {
+  background-color: #268BD2;
+}
+
+.best-scale-color {
+  background-color: #2AA198;
+}
+
+.level-label {
+  float: right;
+  margin-right: 5px;
+}
+
+.fade-success {
+  background-color: #2AA198 !important;
+  -webkit-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.choice-btn {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+/* .fade-primary {
+  background-color: #B58900 !important;
+  -webkit-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: background-color 1000ms linear;
+} */
+
+.modal-body {
+  min-height: 137px;
+}
+
+.event-name {
+  position: absolute;
+  top: 137px;
+}

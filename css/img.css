@@ -1,0 +1,44 @@
+.btn {
+  margin-right: 10px;
+}
+.bust {
+  position: relative;
+  /* margin-left: 20px; */
+  /* overflow: hidden; */
+}
+
+.bust-2 {
+  margin-top: 10px;
+  height: 341px; /* 682 orig*/
+  width: 303px; /* 605 orig*/
+  border: 3px solid gray;
+  border-radius: 2px;
+}
+
+.bust-5 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  height: 137px; /* 682 orig*/
+  width: 121px; /* 605 orig*/
+}
+
+.head, .eyes, .hair_hi, .hair_deco, .ear, .accessory, .mouth, .beard, .nose, .brow, .necklace
+    {
+      position: absolute;
+    }
+
+.glasses, .flowers, .shirt, .coat
+    {
+      position: absolute;
+      display: none;
+    }
+
+.mark {
+  position: absolute;
+  background-color: rgba(0,0,0, 0)
+}
+
+.hidden {
+  visibility: hidden
+}

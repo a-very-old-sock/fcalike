@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+
+    <title>a game!</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/custom.css" />
+    <link rel="stylesheet" href="css/img.css" />
+    <script src="js/i18n/jquery-3.4.1.js"></script>
+    <script src="js/i18n/CLDRPluralRuleParser.js"></script>
+    <script src="js/i18n/jquery.i18n.js"></script>
+    <script src="js/i18n/jquery.i18n.messagestore.js"></script>
+    <script src="js/i18n/jquery.i18n.fallbacks.js"></script>
+    <script src="js/i18n/jquery.i18n.language.js"></script>
+    <script src="js/i18n/jquery.i18n.parser.js"></script>
+    <script src="js/i18n/jquery.i18n.emitter.js"></script>
+    <script src="js/i18n/jquery.i18n.emitter.bidi.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">A Game!</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link home" href="#" id="home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="rules" href="#">Rules Manager</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="shop" href="#">Shop</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="end_week" href="#">End Week</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="manage" href="#">Manage Estate</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="about" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="reset" href="#">Reset</a>
+            </li>
+          </ul>
+
+        </div>
+      </nav>
+        <div class="jumbotron">
+          <!-- <h1>this is my game!</h1> -->
+          <ul class="nav nav-pills nav-fill status-bar">
+            <li class="nav-item">
+              <a class="nav-link active" id="week_counter" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="money_counter" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="reputation_counter" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="slave_counter" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="debug" href="#"></a>
+            </li>
+          </ul>
+        </div>
+        <div id="content">
+          <div id="next_week" class="hidden tab">
+            <div class="row">
+              <h1 id="welcome"></h1>
+            </div>
+            <div class="row" id="slave_list">
+              <table class="table">
+                <thead>
+
+                </thead>
+                <tbody id="list_start">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="view_slave" class="hidden tab">
+
+            <div class="row">
+              <div class="col-sm">
+                <h4 id="slave_name">Name goes here</h4>
+                <div class="bust-2 bust" id="slave_bust">
+                </div>
+                <hr />
+                <button type="button" class="btn btn-primary save_slave" id="">Save</button>
+                <button type="button" class="btn btn-secondary" id="previous_slave">Previous</button>
+                <button type="button" class="btn btn-secondary" id="next_slave">Next</button>
+              </div>
+              <div class="col-sm">
+                <div id="slave_stats">
+
+                </div>
+                <div id="slave_interact_buttons">
+
+                </div>
+                <div id="slave_interact_log">
+
+                </div>
+
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm">
+                <div id="slave_details">
+
+                </div>
+                <div id="slave_history">
+
+                </div>
+              </div>
+
+            </div>
+            <hr />
+            <div class="row mt-3">
+              <div class="col-md-6" id="slave_assignment">
+                <h5 class="mt-3">Note: making changes here will mean that your slave no longer has rules from the rules manager applied to them!</h5>
+                <label id="rules_label" for="follows_rules">Apply rules manager:</label>
+                <select class="custom-select" id="follows_rules">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+
+                <label id="assignment_label" for="assignment">This week slave is assigned to:</label>
+                <select class="custom-select" id="assignment">
+                  <option value="rest">rest</option>
+                  <option value="whore">whore</option>
+                  <option value="work a gloryhole">work a gloryhole</option>
+                  <option value="public use">public use</option>
+                  <option value="serve the household">serve the household</option>
+                  <option value="please you">please you</option>
+                  <option value="stay confined">stay confined</option>
+                </select>
+
+                <label id="living_label" for="living">Slave's living conditions are:</label>
+                <select class="custom-select" id="living">
+                  <option value="luxurious">luxurious</option>
+                  <option value="comfortable">comfortable</option>
+                  <option value="adequate">adequate</option>
+                  <option value="sparse">sparse</option>
+                  <option value="harsh">harsh</option>
+                </select>
+
+                <label id="clothing_label" for="clothing">Slave is currently wearing:</label>
+                <select class="custom-select" id="clothing">
+                </select>
+                <label id="collar_label" for="collar">With a collar:</label>
+                <select class="custom-select" id="collar">
+                </select>
+                <div id="clothing_desc">
+                  This is where a description of the clothing will go once it's written!
+                </div>
+              </div>
+              <div class="col-md-6" id="slave_scales">
+
+              </div>
+
+            </div>
+            <hr />
+            <div class="row">
+
+
+              <div class="col-md-6" id="slave_kinks">
+                <h4>Kinks</h4>
+
+              </div>
+
+              <div class="col-md-6" id="slave_skills">
+                <h4>Skills</h4>
+
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-md-6" id="slave_jobs">
+                <h4>Job Skills</h4>
+
+              </div>
+            </div>
+          </div>
+
+          <div id="buy_tab" class="hidden tab">
+            <div class="row">
+              <h1 id="shop_name">Buy!</h1><button type="button" class="btn btn-secondary btn-sm btn-home home" id="home">Go home</button> <button type="button" class="btn btn-primary btn-sm btn-home hidden tab" id="keep_shopping">Keep shopping</button>
+            </div>
+            <div class="row" id="buy_slave_list">
+              <table class="table">
+                <thead>
+
+                </thead>
+                <tbody id="buy_list_start">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="manage_tab" class="hidden tab">
+            <div class="row">
+              <h1>Manage Estate</h1>
+            </div>
+            <div class="row" id="facilities_list">
+            </div>
+
+          </div>
+
+          <div id="money_tab" class="hidden tab">
+            <h1>Finances</h1>
+            <canvas id="money_chart"></canvas>
+            <div class="row" id="slave_price_list">
+
+            </div>
+          </div>
+
+          <div id="rules_manager" class="hidden tab">
+            <div class="row">
+              <h1>Rules manager</h1> <button type="button" class="btn btn-primary btn-sm" id="save_rules">Save</button>
+              <p>
+                A rule only applies to a slave if you know what they respond to and the status of the attribute measured.  Interact with your slaves to get to know them better.
+              </p>
+            </div>
+            <h3>New rule</h3>
+            <span class="text-danger" id="rule-notif"></span>
+            <div class="row mb-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="responds">Apply this rule for slaves who respond to</label>
+                  </div>
+                  <select class="custom-select" id="responds">
+                    <option disabled selected value> -- select an option -- </option>
+                    <option>
+                      kindness
+                    </option>
+                    <option>
+                      severity
+                    </option>
+                  </select>
+                </div>
+            </div>
+            <h4>Conditions</h4>
+            <div class="row">
+                <div class="col-sm-4">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="stat_name">When</label>
+                    </div>
+                    <select class="custom-select" id="stat_name">
+                      <option disabled selected value> -- select an option -- </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="cond">is</label>
+                    </div>
+                    <select class="custom-select" id="cond">
+                      <option disabled selected value> -- select an option -- </option>
+                      <option>
+                        more than
+                      </option>
+                      <option>
+                        less than
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <label for="cond_level">Level:</label><span class="ml-1" id="level_at"></span>
+                  <input type="range" class="custom-range" min="-100" max="100" id="cond_level">
+                </div>
+            </div>
+            <h4>Rule effects</h4>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="assig_name">Change assignment to</label>
+                  </div>
+                  <select class="custom-select" id="assig_name">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="living_name">Change living conditions to</label>
+                  </div>
+                  <select class="custom-select" id="living_name">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="clothing_name">Change clothing to</label>
+                  </div>
+                  <select class="custom-select" id="clothing_name">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="collar_name">Change collar to</label>
+                  </div>
+                  <select class="custom-select" id="collar_name">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <h4 class="mt-3">Current Rules</h4>
+            <div class="row" id="rules_list">
+
+              <table class="table">
+                <thead>
+
+                </thead>
+                <tbody id="rules_list_start">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="first_week" class="hidden tab">
+              <div class="col-sm-12">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="form-group col-sm-6">
+                        <h5 for="InputName">What your slaves call you</h5>
+                        <input type="name" class="form-control" id="PCTitle" placeholder="Master">
+                      </div>
+                      <div class="form-group col-sm-6">
+                        <h5 for="InputName">What your friends call you</h5>
+                        <input type="name" class="form-control" id="PCName" placeholder="Anon">
+                      </div>
+                    </div>
+                    <h5>Your pronouns</h5>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="PCPronouns" id="PCPronouns1" value="male" checked>
+                      <label class="form-check-label" for="PCPronouns1">
+                        Male (he/him)
+                      </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="PCPronouns" id="PCPronouns2" value="female">
+                      <label class="form-check-label" for="PCPronouns2">
+                        Female (she/her)
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <h5>What you've got <small class="text-muted">(Used for description only, does not affect game stats)</small></h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="pc_hasDick">
+                      <label class="form-check-label" for="defaultCheck1">
+                        Penis
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="pc_hasVagina">
+                      <label class="form-check-label" for="defaultCheck1">
+                        Vagina
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="pc_hasBreasts">
+                      <label class="form-check-label" for="defaultCheck2">
+                        Breasts
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <h5>Your age</h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAge" id="PCAge" value="young" checked>
+                      <label class="form-check-label" for="PCAge">
+                        Young <small class="text-muted">(lower reputation, but more stamina for dealing with your slaves)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAge" id="PCAge" value="neither" checked>
+                      <label class="form-check-label" for="PCAge">
+                        Neither old nor young <small class="text-muted">(no reputation effect, and an average amount of stamina)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAge" id="PCAge" value="old" checked>
+                      <label class="form-check-label" for="PCAge">
+                        Older <small class="text-muted">(higher reputation, but less stamina for dealing with your slaves)</small>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <h5>Your profession</h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="dilettante" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Dilettante <small class="text-muted">(more starting money)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession2" value="celebrity">
+                      <label class="form-check-label" for="PCProfession2">
+                        Celebrity <small class="text-muted">(more reputation)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession3" value="tech" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Tech titan <small class="text-muted">(small amount of recurring income and faster tech upgrades)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="banker" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Investment banker <small class="text-muted">(large amount of recurring income)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="whore" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Retired whore <small class="text-muted">(lower reputation and better slave sexual skills)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="slave" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Former slave<small class="text-muted">(very bad reputation and faster slave training)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="military" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Former military<small class="text-muted">(cheaper security upgrades but slaves fear you more)</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCProfession" id="PCProfession1" value="scholar" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        Scholar<small class="text-muted">(better insight and faster experience)</small>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <h5>You believe a misbehaving slave should:</h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAttitude" id="pc_punishment" value="50" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        be asked why they disobeyed you and gently corrected
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAttitude" id="pc_punishment" value="-20" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        get spanked until they come
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAttitude" id="pc_punishment" value="20" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        have their privileges taken away
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="PCAttitude" id="pc_punishment" value="-50" checked>
+                      <label class="form-check-label" for="PCProfession1">
+                        get whipped until they bleed
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-secondary" id="go_home">Take me home!</button>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="generic-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modal-body">
+            Body text goes here.  If you see this, something's not right!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="generic-modal-btn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- event modal -->
+    <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!-- <h5 class="modal-title" id="event-label">Event title</h5> -->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">skip</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row" id="event-row">
+              <div class="col-9" id="event-body">
+                Event text goes here.  If you see this, something's not right!
+              </div>
+            </div>
+
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="event-modal-btn" data-dismiss="modal">Close</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <script src="js/bootstrap.js"></script>
+
+    <script src= "js/i18n.js"></script>
+    <script src= "js/general.js"></script>
+    <script src= "js/names.js"></script>
+    <script src= "js/generators.js"></script>
+    <script src= "js/descriptions.js"></script>
+    <script src= "js/rules.js"></script>
+    <script src= "js/navigation.js"></script>
+    <script src= "js/shops.js"></script>
+    <script src= "js/slave.js"></script>
+    <script src= "js/purchasing.js"></script>
+    <script src= "js/events.js"></script>
+    <script src= "js/events_controller.js"></script>
+    <script src= "js/manage.js"></script>
+    <script src= "js/index.js"></script>
+    <script src= "js/end_week.js"></script>
+    <script src= "js/clothing_effects.js"></script>
+    <script src= "js/collar_effects.js"></script>
+    <script src= "js/assignment_effects.js"></script>
+    <script src= "js/money.js"></script>
+    <script src= "js/img.js"></script>
+  </body>
+</html>
