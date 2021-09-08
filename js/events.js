@@ -1,9 +1,27 @@
 function makeEvents(){
   var events = new Array()
-  if (slaves.length < 1) {events.push(event_directory.filter(function(events) { return events.tags == "no-slaves"; }))}
-  if (slaves.length >= 1) {events.push(event_directory.filter(function(events) { return events.tags == "one"; }))}
-  if (slaves.length >= 2) {events.push(event_directory.filter(function(events) { return events.tags == "two"; }))}
-  events = events.flat()
+
+  truth_array = []
+  event_directory.forEach((event, i) => {
+    event.prereqs.forEach((prereq, i) => {
+      if (prereq.includes("slaves")) {
+        truth_array.push(eval(prereq))
+        // console.log(prereq, eval(prereq))
+      } else if (prereq.includes("slave")) {
+        slaves.forEach((slave, i) => {
+          truth_array.push(eval(prereq))
+          // console.log(prereq, slave.name, eval(prereq))
+        });
+      }
+    });
+    // console.log(truth_array)
+    if (truth_array.every(Boolean)) {
+      // console.log(event)
+      events.push(event)
+    }
+    truth_array = []
+  });
+  // console.log(events)
   localStorage.setItem("events", JSON.stringify(events))
 }
 
@@ -11,7 +29,7 @@ var event_directory = [
 	{
 		"id": 1,
 		"tags": ["no-slaves"],
-		"prereq":"slaves.length<0",
+		"prereqs":["slaves.length < 1"],
 		"text":"Without slaves to run your household, you're forced to do every little thing yourself.  Do you save money but damage your reputation by performing all the basic chores yourself, or do you save your reputation by renting slaves to attend your household tasks for the week?",
 		"options": [
 			{
@@ -30,8 +48,8 @@ var event_directory = [
 	},
 	{
 		"id": 2,
-		"tags": ["one"],
-		"prereq":"slaves.length > 0",
+		"tags": ["love"],
+		"prereqs":["slaves.length > 0", "statLevel(slave, 'Love') >= 50"],
 		"text":"<strong>$1</strong> says {{GENDER:$2|he|she}} loves you!",
     "textvar":["slave.name", "slave.gender"],
 		"options": [
@@ -43,19 +61,18 @@ var event_directory = [
 				]
 			},
 			{
-				"text": "Spank $1.",
-        "textvar":["slave.name"],
+				"text": "Spank $1 for getting above {{GENDER:$2|him|her}}self.",
+        "textvar":["slave.name", "slave.gender"],
 				"results":[
 					{ "text": "$1 takes the spanking obediently, but you catch {{GENDER:$2|him|her}} crying silently as you send {{GENDER:$2|him|her}} away." , "textvar":["slave.name", "slave.gender"], "effects":["pcKindnessChange(-1)"] }
 				]
-			},
-
+			}
 		]
 	},
   {
     "id": 3,
     "tags": ["two"],
-    "prereq": "slaves.length >= 2",
+    "prereqs": ["slaves.length >= 2"],
     "text":"Passing through the courtyard one afternoon, you notice <strong>$1</strong> and <strong>$2</strong> bathing each other in the fountain in the middle of your courtyard, on display where anyone can watch.  They probably have other things to be doing, but so do you.",
     "textvar":["slave.name","other_slave.name"],
     "options":[
@@ -63,7 +80,7 @@ var event_directory = [
         "text":"Say nothing and simply watch.",
         "textvar":"",
         "results":[
-          {"text": "As you watch, $1 pours a bucket of cool water over $2`s skin, making $2 arch {{GENDER:$4|his|her}} back and moan in the sun.",
+          {"text": "As you watch, $1 pours a bucket of cool water over $2`s skin, making $2 arch {{GENDER:$3|his|her}} back and moan in the sun.",
           "textvar":["slave.name", "other_slave.name", "other_slave.gender"],
           "effects":""}
         ]
@@ -87,7 +104,7 @@ var event_directory = [
         ]
       },
       {
-        "text": "Tell $1 to bend $2 over the fountain",
+        "text": "Tell $1 to bend $2 over the fountain.",
         "textvar":["slave.name", "other_slave.name"],
         "results":[
           {"text": "$1 pushes $2 down to bend over the lip of the fountain for your view.  As you watch, $1 takes a vial of bath oil to pour over $2`s ass, making $2 moan and writhe.",
@@ -96,7 +113,30 @@ var event_directory = [
         ]
       }
     ]
-  }
+  },
+  {
+		"id": 4,
+		"tags": ["hate"],
+		"prereqs":["slaves.length > 0", "statLevel(slave, 'Love') <= -50"],
+		"text":"$1 says {{GENDER:$2|he|she}} hates you.",
+    "textvar":["slave.name","slave.gender"],
+		"options": [
+			{
+				"text": "Slap {{GENDER:$1|him|her}}.",
+        "textvar":["slave.gender"],
+				"results":[
+					{ "text": "You backhand $1 sharply across the face to show {{GENDER:$2|him|her}} what you think of {{GENDER:$2|his|her}} opinion.", "textvar":["slave.name", "slave.gender"], "effects":["pcKindnessChange(-5)", "harshAction(slave)"] }
+				]
+			},
+			{
+				"text": "Tell {{GENDER:$1|him|her}} that you're very disappointed but you hope to gain {{GENDER:$1|his|her}} trust soon.",
+        "textvar":["slave.gender"],
+				"results":[
+					{ "text": "$1 frowns at you but goes away looking thoughtful.", "textvar":["slave.name", "slave.gender"], "effects":["pcKindnessChange(5)", "kindnessAction(slave)"] }
+				]
+			},
+		]
+	}
 ]
 
 var btns = ["btn-outline-primary", "btn-outline-success", "btn-outline-info", "btn-outline-warning", "btn-outline-danger"]
@@ -127,14 +167,4 @@ var btns = ["btn-outline-primary", "btn-outline-success", "btn-outline-info", "b
 //   }
 //   var response_text = $.i18n("$1 pushes $2 down to bend over the lip of the fountain for your view.  As you watch, $1 takes a vial of bath oil to pour over $2's $3 $4, making $2 moan and writhe.", slave.name, other_slave.name, adj, finger_this)
 //   return response_text
-// }
-
-// var eventTwo = function() {
-//   $("#event-body").html($.i18n("eventTwo", slave.gender, slave.name));
-//   var choice_functions = {1: choiceOne, 2: choiceTwo}
-//   Object.keys(choice_functions).forEach((item, i) => {
-//     $("#event-body").append("</br>")
-//     // console.log(item)
-//     choice_functions[item](slave);
-//   });
 // }

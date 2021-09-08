@@ -1,4 +1,6 @@
 function endWeek() {
+  // location.reload(true);
+  makeEvents();
   showHomePage();
   end_of_week_report = [];
   slaves.forEach((slave, i) => {
@@ -106,18 +108,16 @@ function checkLivingExpenses(slaves) {
       if (slave.responds_to == "kindness") {
         var stats = ["Love", "Loyalty", "Obedience", "Libido"]
         stats.forEach((item, i) => {
-          positiveEffect(slave, slave.scales, item, Math.round(slave_cost / 10))
+          changeStat(slave, item, Math.round(slave_cost / 10))
         });
-        // console.log(slave.name + " responds to kindness, increase " + stats + " " + (slave_cost / 10))
       } else if (slave.responds_to == "severity") {
         var stats = ["Obedience", "Loyalty"]
         slave_cost = slave_cost * -1
         stats.forEach((item, i) => {
-          negativeEffect(slave, slave.scales, item, Math.round(slave_cost / 10))
+          changeStat(slave, item, Math.round(slave_cost / 10))
         });
-        // console.log(slave.name + " responds to severity, decrease " + stats + " " + (slave_cost / 10))
       }
-      positiveEffect(slave, slave.scales, "Happiness", Math.round(slave_cost / 10))
+      changeStat(slave, "Happiness", Math.round(slave_cost / 10))
     }
 
     if (slave_cost <= 3) {
@@ -126,19 +126,15 @@ function checkLivingExpenses(slaves) {
       if (slave.responds_to == "kindness") {
         var stats = ["Obedience", "Loyalty", "Love", "Happiness", "Libido"]
         stats.forEach((item, i) => {
-          // console.log(item)
-          negativeEffect(slave, slave.scales, item, effect)
+          changeStat(slave, item, (effect * -1))
         });
-        // console.log(slave.name + " responds to kindness, decrease " + stats + " " + effect)
       } else if (slave.responds_to == "severity") {
         var stats = ["Obedience", "Loyalty", "Love"]
         stats.forEach((item, i) => {
-          negativeEffect(slave, slave.scales, item, (effect * 2))
+          changeStat(slave, item, (effect * -2))
         });
-        // console.log(slave.name + " responds to severity, increase " + stats + " " + effect)
       }
     }
-    // console.log("after living status cost: "+ slave_cost + JSON.stringify(slave.scales))
   });
   return costs
 }
@@ -162,18 +158,24 @@ function checkSlaves() {
 }
 
 function statsInteraction(slave) {
-  var int = slave.stats.find(function(stat) {if(stat.name == "Intelligence") return stat}).level
-  var love = slave.scales.find(function(stat) {if(stat.name == "Love") return stat}).level
-  var happiness = slave.scales.find(function(stat) {if(stat.name == "Happiness") return stat}).level
+  var int = statLevel(slave, "Intelligence")
+  var love = statLevel(slave, "Love")
+  var happiness = statLevel(slave, "Happiness")
+  var health = statLevel(slave, "Health")
   if (int >= 50 && love < 0) {
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level -= Math.floor(int/50)
+    changeStat(slave, "Obedience", (Math.floor(int/50) * -1))
+  } else if (int > 50) {
+    changeStat(slave, "Obedience", randomNumber(0,1))
   }
   if (happiness >= 50 || happiness <= -50) {
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level += Math.floor(happiness/50)
-    slave.scales.find(function(stat) {if(stat.name == "Libido") return stat}).level += Math.floor(happiness/50)
+    changeStat(slave, "Happiness", Math.floor(happiness/50))
+    changeStat(slave, "Libido", Math.floor(happiness/50))
   }
   if (love >= 50 || love <= -50) {
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level += Math.floor(love/50)
+    changeStat(slave, "Obedience", Math.floor(love/50))
+  }
+  if (happiness >= 50 && health >= 50) {
+    changeStat(slave, "Love", Math.floor(happiness/50))
   }
 }
 
@@ -182,10 +184,8 @@ function printStatChanges(slave, stat_changes) {
   stat_changes.sort(function (a, b) {
     return a.change - b.change;
   });
-  // console.log("printStatChanges " + slave.name + " " + slave.responds_to + " and changed: " + JSON.stringify(stat_changes))
   stat_changes.forEach((item, i) => {
     if (item.change >= 5) {
-      // console.log(item.name)
       if (item.type == "stat" || item.type == "scale") {
         phrases.push("<span class='text-success'>" + lowercase(item.name) + " improved</span>")
       } else if (item.type == "skills") {
@@ -229,7 +229,6 @@ function checkOldStats(slave, old_stats) {
     old_stat = old_stats.find(stat => stat.name == item.name)
     if (old_stat.level > item.level || old_stat.level < item.level) {
       var change = item.level - old_stat.level
-      // console.log("new level " + item.name + " " + item.level + " minus old level " + old_stat.level + " equals " + (item.level - old_stat.level))
       stat_changes.push({"name": item.name, "change": change, "type": "scale"})
     }
   });
@@ -238,7 +237,6 @@ function checkOldStats(slave, old_stats) {
     if (old_stat.type == "skills") {
       if (old_stat.level > item.level || old_stat.level < item.level) {
         var change = item.level - old_stat.level
-        // console.log(item.level + " minus " + old_stat.level)
         stat_changes.push({"name": item.name, "change": change, "type": "skills"})
       }
     }
@@ -248,7 +246,6 @@ function checkOldStats(slave, old_stats) {
     if (old_stat.type == "kinks") {
       if (old_stat.level > item.level || old_stat.level < item.level) {
         var change = item.level - old_stat.level
-        // console.log(item.level + " minus " + old_stat.level)
         stat_changes.push({"name": item.name, "change": change, "type": "kinks"})
       }
     }
@@ -257,7 +254,6 @@ function checkOldStats(slave, old_stats) {
     old_stat = old_stats.find(stat => stat.name == item.name)
     if (old_stat.level > item.level || old_stat.level < item.level) {
       var change = item.level - old_stat.level
-      // console.log(item.level + " minus " + old_stat.level)
       stat_changes.push({"name": item.name, "change": change, "type": "jobs"})
     }
   });
@@ -265,13 +261,12 @@ function checkOldStats(slave, old_stats) {
 }
 
 function checkClothing(slave) {
-  // console.log(slave.name + " before clothing: " + slave.clothing + JSON.stringify(slave.scales))
   var phrases = []
   if (slave.clothing == "jeans and a tshirt" || slave.clothing == "a flattering business suit") {
-    slave.scales.find(function(stat) {if(stat.name == "Happiness") return stat}).level += 5
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level -= 10
+    changeStat(slave, "Happiness", 5)
+    changeStat(slave, "Obedience", -10)
     if (slave.clothing == "a flattering business suit") {
-      slave.kinks.find(function(stat) {if(stat.name == "Dominating") return stat}).level += 5
+      changeStat(slave, "Dominating", 5)
     }
     phrases.push(slave.name + " loved passing as a free person wearing " + slave.clothing + " this week")
   } else {
@@ -281,42 +276,32 @@ function checkClothing(slave) {
     phrases.push(otherClothing(slave))
   }
   var report = phrases.join("") + "."
-  // console.log(slave.name + ":" + slave.clothing_weeks)
+
   if (Math.floor(slave.clothing_weeks) < 2) {
     slave.end_of_week_report.push(report)
   }
 
   localStorage.setItem("slaves", JSON.stringify(slaves))
-  // console.log(slave.name + " after clothing: " + slave.clothing + JSON.stringify(slave.scales))
 }
 
 function checkCollar(slave) {
-  // var slaves = JSON.parse(localStorage.getItem("slaves") || "[]");
-  // var objIndex = slaves.findIndex((obj => obj.id == slave_id));
-  // var slave = slaves[objIndex]
   var phrases = []
-  // console.log(slave.name + " before collar: " + slave.collar + JSON.stringify(slave.scales))
   if (slave.collar == "none") {
-    slave.scales.find(function(stat) {if(stat.name == "Happiness") return stat}).level += 5
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level -= 10
+    changeStat(slave, "Happiness", 5)
+    changeStat(slave, "Obedience", -10)
     phrases.push(" was <span class='text-success'>overjoyed</span> to go without a collar this week")
   } else {
     phrases.push(humiliatingCollar(slave))
     phrases.push(punishingCollar(slave))
-    // phrases.push()
   }
-  // console.log(slave.name + ":" + phrases)
   var report = slave.name + phrases.join("") + "."
-  // console.log(slave.name + ":" + slave.collar_weeks)
   if (Math.floor(slave.collar_weeks) < 2) {
     slave.end_of_week_report.push($.i18n(report, slave.gender, slave.collar))
   }
   localStorage.setItem("slaves", JSON.stringify(slaves))
-  // console.log(slave.name + " after collar: " + slave.collar + JSON.stringify(slave.scales))
 }
 
 function checkAssignment(slave) {
-  // console.log(slave.name + " before assignment " + JSON.stringify(slave.scales))
   slave.assignment_weeks += 1
   if (slave.assignment.name == "whore") {checkWhoring(slave);}
   else if (slave.assignment.name == "work a gloryhole") {checkGloryHole(slave);}
@@ -326,15 +311,6 @@ function checkAssignment(slave) {
   else if (slave.assignment.name == "stay confined") {checkConfinement(slave)}
   else if (slave.assignment.name == "exercise") {checkExercise(slave)}
   else {checkResting(slave);}
-  // console.log(slave.name + " after assignment " + JSON.stringify(slave.scales))
-}
-
-function negativeEffect(slave, array, thing, degree) {
-  array.find(function(stat) {if(stat.name == thing) return stat}).level -= degree
-}
-
-function positiveEffect(slave, array, thing, degree) {
-  array.find(function(stat) {if(stat.name == thing) return stat}).level += degree
 }
 
 function aptitudeFor(stat_name) {
@@ -349,16 +325,14 @@ function kindnessAction(slave) {
   var slave_stats = ["Love", "Loyalty", "Obedience", "Happiness"]
   if (slave.responds_to == "kindness") {
     slave_stats.forEach((thing, i) => {
-      var to_change = slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level
-      to_change += 2
+      changeStat(slave, thing, 2)
     });
     if (slave.responds_known == true) {
       slave.end_of_week_report.push($.i18n("action-response-grateful", slave.gender));
     }
   } else if (slave.responds_to == "severity") {
     slave_stats.forEach((thing, i) => {
-      var to_change = slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level
-      to_change -= 2
+      changeStat(slave, thing, -2)
     });
     if (slave.responds_known == true) {
       slave.end_of_week_report.push($.i18n("action-response-ungrateful", slave.gender));
@@ -370,16 +344,14 @@ function harshAction(slave) {
   var slave_stats = ["Love", "Loyalty", "Happiness", "Obedience"]
   if (slave.responds_to == "severity") {
     slave_stats.forEach((thing, i) => {
-      var to_change = slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level
-      to_change += 2
+      changeStat(slave, thing, 2)
     });
     if (slave.responds_known == true) {
       slave.end_of_week_report.push($.i18n("action-response-disciplined", slave.gender));
     }
   } else if (slave.responds_to == "kindness") {
     slave_stats.forEach((thing, i) => {
-      var to_change = slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level
-      to_change -= 2
+      changeStat(slave, thing, -2)
     });
     if (slave.responds_known == true) {
       slave.end_of_week_report.push($.i18n("action-response-hurt", slave.gender));
@@ -402,25 +374,18 @@ function passageOfTime(){
 }
 
 function healthCheck(slave) {
-  var slave_health = slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level
+  var slave_health = statLevel(slave, "Health")
   if (slave_health < -100) {
     slave.status = "dead";
-    // add dead slave to former_slaves
     former_slaves.push(slave);
     localStorage.setItem("former_slaves", JSON.stringify(former_slaves));
 
     // remove slave from slaves
     slaves.splice(slaves.indexOf(slave), 1);
     localStorage.setItem("slaves", JSON.stringify(slaves));
-    pc_kindness = Math.floor(pc_kindness)
-    pc_kindness -= 10;
-    localStorage.setItem("pc_kindness", pc_kindness)
-    money = Math.floor(money);
-    money -= 50
-    localStorage.setItem("money", money);
-    reputation = Math.floor(reputation);
-    reputation -= 50
-    localStorage.setItem("reputation", reputation);
+    pcKindnessChange(-10)
+    pcMoneyChange(-50)
+    pcRepChange(-50)
     end_of_week_report.push($.i18n("warning-died", slave.name));
   }
 }
@@ -462,7 +427,7 @@ function reputationChange() {
   } else if (change < 0) {
     end_of_week_report.push($.i18n("report-reputation", "poorly", "damaged", change));
   }
-  // console.log(change)
+
   return change;
 }
 
@@ -488,7 +453,7 @@ function pcStatCheck() {
     pc_kindness = -100
   }
   var modifier = Math.floor(pc_kindness / 20)
-  // console.log("modifier " + modifier)
+
   slaves = JSON.parse(localStorage.getItem("slaves"))
   var slave_stats = ["Love", "Loyalty", "Obedience"]
   var adj = ""
@@ -496,48 +461,51 @@ function pcStatCheck() {
   slaves.forEach((slave, i) => {
     adj = "bork"
     response = "bork"
-    // console.log(slave.name + " " + slave_stat + " before pc rep effect: " + modifier + JSON.stringify(slave.scales))
+
     if (modifier >= 2) {
       if (slave.responds_to == "kindness") {
-        slave_stats.forEach((slave_stat, i) => {positiveEffect(slave, slave.scales, slave_stat, modifier)})
+        slave_stats.forEach((slave_stat, i) => {
+          changeStat(slave, slave_stat, modifier)
+        })
         adj = "well";
         response = "improved";
       } else if (slave.responds_to == "severity") {
-        slave_stats.forEach((slave_stat, i) => {negativeEffect(slave, slave.scales, slave_stat, modifier)})
+        slave_stats.forEach((slave_stat, i) => {
+          changeStat(slave, slave_stat, (modifier * -1))
+        })
         adj = "poorly";
         response = "got worse";
       }
       slave.end_of_week_report.push($.i18n("pc-rep-responds", slave.gender, slave.name, adj, slave.responds_to, response));
     } else if (modifier <= -2) {
       if (slave.responds_to == "kindness") {
-        slave_stats.forEach((slave_stat, i) => {negativeEffect(slave, slave.scales, slave_stat, modifier)})
+        slave_stats.forEach((slave_stat, i) => {
+          changeStat(slave, slave_stat, (modifier))
+        })
         adj = "poorly";
         response = "got worse";
         rep = "brutality"
       } else if (slave.responds_to == "severity") {
-        slave_stats.forEach((slave_stat, i) => {positiveEffect(slave, slave.scales, slave_stat, modifier)})
+        slave_stats.forEach((slave_stat, i) => {
+          changeStat(slave, slave_stat, (modifier * -1))
+        })
         adj = "well";
         response = "improved";
         rep = "brutality"
       }
       slave.end_of_week_report.push($.i18n("pc-rep-responds", slave.gender, slave.name, adj, rep, response));
     }
-      // console.log(slave.name + " " + slave_stat + " after pc rep effect: " + modifier + JSON.stringify(slave.scales))
     });
 }
 
 function averageChange(thing) {
-  // console.log(thing);
   var average = 0
   var change = 0
   slaves.forEach((slave, i) => {
-    var a = slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level;
+    var a = statLevel(slave, thing);
     average += a
-    // console.log(health);
   });
-  // console.log("average:" + average);
   average = average / slaves.length
-  // console.log(average);
   if (average <= -1) {
     change = -1
   } else if (average >= 1) {
@@ -545,13 +513,10 @@ function averageChange(thing) {
   }
   if (change != 0) {
     slaves.forEach((slave, i) => {
-      // console.log("averageChange" + slave.name + " " + thing + " " + change)
-      slave.scales.find(function(stat) {if(stat.name == thing) return stat}).level += change;
-      // console.log(slave.stats.find(function(stat) {if(stat.name == "Health") return stat}).level );
+      changeStat(slave, thing, change)
     });
   }
   localStorage.setItem("slaves", JSON.stringify(slaves))
-  // console.log(thing + ": " + change);
 }
 
 function checkBeds() {
@@ -560,21 +525,16 @@ function checkBeds() {
   if (slaves.length > beds) {
     var effect = Math.floor(slaves.length / beds) * 4
     slaves.forEach((slave, i) => {
-      negativeEffect(slave, slave.scales, "Health", 5)
+      changeStat(slave, "Health", -5)
     });
     end_of_week_report.push($.i18n("warning-crowded", slaves.length))
   }
 }
 
 function incrementWeeks(slave) {
-  // var slaves = JSON.parse(localStorage.getItem("slaves") || "[]");
-  // var objIndex = slaves.findIndex((obj => obj.id == slave_id));
-  // var inc_these = [slaves[objIndex].living_weeks, slaves[objIndex].clothing_weeks, slaves[objIndex].collar_weeks]
-  // console.log(slave.collar_weeks)
   slave.living_weeks = Math.floor(slave.living_weeks) + 1
   slave.clothing_weeks = Math.floor(slave.clothing_weeks) + 1
   slave.collar_weeks = Math.floor(slave.collar_weeks) + 1
-  // console.log(slave.collar_weeks)
   localStorage.setItem("slaves", JSON.stringify(slaves))
 }
 

@@ -11,9 +11,10 @@ function getEvents() {
     other_slave = getOtherSlave(slave)
   }
   if (other_slave == null) {
+    console.log("null")
     getOtherSlave(slave)
   }
-  console.log("after get other " +slave.name, other_slave.name)
+  // console.log("after get other " +slave.name, other_slave.name)
   // console.log(other_slave)
   $("#event-row").empty()
   $("#event-row").prepend("<div class='col bust-5' id='event-bust'></div>")
@@ -21,17 +22,17 @@ function getEvents() {
   $("#event-bust").append("<h6 class='event-name'>"+slave.name+"</h6>")
   $("#event-row").append('<div class="col-9" id="event-body"></div>')
   if (this_one.tags.includes("two")) {
-    console.log("if tags include two " +slave.name, other_slave.name)
+    // console.log("if tags include two " +slave.name, other_slave.name)
     $("#event-row").append("<div class='col bust-5' id='other-event-bust'></div>")
     makePortrait("#other-event-bust", other_slave.id, 5, "slaves")
     $("#other-event-bust").append("<h6 class='event-name'>"+other_slave.name+"</h6>")
   }
-  console.log("before event body " + slave.name, other_slave.name)
+  // console.log("before event body " + slave.name, other_slave.name)
   $("#event-body").html(checkText(this_one.text, slave.id, other_slave.id, this_one.textvar));
   $("#event-body").append("</br>")
 
   this_one.options.forEach((option, i) => {
-    console.log("check options " + slave.name, other_slave.name)
+    // console.log("check options " + slave.name, other_slave.name)
     $("#event-body").append("<button type='button' class='btn "+ btns[i] +" choice-btn' onclick='showResponse(\"" + checkText(option.results[0].text, slave.id, other_slave.id, option.results[0].textvar) + "\"); responseEffects(\"" + option.results[0].effects + "\")'>" + checkText(option.text, slave.id, other_slave.id, option.textvar) + "</button>");
   });
 }
@@ -41,7 +42,7 @@ function checkText(text, slave_id, other_slave_id, textvar) {
     // console.log(text)
     slave = slaves.filter(function(slave) { return slave.id == slave_id; })[0]
     other_slave = slaves.filter(function(other_slave) { return other_slave.id == other_slave_id; })[0]
-    console.log(slave_id, other_slave_id)
+    // console.log(slave_id, other_slave_id)
     a = []
     if (typeof textvar !== 'undefined') {
       // console.log(textvar)

@@ -107,20 +107,52 @@ function interactButton(slave_id, group) {
   makeInteractButtons(slave_id)
 }
 
+function statLevel(s, stat) {
+  if (slave_scales.includes(stat)) {
+    stat_level = s.scales.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_stats.includes(stat)) {
+    stat_level = s.stats.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_kinks.includes(stat)) {
+    stat_level = s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_skills.includes(stat)) {
+    stat_level = s.skills.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_jobs.includes(stat)) {
+    stat_level = s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else {
+    stat_level = 0
+  }
+  return stat_level
+}
+
+function changeStat(s, stat, amount) {
+  if (slave_scales.includes(stat)) {
+    s.scales.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else if (slave_stats.includes(stat)) {
+    s.stats.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else if (slave_kinks.includes(stat)) {
+    s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else if (slave_skills.includes(stat)) {
+    s.skills.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else if (slave_jobs.includes(stat)) {
+    s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else {
+  }
+}
+
 function interrogate(slave_id, group) {
   slave = group.find(slave => slave.id == slave_id);
   int = parseInt(localStorage.getItem("pc_int")) || 0;
   luck = parseInt(localStorage.getItem("pc_luck")) || 0;
   xp = parseInt(localStorage.getItem("xp")) || 0;
-  slave_int = slave.stats.find(function(stat) {if(stat.name == "Intelligence") return stat}).level
-  slave_honesty = (slave.scales.find(function(stat) {if(stat.name == "Honesty") return stat}).level) * -1
-  slave_obedience = (slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level) * -1
+  slave_int = statLevel(slave, "Intelligence")
+  slave_honesty = statLevel(slave, "Honesty") * -1
+  slave_obedience = statLevel(slave, "Obedience") * -1
   player_roll = int + luck + xp
   slave_roll = slave_int + slave_honesty + slave_obedience - (randomNumber(0,luck))
   if (player_roll >= slave_roll) {
-    roll_results = "player succeeds"
+    roll_results = player_roll + " > " + slave_roll + " player succeeds"
   } else {
-    roll_results = "slave succeeds"
+    roll_results = slave_roll + " > " + player_roll + " slave succeeds"
   }
   return roll_results
 }

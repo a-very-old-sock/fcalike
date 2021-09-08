@@ -24,7 +24,6 @@ if (!start) {
   var pc_hasBreasts = true;
   var beds = 5;
   var rules = [];
-  makeEvents();
   var pc_facilities = []
   makeFacilities();
   // var shop_counter = 0;
@@ -54,7 +53,6 @@ if (!start) {
   income_record = (income_record) ? JSON.parse(income_record) : [];
   var end_of_week_report = localStorage.getItem("end_of_week_report");
   end_of_week_report = (end_of_week_report) ? JSON.parse(end_of_week_report) : [];
-  makeEvents();
   // var shop_counter = 0;
 }
 

@@ -259,6 +259,7 @@ $(document).ready(function() {
 function showHomePage() {
   // hide the main div and show the home div
   hideAll();
+  // location.reload(true);
   document.getElementById("next_week").classList.remove("hidden");
   homeTableHead();
   slaves = JSON.parse(localStorage.getItem("slaves") || "[]");

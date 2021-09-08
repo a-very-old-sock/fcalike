@@ -1,28 +1,24 @@
 function checkExercise(slave) {
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   training_level = buildings.find(function(bldg) {if (bldg.name == "training") return bldg}).level
-  if (slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level > 0) {
-    slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).level += 5 + training_level
+  if (statLevel(slave, "Health") > 0) {
+    changeStat(slave, "Strength", (5 + training_level))
     slave.end_of_week_report.push(slave.name + " exercised this week and grew stronger.")
   } else {
-    slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level -= 2
+    changeStat(slave, "Health", -2)
     slave.end_of_week_report.push(slave.name + " exercised this week but grew sicker due to their poor health.")
   }
 }
 
 function checkWhoring(slave) {
-  // console.log(slave.name + " whore!")
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
-  var customers = randomNumber(0, 5) + Math.floor((slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level / 20)) + brothel_level
+  var customers = randomNumber(0, 5) + Math.floor(statLevel(slave, "Charisma") / 20) + brothel_level
   var skillz = 0
   slave.skills.forEach((skill, i) => {
     if (skill.known == true) {
       skillz += skill.level
-      flip = randomNumber(1,5)
-      if (flip == 1) {
-        skill.level += randomNumber(0,customers)
-      }
+      skill.level += randomNumber(0,customers)
     } else {
       flip = randomNumber(1,5)
       if (flip == 1) {
@@ -41,17 +37,16 @@ function checkWhoring(slave) {
     }
   });
   skillz_array = skillz_array.sort(function(a, b){return a.level - b.level})
-  // console.log(skillz_array)
+
   min_skill = skillz_array[0]
-  // console.log(min)
+
   skillz_array = skillz_array.sort(function(a, b){return b.level - a.level})
   max_skill = skillz_array[0]
-  // console.log(skillz_array)
-  // console.log(max)
+
   var whore_skill = 0
   function getSkill(slave) {
     if (slave.jobs.find(function(stat) {if(stat.name == "Whore" && stat.known == true) return stat})) {
-      var get_skill = Math.floor(slave.jobs.find(function(stat) {if(stat.name == "Whore") return stat}).level / 10)
+      var get_skill = Math.floor(statLevel(slave, "Whore") / 10)
     } else {
       var get_skill = 1
     }
@@ -129,7 +124,7 @@ function checkWhoring(slave) {
 }
 
 function checkResting(slave) {
-  slave_health = slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level
+  slave_health = statLevel(slave, "Health")
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   bathhouse_level = buildings.find(function(bldg) {if (bldg.name == "bathhouse") return bldg}).level
   if (slave.living == "luxurious") {
@@ -144,36 +139,32 @@ function checkResting(slave) {
     slave_cost = 1
   }
   if (slave_health <= -50) {
-    slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level += ((Math.floor(slave_health / 10)) * -1) + slave_cost + bathhouse_level
+    hc = bathhouse_level + slave_cost + (Math.floor(slave_health/10) * -1)
     slave.end_of_week_report.push(slave.name + " rested this week and recuperated.")
-    // console.log("low!")
   } else if (slave_health > -50 && slave_health <= 0) {
-    slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level += 5 + slave_cost + bathhouse_level
+    hc = bathhouse_level + slave_cost + 5
     slave.end_of_week_report.push(slave.name + " rested this week and grew a bit more healthy.")
-    // console.log("med!")
   } else if (slave_health > 0 && slave_health <= 50) {
-    slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level += 5 + slave_cost + bathhouse_level
-    slave.scales.find(function(stat) {if(stat.name == "Libido") return stat}).level += 5 + bathhouse_level
+    hc = bathhouse_level + slave_cost + 3
+    changeStat(slave, "Libido", (bathhouse_level))
     slave.end_of_week_report.push(slave.name + " rested this week and felt better.")
-    // console.log("good!")
   } else {
-    slave.scales.find(function(stat) {if(stat.name == "Libido") return stat}).level += 5 + slave_cost + bathhouse_level
-    slave.scales.find(function(stat) {if(stat.name == "Obedience") return stat}).level -= 2 + slave_cost
+    hc = 1
+    changeStat(slave, "Libido", (bathhouse_level + 5))
+    changeStat(slave, "Obedience", (bathhouse_level * -1))
     slave.end_of_week_report.push(slave.name + " lazed around this week and did nothing.")
-    // console.log("best!")
   }
-  // console.log("resting!")
+  changeStat(slave, "Health", hc)
   kindnessAction(slave);
 }
 
 function checkGloryHole(slave) {
-  // console.log(slave.name)
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
   var customers = randomNumber(0, 20) + brothel_level
   var av_price = randomNumber(1,10) + brothel_level
   var total = (customers * av_price) * 6
-  money = Math.floor(localStorage.getItem("money"))
+  money = Math.round(localStorage.getItem("money"))
   money += total
   if (customers > 0) {
     slave.end_of_week_report.push($.i18n("gloryhole-customers", slave.name, customers, av_price, total));
@@ -186,9 +177,8 @@ function checkGloryHole(slave) {
 function checkPublicUse(slave) {
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
-  // console.log(slave.name + " whore!")
-  var customers = randomNumber(0, 5) + Math.floor((slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level / 20)) + brothel_level
-  var av_price = randomNumber(0, 2) + Math.floor(slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level / 50) + brothel_level
+  var customers = randomNumber(0, 5) + Math.round(statLevel(slave, "Charisma")/ 20) + brothel_level
+  var av_price = randomNumber(0, 2) + Math.round(statLevel(slave, "Charisma") / 50) + brothel_level
   var e = 0
   var total = (customers * av_price) * 6
   if (customers > 0) {
@@ -200,7 +190,7 @@ function checkPublicUse(slave) {
   } else {
     slave.end_of_week_report.push($.i18n("publicuse-no-customers", slave.gender, slave.name));
   }
-  reputation = Math.floor(localStorage.getItem("reputation"))
+  reputation = Math.round(localStorage.getItem("reputation"))
   reputation += total
   localStorage.setItem("reputation", reputation)
 }
@@ -211,26 +201,27 @@ function checkServeHousehold(slave) {
   var cooking = 0
   var strength = 0
   if (slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).known == true) {
-    cooking = Math.floor(slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).level / 10) + kitchen_level
+    cooking = Math.round(statLevel(slave, "Chef") / 10) + kitchen_level
   } else {
     var roll = randomNumber(0,100)
     if (roll > 50) {
       slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).known = true
-      cooking = Math.floor(slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).level / 10)
+      cooking = Math.round(statLevel(slave, "Chef") / 10)
       slave.end_of_week_report.push($.i18n("new-job", slave.gender, slave.name, "chef"));
     }
   }
   if (slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).known == true) {
-    strength = Math.floor(slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).level / 10)
+    strength = Math.round(statLevel(slave, "Strength") / 10)
   } else {
     var roll = randomNumber(0,100)
     if (roll > 50) {
       slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).known = true
-      strength = Math.floor(slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).level / 10)
+      strength = Math.round(statLevel(slave, "Strength") / 10)
       slave.end_of_week_report.push($.i18n("new-talent", slave.gender, slave.name, aptitudeFor("Strength")));
     }
   }
-  var money_saved = (cooking + strength) * 6
+  var slave_int = Math.round(statLevel(slave, "Intelligence") / 10)
+  var money_saved = (cooking + strength + slave_int) * 6
   if (money_saved > 0) {
     slave.end_of_week_report.push($.i18n("servant-money", slave.gender, slave.name, money_saved));
     kindnessAction(slave);
@@ -242,35 +233,31 @@ function checkServeHousehold(slave) {
 }
 
 function checkPleaseYou(slave) {
-  var charisma = Math.floor(slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level / 2)
+  var charisma = Math.floor(statLevel(slave, "Charisma") / 2)
   var attraction = 0
   var pcGender = localStorage.getItem("pcGender");
-  if (slave.kinks.find(function(stat) {if(stat.name == "Attraction to Men") return stat}).level > 0 && pcGender == "male") {
-    attraction = Math.floor(slave.kinks.find(function(stat) {if(stat.name == "Attraction to Men") return stat}).level / 2)
-  } else if (slave.kinks.find(function(stat) {if(stat.name == "Attraction to Women") return stat}).level > 0 && pcGender == "female") {
-    attraction = Math.floor(slave.kinks.find(function(stat) {if(stat.name == "Attraction to Women") return stat}).level / 2)
+  if (statLevel(slave, "Attraction to Men") > 0 && pcGender == "male") {
+    attraction = Math.floor(statLevel(slave, "Attraction to Men") / 2)
+  } else if (statLevel(slave, "Attraction to Women") > 0 && pcGender == "female") {
+    attraction = Math.floor(statLevel(slave, "Attraction to Women") / 2)
   }
   if (attraction > 0) {
-    slave.scales.find(function(stat) {if(stat.name == "Libido") return stat}).level += randomNumber(1,5)
+    changeStat(slave, "Libido", randomNumber(1,attraction))
   } else if (attraction < 0 && slave.assignment_weeks >= 3) {
     if (randomNumber(1,100) < slave.assignment_weeks) {
       if (pcGender == "male") {
-        slave.kinks.find(function(stat) {if(stat.name == "Attraction to Men") return stat}).level = randomNumber(50,100)
+        changeStat(slave, "Attraction to Men", randomNumber(50,100))
       } else {
-        slave.kinks.find(function(stat) {if(stat.name == "Attraction to Women") return stat}).level = randomNumber(50,100)
+        changeStat(slave, "Attraction to Women", randomNumber(50,100))
       }
     }
   }
-  reputation = Math.floor(localStorage.getItem("reputation"))
   rep_change = charisma + attraction
-  if (reputation < 0) {
-    reputation = 0
-  }
-  reputation += rep_change
-  localStorage.setItem("reputation", reputation)
+  pcRepChange(rep_change)
+
   slave.end_of_week_report.push($.i18n("please-you", slave.gender, slave.name, rep_change))
 
-  slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level += randomNumber(1,5)
+  changeStat(slave, "Health", randomNumber(1,5))
 
   //discover things
   var together_time = discoverThings(slave)
@@ -303,7 +290,7 @@ function checkPleaseYou(slave) {
 function discoverThings(slave) {
   var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks]
   var discoveries = []
-  slave_honesty = slave.scales.find(function(stat) {if(stat.name == "Honesty") return stat}).level
+  slave_honesty = statLevel(slave, "Honest")
   pc_int = parseInt(localStorage.getItem("pc_int"))
   xp = parseInt(localStorage.getItem("xp"))
   luck = parseInt(localStorage.getItem("pc_luck"))
@@ -356,8 +343,8 @@ function checkConfinement(slave) {
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   security_level = buildings.find(function(bldg) {if (bldg.name == "security") return bldg}).level
   effect = 10 + security_level
-  negativeEffect(slave, slave.scales, "Health", 5)
-  positiveEffect(slave, slave.scales, "Obedience", security_level)
+  changeStat(slave, "Health", -5)
+  changeStat(slave, "Obedience", security_level)
   slave.end_of_week_report.push($.i18n("confinement", slave.gender, slave.name))
   harshAction(slave)
 }
