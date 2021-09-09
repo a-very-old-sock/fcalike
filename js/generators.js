@@ -90,6 +90,7 @@ function slaveMaker(age, gender, known_mod) {
   var slave_constructor = function Slave(){
     this.id = Slave.defaultID;
     this.name = Slave.defaultName;
+    this.old_name = Slave.defaultOldName;
     this.age = Slave.defaultAge;
     this.gender = Slave.defaultGender;
     this.weeks_owned = Slave.defaultWeeksOwned;
@@ -137,6 +138,7 @@ function slaveMaker(age, gender, known_mod) {
   };
 
   slave_constructor.defaultID = Date.now() + randomNumber(0,10000);
+  slave_constructor.defaultOldName = "";
   slave_constructor.defaultAge = randomAge(age);
   slave_constructor.defaultResponds = getRandom(responds_to);
   var roll = randomNumber(0,100)

@@ -67,7 +67,7 @@ function viewSlave(id){
 
   $("#slave_interact_buttons").empty()
   $("#slave_interact_log").empty()
-  makeInteractButtons(inspected.id)
+  makeInteractButtons(inspected.id, "slaves")
 
   $("#slave_skills").append("<hr>");
   $("#slave_skills").append("<h5>Skills</h5>");
@@ -90,21 +90,23 @@ function viewSlave(id){
   }
 };
 
-function makeInteractButtons(slave_id) {
+function makeInteractButtons(slave_id, group) {
+  group = JSON.parse(localStorage.getItem(group) || "[]")
+  slave = group.find(slave => slave.id == slave_id);
   action_pts = localStorage.getItem("action_pts");
   if (action_pts > 0) {
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary' onclick='interactButton(" + slave_id +", slaves" + ")'>Button</button>");
+    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary' onclick='interactButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
   }
 }
 
 function interactButton(slave_id, group) {
   $("#slave_interact_buttons").empty()
   slave = group.find(slave => slave.id == slave_id);
-  $("#slave_interact_log").append(slave.name, interrogate(slave_id, group))
+  $("#slave_interact_log").append(talkWith(slave_id, group))
   $("#slave_interact_log").append("<br/>")
   pcActionChange(-1)
   pcXpChange(1)
-  makeInteractButtons(slave_id)
+  makeInteractButtons(slave_id, group)
 }
 
 function statLevel(s, stat) {
@@ -139,7 +141,8 @@ function changeStat(s, stat, amount) {
   }
 }
 
-function interrogate(slave_id, group) {
+function talkWith(slave_id, group) {
+  pcKindnessChange(1)
   slave = group.find(slave => slave.id == slave_id);
   int = parseInt(localStorage.getItem("pc_int")) || 0;
   luck = parseInt(localStorage.getItem("pc_luck")) || 0;
@@ -150,11 +153,62 @@ function interrogate(slave_id, group) {
   player_roll = int + luck + xp
   slave_roll = slave_int + slave_honesty + slave_obedience - (randomNumber(0,luck))
   if (player_roll >= slave_roll) {
-    roll_results = player_roll + " > " + slave_roll + " player succeeds"
+    thing = discoverOneThing(slave)
+    console.log(thing)
+    if (typeof thing == undefined) {
+      roll_results = "After taking time to speak with " + slave.name + ", you discover " + thing + "."
+    } else {
+      roll_results = slave.name + " answers your questions readily but you don't learn anything new."
+    }
+  } else if (statLevel(slave, "Honesty") <= -50 && int >= 50) {
+    roll_results = slave.name + " answers your questions obediently, but seems evasive."
   } else {
-    roll_results = slave_roll + " > " + player_roll + " slave succeeds"
+    roll_results = slave.name + " tolerates your interrogation obediently, but you don't learn much."
   }
   return roll_results
+}
+
+function discoverOneThing(slave) {
+  var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks]
+  var discoveries = []
+  check_these = shuffle(check_these)
+  if (discoveries.length < 1) {
+    check_these.forEach((thing, i) => {
+      thing.forEach((stat, i) => {
+        if (stat.known == false) {
+          stat.known = true
+          var phrase = ""
+          if (stat.type == "stat") {
+            phrase = aptitudeFor(stat.name)
+          } else if (stat.type == "scale") {
+            phrase = "level of " + lowercase(stat.name)
+          } else if (stat.type == "kink") {
+            if (stat.level >= 0) {
+              if (stat.name == "Attraction to Men" || stat.name == "Attraction to Women") {
+                phrase = lowercase(stat.name)
+              } else {
+                phrase = "love of " + lowercase(stat.name)
+              }
+            } else {
+              if (stat.name == "Attraction to Men") {
+                phrase = "disgust for fucking men"
+              } else if (stat.name == "Attraction to Women") {
+                phrase = "disgust for fucking women"
+              } else {
+                phrase = "hatred of " + lowercase(stat.name)
+              }
+            }
+          } else if (stat.type == "skill") {
+            phrase = "skills for " + lowercase(stat.name)
+          } else {
+          }
+          discoveries.push(phrase)
+        }
+      })
+    });
+  }
+
+  return discoveries[0]
 }
 
 function makePortrait(elem, slave_id, resize, group) {
