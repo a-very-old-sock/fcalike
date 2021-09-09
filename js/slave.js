@@ -77,17 +77,17 @@ function viewSlave(id){
   modalStatsBlock(inspected.kinks,"#slave_kinks");
   $("#slave_history").append(inspected.end_of_week_report.join('  '))
 
-  pc_facilities = JSON.parse(localStorage.getItem("pc_facilities"))
-  levels = 0
-  pc_facilities.forEach((item, i) => {
-    levels += item.level
-  });
-
-  if (levels > 0) {
-    $("#slave_jobs").append("<hr>");
-    $("#slave_jobs").append("<h5>Job Skills</h5>");
-    modalStatsBlock(inspected.jobs,"#slave_jobs");
-  }
+  // pc_facilities = JSON.parse(localStorage.getItem("pc_facilities"))
+  // levels = 0
+  // pc_facilities.forEach((item, i) => {
+  //   levels += item.level
+  // });
+  //
+  // if (levels > 0) {
+  //   $("#slave_jobs").append("<hr>");
+  //   $("#slave_jobs").append("<h5>Job Skills</h5>");
+  //   modalStatsBlock(inspected.jobs,"#slave_jobs");
+  // }
 };
 
 function makeInteractButtons(slave_id, group) {

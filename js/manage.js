@@ -41,7 +41,7 @@ function printFacilities() {
 //["dormitories", "kitchens", "security", "bathhouse", "gardens", "training", "library", "office", "workshop"]
 var basic_descriptions = ["A place to house your slaves.  Renovating your dormitories allows you to house more slaves.  Slaves employed in a job are housed at their place of work and not in the dormitories.", "Renovating your kitchens will allow you to employ more chefs, host parties, and increases your reputation.", "Renovating your security systems allows you to employ guards, makes it harder for your slaves to escape, and improves their obedience, but will also make them fear you more.", "A place to beautify your slaves and entertain your guests.  Renovating your bathhouse will improve your reputation and allow you to employ aestheticians to beautify your slaves.", "Beautifies your estate and produces food for your estate.  Renovating your gardens improves your reputation, makes your slaves healthier, and allows you to employ gardeners.", "A place to teach your slaves obedience, honesty, loyalty, and various skills.  Renovating your training facilities makes teachers more effective and makes training quicker.", "Renovating your library will make your educated slaves more intelligent and improve their job skills, but be careful--it may also make them less obedient and more rebellious!", "A place for your social secretaries and accountants to work.  Renovating the offices on your estate make your secretaries and accountants more efficient.", "A place for your tailors to work.", "Renovating your clinic allows you to employ medics to cure and surgically enhance your slaves.", "A place to put your slaves out to work their assets.  Renovating your brothel improves the prices your slaves can get and the number of customers they can see."]
 
-var dorm_descriptions = ["Your estate currently has ten small, narrow beds tucked away in the service areas.", "A ramshakle little building to warehouse up to twenty slaves.  Not very attractive.", "An attractive building to house up to thirty slaves.", "A comfortable set of buildings that house up to forty slaves.", "A block of small buildings designed to manage up to fifty slaves.", "A series of small buildings that manage up to sixty slaves.", "A block of large buildings designed to house up to seventy slaves.", "A series of large buildings that house up to eighty slaves.", "A small suburb of buildings that house up to ninety slaves.", "A large partition of your estate that houses up to one hundred slaves."]
+var dorm_descriptions = ["Your estate currently has five small, narrow beds tucked away in the service areas.", "A ramshakle little building to warehouse up to ten slaves.  Not very attractive.", "An attractive building to house up to fifteen slaves.", "A comfortable set of buildings that house up to twenty slaves.", "A block of small buildings designed to manage up to twenty-five slaves.", "A series of small buildings that manage up to thirty slaves."]
 var kitchen_descriptions = ["There's a small, dingy kitchen barely big enough to accommodate your own needs.  You definitely won't be hosting any parties with this kitchen.", "A small, bright kitchen that can employ one chef.  You can host parties, but do you really want to with a kitchen this small?", "A large, well equipped kitchen with all the necessities to host a good party.", "A luxurious, well-stocked kitchen with space for three chefs to prepare for a grand party.", "A kitchen large enough to accommodate any party, if the four chefs can handle it.", "A kitchen so technologically enhanced it hardly needs five chefs."]
 var security_descriptions = ["Your estate currently has no security beyond your own chore of locking the door every night.", "Your estate has a moderately high fence and a place to lock away recalcitrant slaves.", "You have a fence now! And a better lock.", "security 3", "security 4", "security 5", "security 6", "security 7", "security 8", "security 9", "A sophisticated AI monitors your slaves, and the predictive algorithm is almost good enough to read their thoughts."]
 var bathhouse_descriptions = ["There's no bathhouse to speak of.  Your slaves can clean each other with buckets in the courtyard, which isn't without its own appeals.", "A nice little bathhouse with a single soaking tub.", "A pretty little bathhouse with a spacious soaking tub and a small sauna.", "A beautifully appointed bathhouse to enhance your slaves' charms.", "A grand, spacious bathhouse with comfortable soaking pools and a little grotto.", "A luxurious bathhouse with a pool, waterfalls, and plenty of massage oil."]
@@ -54,21 +54,23 @@ var clinic_descriptions = ["There's no appropriate space, so there's not much yo
 var brothel_descriptions = ["Without a brothel attached to your estate, your slaves have to walk the streets to sell themselves and get fucked in back alleys where anything can happen.", "It's not pretty, but it's a place to make sure your slaves don't get abused too badly.", "A few clean beds and some dingy curtains are all a brothel really needs.", "Real walls, doors that close, and moderately clean beds.  That's all the advertisement you need, given the competition.", "A luxurious brothel with soft lighting, warm beds, and good clean fun.", "The fanciest little whorehouse in town."]
 
 function upgradeFacility(facility_index, item_price) {
-  // console.log(facility_index)
-  money = Math.floor(localStorage.getItem("money"))
-  money -= item_price
+  pcMoneyChange(item_price * -1)
   $("#money_counter").html("<h2>Money: " + money + "</h2>");
-  localStorage.setItem("money", money)
+
   if (pc_facilities[facility_index].name == "security") {
-    pc_kindness = Math.floor(localStorage.getItem("pc_kindness"))
-    pc_kindness -= 10
-    localStorage.setItem("pc_kindness", pc_kindness)
+    pcKindnessChange(-10)
   }
   pc_facilities[facility_index].level += 1
   localStorage.setItem("pc_facilities", JSON.stringify(pc_facilities))
   $("#" + pc_facilities[facility_index].name).prepend("<span class='text-success'>" + pc_facilities[facility_index].name + " renovated!")
   $('#facilities_list').empty()
   printFacilities()
+}
+
+function bldgLevel(bldg) {
+  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
+  bldg_level = buildings.find(function(bldg) {if (bldg.name == bldg) return bldg}).level
+  return bldgLevel
 }
 
 function facilityMaker(name, level) {

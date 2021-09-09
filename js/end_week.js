@@ -519,15 +519,34 @@ function averageChange(thing) {
   localStorage.setItem("slaves", JSON.stringify(slaves))
 }
 
+function checkNumBeds() {
+  lvl = bldgLevel("dormitories")
+  if (lvl == 0) {
+    beds = 5
+  } else if (lvl == 1) {
+    beds = 10
+  } else if (lvl == 2) {
+    beds = 15
+  } else if (lvl == 3) {
+    beds = 20
+  } else if (lvl == 4) {
+    beds = 25
+  } else if (lvl == 5) {
+    beds = 30
+  } else {
+    beds = Math.floor(localStorage.getItem("beds"))
+  }
+  return beds
+}
+
 function checkBeds() {
-  var beds = Math.floor(localStorage.getItem("beds"))
-  // console.log(beds)
+  checkNumBeds()
   if (slaves.length > beds) {
-    var effect = Math.floor(slaves.length / beds) * 4
+    // var effect = Math.floor(slaves.length / beds) * 4
     slaves.forEach((slave, i) => {
       changeStat(slave, "Health", -5)
     });
-    end_of_week_report.push($.i18n("warning-crowded", slaves.length))
+    end_of_week_report.push($.i18n("warning-crowded", slaves.length, beds))
   }
 }
 
