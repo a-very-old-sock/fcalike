@@ -9,6 +9,7 @@ Things that will not be added because they take too much coding effort:
 - incest
 - pregnancy/breeding
 - speech impediments/accents
+- inflation
 
 There's a lot of stuff that isn't fleshed out much yet.  Priorities are:
 - buttons for one-on-one interactions between player and slave outside of events
