@@ -12,7 +12,7 @@ Things that will not be added because they take too much coding effort:
 - inflation
 
 There's a lot of stuff that isn't fleshed out much yet.  Priorities are:
-- buttons for one-on-one interactions between player and slave outside of events
+- more buttons for one-on-one interactions between player and slave outside of events to change kinks, stats, etc
 - more events, especially event plot sequences
 - effects from buildings (ie, build a bath house and get the ability to change slave hair color; build a kitchen and unlock new events, etc)
 
