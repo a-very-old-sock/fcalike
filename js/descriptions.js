@@ -15,6 +15,7 @@ function modalDescription(slave, div_id) {
 
 function modalStatsBlock(stat_block, div_id) {
   // console.log(stat_block);
+  $(div_id).empty()
   stat_block.forEach(function(stat, i) {
     $(div_id).append("</br>");
     $(div_id).append("<h6 class='stat-name'>" + stat.name + "</h6>");

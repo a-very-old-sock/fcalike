@@ -1,9 +1,21 @@
 function hideAll() {
+  console.log(getFuncName())
   var tabs = document.getElementsByClassName("tab");
   for (var i = 0; i < tabs.length; i++) {
     tabs[i].classList.add("hidden");
   }
-  clearShowSlave()
+  clearShowSlave();
+  $("#facilities_menu").empty()
+  clear = ["#slave_list", "#buy_slave_list", "#bathhouse_list", "#slave_bathhouse_list"]
+  clear.forEach((item, i) => {
+    $(item).empty()
+  });
+
+  // "kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic", "brothel"
+  show_facilities_menu = localStorage.getItem("show_facilities_menu") || false
+  if (show_facilities_menu) {
+    $("#facilities_menu").append('<ul class="nav nav-pills nav-fill status-bar"><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Kitchens</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Guardhouse</h5></a></li><li class="nav-item"><a class="nav-link" id="salon" href="#" onclick="showBathhouse()"><h5>Bathhouse</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Gardens</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Training</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Library</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Office</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Workshop</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Clinic</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Brothel</h5></a></li></ul>')
+  }
 };
 
 // hide and show different tabs on refresh
@@ -33,6 +45,14 @@ document.addEventListener('DOMContentLoaded', function() {
   } else if (current_page=="manage_estate") {
     document.getElementById("manage_tab").classList.remove("hidden");
     showManageEstate();
+  } else if (current_page == "bathhouse_tab") {
+    document.getElementById("bathhouse_tab").classList.remove("hidden");
+    showBathhouse();
+  } else if (current_page = "view_slave_salon") {
+    hideAll();
+    document.getElementById("bathhouse_tab").classList.remove("hidden");
+    current_slave_id = localStorage.getItem("current_slave_id");
+    viewSlaveSalon(current_slave_id);
   } else {
     document.getElementById("next_week").classList.remove("hidden");
   }
@@ -229,6 +249,7 @@ $(document).ready(function() {
 
 // click the shop button
 function showBuyPage() {
+  console.log(getFuncName())
   hideAll()
   // hide the main div and show the buy div
   document.getElementById("buy_tab").classList.remove("hidden");
@@ -257,6 +278,7 @@ $(document).ready(function() {
 });
 
 function showHomePage() {
+  console.log(getFuncName())
   // hide the main div and show the home div
   hideAll();
   // location.reload(true);
@@ -269,6 +291,7 @@ function showHomePage() {
 };
 
 function showMoneyPage() {
+  console.log(getFuncName())
   // hide the main div and show the money div
   hideAll();
   document.getElementById("money_tab").classList.remove("hidden");
@@ -277,7 +300,44 @@ function showMoneyPage() {
   showSlaveSaleList()
 };
 
+function showBathhouse() {
+  console.log(getFuncName())
+  // btns = ["#save_buttons", "#salon_buttons_0", "#salon_buttons_1", "#salon_buttons_2", "#salon_buttons_3", "#salon_buttons_4", "#salon_buttons_5"]
+  // btns.forEach((item, i) => {
+  //   $(item).addClass("hidden-button")
+  // });
+  // hide the main div and show the bathhouse div
+  hideAll();
+  $("#salon_slave_bust").empty()
+  $("#salon_buttons").addClass("hidden-button")
+  $("#bathhouse_list").empty()
+  $("#slave_bathhouse_list").empty()
+  document.getElementById("bathhouse_tab").classList.remove("hidden");
+  var current_page = "bathhouse_tab";
+  localStorage.setItem("current_page", current_page);
+
+  attendants = getAttendants("bathhouse")[0]
+  others = getAttendants("bathhouse")[1]
+  bathhouseAttendantTableHead()
+  listAttendantsBathhouse(attendants)
+  bathhouseTableHead()
+  listslavesBathhouse(others)
+};
+
+function getAttendants(bldg) {
+  slaves = JSON.parse(localStorage.getItem("slaves"))
+  attendants = []
+  slaves.forEach((s, i) => {
+    if (s.assignment.name == bldg) {
+      attendants.push(s)
+    }
+  });
+  others = slaves.filter(x => !attendants.includes(x));
+  return [attendants, others]
+}
+
 function clearShowSlave() {
+  console.log(getFuncName())
   // console.log("clear!")
   var ids = ["slave_details", "slave_stats", "slave_scales", "slave_jobs", "slave_skills", "slave_kinks", "slave_history"]
   var dropdowns = ["slave_assignment"]
@@ -293,6 +353,7 @@ function clearShowSlave() {
 }
 
 function removeOptions(selectElement) {
+  console.log(getFuncName())
    var i, L = selectElement.options.length - 1;
    for(i = L; i >= 0; i--) {
       selectElement.remove(i);
@@ -300,6 +361,7 @@ function removeOptions(selectElement) {
 }
 
 function saveButton(div_id) {
+  console.log(getFuncName())
   document.getElementById(div_id).classList.remove("btn-primary");
   document.getElementById(div_id).classList.add("fade-success");
   setTimeout(function(){

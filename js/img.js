@@ -3,6 +3,7 @@
 // })
 
 function createPortrait(gender, accessories, scarProb) {
+  console.log(getFuncName())
   individual_portrait = []
 
   checkthese = ["head", "ear", "hair_deco", "eyes", "hair_hi"]
@@ -67,6 +68,7 @@ function createPortrait(gender, accessories, scarProb) {
 }
 
 function newPortrait(gender, accessories, scarProb, resize, slave_id) {
+  console.log(getFuncName())
   // console.log("newPortrait " + slave_id)
   individual_portrait = []
   portrait.forEach((item, i) => {
@@ -86,12 +88,12 @@ function newPortrait(gender, accessories, scarProb, resize, slave_id) {
       color = thisone[0].sub
       if (item.category == 'hair_hi') {
         btn = document.getElementsByClassName("hair-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("hair-hi-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       } else {
         btn = document.getElementsByClassName("head-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       }
       // console.log(color)
     } else if (item.category == "ear" || item.category == "hair_deco") {
@@ -102,16 +104,16 @@ function newPortrait(gender, accessories, scarProb, resize, slave_id) {
       thisone.push(get_it[Math.floor(Math.random() * get_it.length)])
       if (item.category == "hair_deco") {
         pony = document.getElementsByClassName("hair_deco")[0]
-        $(pony).data("id", thisone[0].id);
+        $(pony).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("hair-deco-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       }
       // console.log(thisone)
     } else if (item.category == "mouth") {
       var cat_count = getRnd(0,21)
       thisone = portrait_data.filter(function(stuff) { return stuff.category == category && stuff.cat_count == cat_count; })
       btn = document.getElementsByClassName("mouth-btn")[0]
-      $(btn).data("id", thisone[0].id);
+      $(btn).attr("data-id", thisone[0].id);
     }
     else if (item.category == "eyes"){
       var eyecolor = getRnd(0,5)
@@ -120,35 +122,35 @@ function newPortrait(gender, accessories, scarProb, resize, slave_id) {
       var thisone = []
       thisone.push(get_it[Math.floor(Math.random() * get_it.length)])
       btn = document.getElementsByClassName("eyecolor-btn")[0]
-      $(btn).data("id", thisone[0].id);
+      $(btn).attr("data-id", thisone[0].id);
       btn = document.getElementsByClassName("eyeshape-btn")[0]
-      $(btn).data("id", thisone[0].id);
+      $(btn).attr("data-id", thisone[0].id);
     } else {
       var thisone = portrait_data.filter(function(stuff) { return stuff.category == category && stuff.cat_count == cat_count; })
       btn = document.getElementsByClassName(item.category + "-btn")[0]
-      $(btn).data("id", thisone[0].id);
+      $(btn).attr("data-id", thisone[0].id);
       if (item.category == "beard") {
         btn = document.getElementsByClassName("beardcolor-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("beardstyle-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("beardvisibility-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       } else if (item.category == 'mark') {
         btn = document.getElementsByClassName("mark-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("scar-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       } else if (item.category == 'accessory') {
         btn = document.getElementsByClassName("accessory-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("earring-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       } else if (item.category == 'necklace') {
         btn = document.getElementsByClassName("collar-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
         btn = document.getElementsByClassName("collarvisibility-btn")[0]
-        $(btn).data("id", thisone[0].id);
+        $(btn).attr("data-id", thisone[0].id);
       }
     }
     // console.log(thisone)
@@ -157,7 +159,7 @@ function newPortrait(gender, accessories, scarProb, resize, slave_id) {
     url = "img/" + item.category + "/"+ thisone[0].sub + "/" + thisone[0].id +".png"
     img.src = url
 
-    $(img).data('id', thisone[0].id);
+    $(img).attr("data-id", thisone[0].id);
     $(img).css({top: (thisone[0].y-180)/resize, left: (thisone[0].x)/resize, height: thisone[0].height/resize, width: thisone[0].width/resize});
 
     visibility = ""
@@ -186,6 +188,7 @@ function newPortrait(gender, accessories, scarProb, resize, slave_id) {
 }
 
 function resize() {
+  console.log(getFuncName())
     bust = document.getElementsByClassName("bust")[0]
     collection = bust.children
     for (let item of collection) {
@@ -203,6 +206,7 @@ function resize() {
 }
 
 function dontShow(item, img, category, prob) {
+  console.log(getFuncName())
   if (item.category == category && getRnd(0,prob) == 1) {
     $(img).css("display", "");
     visibility = ""
@@ -217,108 +221,150 @@ function getRnd(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
-// function visToggle(elem, type) {
-//   dataId = $(elem).data("id")
-//
-//   get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
-//
-//   img = document.getElementsByClassName(get_it[0].category)[0]
-//   $(img).toggle();
-//
-// }
-//
-// function newShape(elem, type, resize) {
-//   dataId = $(elem).data("id")
-//
-//   get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
-//
-//   shape = get_it[0].style - 1
-//   if (shape < 0) {
-//     if (type == 'hair-hi') {
-//       shape = 17
-//     } else if (type == 'hair-deco') {
-//       shape = 16
-//     } else if (type == 'beardstyle') {
-//       shape = 2
-//     } else if (type == 'eyeshape') {
-//       shape = 7
-//     } else if (type == 'head') {
-//       shape = 4
-//     } else if (type == 'nose') {
-//       shape = 8
-//     } else if (type == 'mouth') {
-//       shape = 33
-//     } else if (type == 'mark') {
-//       shape = 19
-//     } else if (type == 'collar') {
-//       shape = 11
-//     } else if (type == 'accessory') {
-//       shape = 17
-//     }
-//   }
-//
-//   newone = portrait_data.filter(function(stuff) { return (stuff.category == get_it[0].category) && (stuff.sub == get_it[0].sub) && (stuff.style == shape)})
-//
-//   img = document.getElementsByClassName(newone[0].category)[0]
-//   img.src = "img/" + newone[0].category + "/"+ newone[0].sub + "/" + newone[0].id +".png"
-//
-//   $(img).data('id', newone[0].id);
-//   $(img).css({top: (newone[0].y-180)/resize, left: (newone[0].x)/resize, height: (thisone[0].height)/resize, width: (thisone[0].width)/resize});
-//   btn = document.getElementsByClassName(type + "-btn")[0]
-//   $(btn).data("id", newone[0].id);
-//   if (type == 'hair-hi') {
-//     btn = document.getElementsByClassName("hair-btn")[0]
-//     $(btn).data("id", newone[0].id);
-//   } else if (type == 'eyeshape') {
-//     btn = document.getElementsByClassName("eyecolor-btn")[0]
-//     $(btn).data("id", newone[0].id);
-//   } else if (type == 'beardstyle') {
-//     btn = document.getElementsByClassName("beardcolor-btn")[0]
-//     $(btn).data("id", newone[0].id);
-//   }
-// }
-//
-// function newColor(elem, type, resize){
-//     dataId = $(elem).data("id")
-//     get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
-//     color = get_it[0].sub - 1
-//     if (type == 'hair') {
-//       if (color < 0) {
-//         color = 7
-//       }
-//     } else if (type == 'eyecolor') {
-//       if (color < 0) {
-//         color = 5
-//       }
-//     } else if (type == 'beardcolor') {
-//       if (color < 0) {
-//         color = 8
-//       }
-//     }
-//
-//     newone = portrait_data.filter(function(stuff) { return (stuff.category == get_it[0].category) && (stuff.sub == color) && (stuff.style == get_it[0].style)})
-//
-//     img = document.getElementsByClassName(newone[0].category)[0]
-//     img.src = "img/" + newone[0].category + "/"+ newone[0].sub + "/" + newone[0].id +".png"
-//
-//     $(img).data('id', newone[0].id);
-//     $(img).css({top: (newone[0].y-180)/resize, left: (newone[0].x)/resize, height: (thisone[0].height)/resize, width: (thisone[0].width)/resize});
-//     btn = document.getElementsByClassName(type + "-btn")[0]
-//     $(btn).data("id", newone[0].id);
-//
-//     if (type == "hair") {
-//       pony = document.getElementsByClassName("hair_deco")[0]
-//       pony_id = $(pony).data("id")
-//
-//       get_pony = portrait_data.filter(function(stuff) { return stuff.id == pony_id; })
-//       // console.log(get_pony[0].style)
-//       newpony = portrait_data.filter(function(stuff) { return (stuff.category == "hair_deco") && (stuff.sub == color) && (stuff.style == get_pony[0].style)});
-//       // console.log(newpony[0].style)
-//       pony.src = "img/hair_deco/"+ color + "/" + newpony[0].id +".png"
-//       $(pony).css({top: (newpony[0].y-180)/resize, left: (newpony[0].x)/resize, height: (thisone[0].height)/resize, width: (thisone[0].width)/resize});
-//       $(pony).data("id", newpony[0].id);
-//     }
-// }
+function makePortrait(elem, slave_id, resize, group) {
+  console.log(getFuncName())
+  // console.log(slave_id)
+  portrait_array = ["hair_deco", "head", "mark", "nose", "mouth", "brow", "eyes", "beard", "hair_hi", "ear", "shirt", "coat", "necklace", "accessory", "flowers", "glasses"]
+  // console.log(elem)
+  portrait_array.forEach((item, i) => {
+    var img = document.createElement('img');
+    img.id = item + "_" + slave_id
+    img.className = item
+    img.setAttribute('data-id', "0")
+    $(elem).append(img);
+    // console.log(img)
+  });
+  // newPortrait("U", true, 3, resize, slave_id)
+  drawPortrait(elem, slave_id, resize, group)
+}
+
+function drawPortrait(elem, slave_id, resize, group) {
+  console.log(getFuncName())
+  // console.log("drawPortrait")
+
+  group = JSON.parse(localStorage.getItem(group) || "[]");
+  // console.log(slaves)
+  drawslave = group.find(slave => slave.id == slave_id);
+  drawslave.image.forEach((item, i) => {
+    // console.log(slave.name, item.category)
+    // img = document.getElementById(item.category + "_" + slave_id)
+    img = document.querySelectorAll(elem + ' #'+item.category+ '_' + slave_id)[0];
+    thisone = portrait_data.filter(function(stuff) { return stuff.id == item.id; })
+    url = "img/" + item.category + "/"+ thisone[0].sub + "/" + thisone[0].id +".png"
+    img.src = url
+    img.setAttribute('data-id', thisone[0].id)
+    $(img).css({top: (thisone[0].y-180)/resize, left: (thisone[0].x)/resize, height: thisone[0].height/resize, width: thisone[0].width/resize, display: item.visibility});
+    btn = $("#" + item.category + "-btn");
+    $("#" + item.category + "_btn").attr("data-id",item.id)
+    $("#" + item.category + "_visibility_btn").attr("data-id",item.id)
+    // console.log(item.id)
+  });
+}
+
+function visToggle(elem, type) {
+  console.log(getFuncName())
+  dataId = $(elem).attr("data-id")
+
+  get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
+
+  img = document.getElementsByClassName(get_it[0].category)[0]
+  $(img).toggle();
+  // console.log($(img).is(':visible'))
+}
+
+function newShape(elem, type, resize) {
+  console.log(getFuncName(), type)
+  dataId = $(elem).attr("data-id")
+
+  get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
+  // console.log(elem)
+  shape = get_it[0].style - 1
+  if (shape < 0) {
+    if (type == 'hair-hi') {
+      shape = 17
+    } else if (type == 'hair-deco') {
+      shape = 16
+    } else if (type == 'beardstyle') {
+      shape = 2
+    } else if (type == 'eyeshape') {
+      shape = 7
+    } else if (type == 'head') {
+      shape = 4
+    } else if (type == 'nose') {
+      shape = 8
+    } else if (type == 'mouth') {
+      shape = 33
+    } else if (type == 'mark') {
+      shape = 19
+    } else if (type == 'collar') {
+      shape = 11
+    } else if (type == 'accessory') {
+      shape = 17
+    }
+  }
+
+  newone = portrait_data.filter(function(stuff) { return (stuff.category == get_it[0].category) && (stuff.sub == get_it[0].sub) && (stuff.style == shape)})
+
+  img = document.getElementsByClassName(newone[0].category)[0]
+  img.src = "img/" + newone[0].category + "/"+ newone[0].sub + "/" + newone[0].id +".png"
+
+  $(img).attr("data-id",newone[0].id);
+  $(img).css({top: (newone[0].y-180)/resize, left: (newone[0].x)/resize, height: (newone[0].height)/resize, width: (newone[0].width)/resize});
+  $("#" + newone[0].category + "_btn").attr("data-id",newone[0].id)
+  // if (type == 'hair-hi') {
+  //   btn = document.getElementsByClassName("hair-btn")[0]
+  //   $(btn).attr("data-id", newone[0].id);
+  // } else if (type == 'eyeshape') {
+  //   btn = document.getElementsByClassName("eyecolor-btn")[0]
+  //   $(btn).attr("data-id", newone[0].id);
+  // } else if (type == 'beardstyle') {
+  //   btn = document.getElementsByClassName("beardcolor-btn")[0]
+  //   $(btn).attr("data-id", newone[0].id);
+  // }
+}
+
+function newColor(elem, type, resize){
+  console.log(getFuncName(), type)
+    dataId = $(elem).attr("data-id")
+    get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
+    color = get_it[0].sub - 1
+    if (type == 'hair') {
+      if (color < 0) {
+        color = 7
+      }
+    } else if (type == 'eyecolor') {
+      if (color < 0) {
+        color = 5
+      }
+    } else if (type == 'beardcolor') {
+      if (color < 0) {
+        color = 8
+      }
+    }
+
+    newone = portrait_data.filter(function(stuff) { return (stuff.category == get_it[0].category) && (stuff.sub == color) && (stuff.style == get_it[0].style)})
+
+    img = document.getElementsByClassName(newone[0].category)[0]
+    img.src = "img/" + newone[0].category + "/"+ newone[0].sub + "/" + newone[0].id +".png"
+
+    $(img).attr("data-id", newone[0].id);
+    $(img).css({top: (newone[0].y-180)/resize, left: (newone[0].x)/resize, height: (thisone[0].height)/resize, width: (thisone[0].width)/resize});
+    btn = document.getElementsByClassName(type + "-btn")[0]
+    $(btn).attr("data-id", newone[0].id);
+
+    if (type == "hair") {
+      pony = document.getElementsByClassName("hair_deco")[0]
+      pony_id = $(pony).attr("data-id")
+
+      get_pony = portrait_data.filter(function(stuff) { return stuff.id == pony_id; })
+      // console.log(get_pony[0].style)
+      newpony = portrait_data.filter(function(stuff) { return (stuff.category == "hair_deco") && (stuff.sub == color) && (stuff.style == get_pony[0].style)});
+      // console.log(newpony[0].style)
+      pony.src = "img/hair_deco/"+ color + "/" + newpony[0].id +".png"
+      $(pony).css({top: (newpony[0].y-180)/resize, left: (newpony[0].x)/resize, height: (thisone[0].height)/resize, width: (thisone[0].width)/resize});
+      $(pony).attr("data-id", newone[0].id);
+    }
+}
 
 var portrait = [{"category":"head", "count":39}, {"category":"eyes", "count":53}, {"category":"ear", "count":7}, {"category":"hair_hi", "count":161}, {"category":"hair_deco", "count":152}, {"category":"mouth", "count":35}, {"category":"nose", "count":8}, {"category":"brow", "count":7}, {"category":"accessory", "count":17}, {"category":"necklace", "count":11}, {"category":"beard", "count":26}, {"category":"shirt", "count":19}, {"category":"coat", "count":44}, {"category":"flowers", "count":5}, {"category":"glasses", "count":5}, {"category":"mark", "count":19}]
 

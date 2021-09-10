@@ -24,22 +24,13 @@ function endWeek() {
       averageChange(item);
     });
   }
-  // console.log("first " + reputation)
-  // reputation = Math.floor(reputation);
-  // // console.log("second " + reputation)
-  // reputation += Math.floor(reputationChange());
-  // localStorage.setItem("reputation", reputation);
-  // console.log("third " + reputation)
-  // console.log(money);
+
   checkBeds();
   checkSlaves();
   passageOfTime();
   incomeReport(old_money)
   localStorage.setItem("slaves", JSON.stringify(slaves));
-  // console.log(end_of_week_report);
-  // slaves.forEach((slave, i) => {
-  //   // console.log(slave.end_of_week_report);
-  // });
+
   homeTableHead();
   listAllSlaves(slaves);
   var week_div = $("#week_counter").html("<h2>Week: " + week + "</h2>");
@@ -70,10 +61,8 @@ function modalReport() {
 function expenses() {
   var costs = 0
   costs += checkLivingExpenses(slaves);
-  var money = Math.floor(localStorage.getItem("money"))
   var taxes = Math.floor(money * 0.13)
-  money -= taxes
-  localStorage.setItem("money", money)
+  pcMoneyChange((taxes + costs) * -1)
   end_of_week_report.push($.i18n("report-maintaining", slaves.length, costs));
   end_of_week_report.push($.i18n("report-taxes", taxes));
   return costs
@@ -93,7 +82,7 @@ function checkLivingExpenses(slaves) {
   slaves.forEach((slave, i) => {
     // console.log("before living status " + JSON.stringify(slave.scales))
     if (slave.living == "luxurious") {
-      slave_cost = 500
+      slave_cost = 200
     } else if (slave.living == "comfortable") {
       slave_cost = 50
     } else if (slave.living == "adequate") {
@@ -303,7 +292,9 @@ function checkCollar(slave) {
 
 function checkAssignment(slave) {
   slave.assignment_weeks += 1
-  if (slave.assignment.name == "whore") {checkWhoring(slave);}
+  pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
+  if (pf.includes(slave.assignment.name)) {checkJob(slave)} 
+  else if (slave.assignment.name == "whore") {checkWhoring(slave);}
   else if (slave.assignment.name == "work a gloryhole") {checkGloryHole(slave);}
   else if (slave.assignment.name == "public use") {checkPublicUse(slave);}
   else if (slave.assignment.name == "serve the household") {checkServeHousehold(slave);}
@@ -467,29 +458,29 @@ function pcStatCheck() {
         slave_stats.forEach((slave_stat, i) => {
           changeStat(slave, slave_stat, modifier)
         })
-        adj = "well";
+        adj = "<span class='text-success'>well</span>";
         response = "improved";
       } else if (slave.responds_to == "severity") {
         slave_stats.forEach((slave_stat, i) => {
           changeStat(slave, slave_stat, (modifier * -1))
         })
-        adj = "poorly";
+        adj = "<span class='text-danger'>poorly</span>";
         response = "got worse";
       }
-      slave.end_of_week_report.push($.i18n("pc-rep-responds", slave.gender, slave.name, adj, slave.responds_to, response));
+      slave.end_of_week_report.push($.i18n("pc-rep-responds", slave.gender, slave.name, adj, "kindness", response));
     } else if (modifier <= -2) {
       if (slave.responds_to == "kindness") {
         slave_stats.forEach((slave_stat, i) => {
           changeStat(slave, slave_stat, (modifier))
         })
-        adj = "poorly";
+        adj = "<span class='text-danger'>poorly</span>";
         response = "got worse";
         rep = "brutality"
       } else if (slave.responds_to == "severity") {
         slave_stats.forEach((slave_stat, i) => {
           changeStat(slave, slave_stat, (modifier * -1))
         })
-        adj = "well";
+        adj = "<span class='text-success'>well</span>";
         response = "improved";
         rep = "brutality"
       }

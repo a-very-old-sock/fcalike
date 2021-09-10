@@ -1,6 +1,7 @@
 // view an owned slave
 function viewSlave(id){
   // console.log(id)
+  console.log(getFuncName())
   $(".save_slave").attr("id", id);
   $("#slave_bust").empty()
   clearthese = document.getElementsByClassName("bust");
@@ -19,7 +20,7 @@ function viewSlave(id){
   var these_ones = JSON.parse(localStorage.getItem("slaves") || "[]");
   // console.log(these_ones)
   var inspected = these_ones.find(slave => slave.id == id);
-  // console.log("bork!");
+
   $("#slave_name").html("<h4>" + inspected.name + ", " + inspected.age + "</h4>");
 
   makePortrait("#slave_bust", inspected.id, 2, "slaves");
@@ -40,7 +41,9 @@ function viewSlave(id){
   // console.log(inspected.follows_rules)
 
   $("#assignment_label").html("This week " + inspected.name + " is assigned to:");
+  checkFacilities();
   $('#assignment').val(inspected.assignment.name);
+
 
   $("#living_label").html(inspected.name + "'s living conditions are:");
   $('#living').val(inspected.living);
@@ -77,280 +80,57 @@ function viewSlave(id){
   modalStatsBlock(inspected.kinks,"#slave_kinks");
   $("#slave_history").append(inspected.end_of_week_report.join('  '))
 
-  // pc_facilities = JSON.parse(localStorage.getItem("pc_facilities"))
-  // levels = 0
-  // pc_facilities.forEach((item, i) => {
-  //   levels += item.level
-  // });
-  //
-  // if (levels > 0) {
-  //   $("#slave_jobs").append("<hr>");
-  //   $("#slave_jobs").append("<h5>Job Skills</h5>");
-  //   modalStatsBlock(inspected.jobs,"#slave_jobs");
-  // }
+  pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic", "brothel"]
+  levels = 0
+  pf.forEach((item, i) => {
+    levels += bldgLevel(item)
+    // console.log(bldgLevel(item))
+  });
+
+  if (levels >= 1) {
+    $("#slave_jobs").append("<hr>");
+    $("#slave_jobs").append("<h5>Job Skills</h5>");
+    modalStatsBlock(inspected.jobs,"#slave_jobs");
+  }
 };
 
+function checkFacilities() {
+  console.log(getFuncName())
+  pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
+  pf.forEach((bldg, i) => {
+    if (bldgLevel(bldg) >= 1) {
+      var opt = document.createElement('option');
+      opt.value = bldg;
+      opt.innerHTML = "work in the " + bldg;
+      document.getElementById("assignment").appendChild(opt);
+    }
+  });
+}
+
 function makeInteractButtons(slave_id, group) {
-  group = JSON.parse(localStorage.getItem(group) || "[]")
-  slave = group.find(slave => slave.id == slave_id);
+  console.log(getFuncName())
+  if (Array.isArray(group)) {
+    slave = group.find(slave => slave.id == slave_id);
+  } else {
+    group = JSON.parse(localStorage.getItem(group) || "[]")
+    slave = group.find(slave => slave.id == slave_id);
+  }
   action_pts = localStorage.getItem("action_pts");
   if (action_pts > 0) {
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary' onclick='interactButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
-  }
-}
-
-function interactButton(slave_id, group) {
-  $("#slave_interact_buttons").empty()
-  slave = group.find(slave => slave.id == slave_id);
-  $("#slave_interact_log").append(talkWith(slave_id, group))
-  $("#slave_interact_log").append("<br/>")
-  pcActionChange(-1)
-  pcXpChange(1)
-  makeInteractButtons(slave_id, group)
-}
-
-function statLevel(s, stat) {
-  if (slave_scales.includes(stat)) {
-    stat_level = s.scales.find(function(thing) {if(thing.name == stat) return thing}).level
-  } else if (slave_stats.includes(stat)) {
-    stat_level = s.stats.find(function(thing) {if(thing.name == stat) return thing}).level
-  } else if (slave_kinks.includes(stat)) {
-    stat_level = s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level
-  } else if (slave_skills.includes(stat)) {
-    stat_level = s.skills.find(function(thing) {if(thing.name == stat) return thing}).level
-  } else if (slave_jobs.includes(stat)) {
-    stat_level = s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level
-  } else {
-    stat_level = 0
-  }
-  return stat_level
-}
-
-function changeStat(s, stat, amount) {
-  if (slave_scales.includes(stat)) {
-    s.scales.find(function(thing) {if(thing.name == stat) return thing}).level += amount
-  } else if (slave_stats.includes(stat)) {
-    s.stats.find(function(thing) {if(thing.name == stat) return thing}).level += amount
-  } else if (slave_kinks.includes(stat)) {
-    s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level += amount
-  } else if (slave_skills.includes(stat)) {
-    s.skills.find(function(thing) {if(thing.name == stat) return thing}).level += amount
-  } else if (slave_jobs.includes(stat)) {
-    s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level += amount
-  } else {
-  }
-}
-
-function talkWith(slave_id, group) {
-  pcKindnessChange(1)
-  slave = group.find(slave => slave.id == slave_id);
-  int = parseInt(localStorage.getItem("pc_int")) || 0;
-  luck = parseInt(localStorage.getItem("pc_luck")) || 0;
-  xp = parseInt(localStorage.getItem("xp")) || 0;
-  slave_int = statLevel(slave, "Intelligence")
-  slave_honesty = statLevel(slave, "Honesty") * -1
-  slave_obedience = statLevel(slave, "Obedience") * -1
-  player_roll = int + luck + xp
-  slave_roll = slave_int + slave_honesty + slave_obedience - (randomNumber(0,luck))
-  if (player_roll >= slave_roll) {
-    thing = discoverOneThing(slave)
-    console.log(thing)
-    if (typeof thing == undefined) {
-      roll_results = "After taking time to speak with " + slave.name + ", you discover " + thing + "."
-    } else {
-      roll_results = slave.name + " answers your questions readily but you don't learn anything new."
+    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='talkButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
+    if ((statLevel(slave, "Health") <= 0) && statKnown(slave, "Health")) {
+      $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='healButton(" + slave_id +", slaves" + ")'>Have a doctor heal " + slave.name + " (§1000)</button>");
     }
-  } else if (statLevel(slave, "Honesty") <= -50 && int >= 50) {
-    roll_results = slave.name + " answers your questions obediently, but seems evasive."
-  } else {
-    roll_results = slave.name + " tolerates your interrogation obediently, but you don't learn much."
+    if (statKnown(slave, "Health") == false) {
+      $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='examineButton(" + slave_id +", slaves" + ")'>Have " + slave.name + " examined by a doctor (§100)</button>");
+    }
+    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='viewSlaveSalon(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
   }
-  return roll_results
 }
-
-function discoverOneThing(slave) {
-  var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks]
-  var discoveries = []
-  check_these = shuffle(check_these)
-  if (discoveries.length < 1) {
-    check_these.forEach((thing, i) => {
-      thing.forEach((stat, i) => {
-        if (stat.known == false) {
-          stat.known = true
-          var phrase = ""
-          if (stat.type == "stat") {
-            phrase = aptitudeFor(stat.name)
-          } else if (stat.type == "scale") {
-            phrase = "level of " + lowercase(stat.name)
-          } else if (stat.type == "kink") {
-            if (stat.level >= 0) {
-              if (stat.name == "Attraction to Men" || stat.name == "Attraction to Women") {
-                phrase = lowercase(stat.name)
-              } else {
-                phrase = "love of " + lowercase(stat.name)
-              }
-            } else {
-              if (stat.name == "Attraction to Men") {
-                phrase = "disgust for fucking men"
-              } else if (stat.name == "Attraction to Women") {
-                phrase = "disgust for fucking women"
-              } else {
-                phrase = "hatred of " + lowercase(stat.name)
-              }
-            }
-          } else if (stat.type == "skill") {
-            phrase = "skills for " + lowercase(stat.name)
-          } else {
-          }
-          discoveries.push(phrase)
-        }
-      })
-    });
-  }
-
-  return discoveries[0]
-}
-
-function makePortrait(elem, slave_id, resize, group) {
-  // console.log(slave_id)
-  portrait_array = ["hair_deco", "head", "mark", "nose", "mouth", "brow", "eyes", "beard", "hair_hi", "ear", "shirt", "coat", "necklace", "accessory", "flowers", "glasses"]
-  // console.log(elem)
-  portrait_array.forEach((item, i) => {
-    var img = document.createElement('img');
-    img.dataset.id = 0
-    img.id = item + "_" + slave_id
-    img.className = item
-    $(elem).append(img);
-    // console.log(img)
-  });
-  // newPortrait("U", true, 3, resize, slave_id)
-  drawPortrait(elem, slave_id, resize, group)
-}
-
-function drawPortrait(elem, slave_id, resize, group) {
-  // console.log("drawPortrait")
-
-  group = JSON.parse(localStorage.getItem(group) || "[]");
-  // console.log(slaves)
-  drawslave = group.find(slave => slave.id == slave_id);
-  drawslave.image.forEach((item, i) => {
-    // console.log(slave.name, item.category)
-    // img = document.getElementById(item.category + "_" + slave_id)
-    img = document.querySelectorAll(elem + ' #'+item.category+ '_' + slave_id)[0];
-    thisone = portrait_data.filter(function(stuff) { return stuff.id == item.id; })
-    url = "img/" + item.category + "/"+ thisone[0].sub + "/" + thisone[0].id +".png"
-    img.src = url
-    // console.log(slave.name, img)
-    $(img).data('id', thisone[0].id);
-    $(img).css({top: (thisone[0].y-180)/resize, left: (thisone[0].x)/resize, height: thisone[0].height/resize, width: thisone[0].width/resize, display: item.visibility});
-  });
-
-  // console.log(slave.image)
-}
-
-// function slaveKinksRadar(inspected){
-//   var kctx = document.getElementById("slave_kinks_chart").getContext('2d');
-//
-//   var skills_levels = []
-//   inspected.skills.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     skills_levels.push(item.level)
-//   });
-//   var skills_labels = []
-//   inspected.skills.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     skills_labels.push(item.name + ", " + item.level)
-//   });
-//
-//   var kinks_levels = []
-//   inspected.kinks.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     kinks_levels.push(item.level)
-//   });
-//   var kinks_labels = []
-//   inspected.kinks.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     kinks_labels.push(item.name + ", " + item.level)
-//   });
-//
-//   var kinkRadarChart = new Chart(kctx, {
-//       type: 'radar',
-//       data: {
-//           labels: kinks_labels,
-//           // spanGaps: false,
-//           datasets: [{
-//               label: "Skills",
-//               backgroundColor: 'rgba(255, 99, 132, 0.1)',
-//               borderColor: 'rgb(255, 99, 132)',
-//               data: skills_levels,
-//               // spanGaps: false
-//           },
-//           {
-//               label: "Kinks",
-//               backgroundColor: 'rgba(54, 162, 235, 0.1)',
-//               borderColor: 'rgba(54, 162, 235, 1)',
-//               data: kinks_levels,
-//               // spanGaps: false
-//           }]
-//       },
-//       // options: options
-//   });
-// }
-//
-// function slaveStatsRadar(inspected){
-//   var sctx = document.getElementById("slave_chart").getContext('2d');
-//
-//   var scales_levels = []
-//   inspected.scales.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     scales_levels.push(item.level)
-//   });
-//   inspected.stats.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     scales_levels.push(item.level)
-//   });
-//   var scales_labels = []
-//   inspected.scales.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     scales_labels.push(item.name + ", " + item.level)
-//   });
-//   inspected.stats.forEach((item, i) => {
-//     // console.log(item.name + item.level)
-//     scales_labels.push(item.name + ", " + item.level)
-//   });
-//   // console.log(scales_levels)
-//
-//   var options = {
-//     scale: {
-//         // angleLines: {
-//         //     display: false
-//         // },
-//         ticks: {
-//             suggestedMin: -100,
-//             suggestedMax: 100
-//             }
-//         }
-//     };
-//
-//   var slaveRadarChart = new Chart(sctx, {
-//       type: 'radar',
-//       data: {
-//           labels: scales_labels,
-//           // spanGaps: false,
-//           datasets: [{
-//               label: "Slave attributes",
-//               backgroundColor: 'rgb(255, 99, 132, 0.1)',
-//               borderColor: 'rgb(255, 99, 132)',
-//               data: scales_levels,
-//               // spanGaps: false
-//           }]
-//       },
-//       // options: options
-//   });
-// }
 
 // inspect a slave
 function inspectSlave(id){
+  console.log(getFuncName())
   current_page = localStorage.getItem("current_page");
   if (current_page == "buy_tab") {
     var these_ones = JSON.parse(localStorage.getItem("available") || "[]");
@@ -398,6 +178,7 @@ $(document).ready(function() {
 });
 
 function setThing(id, div_id) {
+  console.log(getFuncName())
   var these_ones = JSON.parse(localStorage.getItem("slaves") || "[]");
   var objIndex = these_ones.findIndex((obj => obj.id == id));
   var dropdown = document.getElementById(div_id);
@@ -431,6 +212,7 @@ function setThing(id, div_id) {
 }
 
 function setAssignment(id) {
+  console.log(getFuncName())
   // console.log("id: " + id);
   var these_ones = JSON.parse(localStorage.getItem("slaves") || "[]");
   var dropdown = document.getElementById("assignment");
@@ -443,14 +225,15 @@ function setAssignment(id) {
   these_ones[objIndex].assignment = new_assignment;
 
   localStorage.setItem("slaves", JSON.stringify(these_ones))
-  // console.log(inspected.assignment)
 }
 
 function getAssignmentType(a) {
+  console.log(getFuncName())
   var type = ""
+  pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
   if (a == "rest") {
     type = "rest"
-  } else if (a == "whore" || a == "serve the household" || "please you") {
+  } else if (a == "whore" || a == "serve the household" || a == "please you" || pf.includes(a)) {
     type = "work"
   } else if (a == "work a gloryhole" || a == "public use" || a == "stay confined") {
     type = "punishment"
@@ -458,4 +241,125 @@ function getAssignmentType(a) {
     type = "none"
   }
   return type
+}
+
+function statLevel(s, stat) {
+  console.log(getFuncName())
+  if (slave_scales.includes(stat)) {
+    stat_level = s.scales.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_stats.includes(stat)) {
+    stat_level = s.stats.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_skills.includes(stat)) {
+    stat_level = s.skills.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else if (slave_jobs.includes(stat)) {
+    stat_level = s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level
+  } else {
+    stat_level = 0
+  }
+  return stat_level
+}
+
+function kinkLevel(s, stat) {
+  console.log(getFuncName())
+  stat_level = s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level
+  return stat_level
+}
+
+function statKnown(s, stat) {
+  console.log(getFuncName())
+  if (slave_scales.includes(stat)) {
+    stat_known = s.scales.find(function(thing) {if(thing.name == stat) return thing}).known
+  } else if (slave_stats.includes(stat)) {
+    stat_known = s.stats.find(function(thing) {if(thing.name == stat) return thing}).known
+  } else if (slave_skills.includes(stat)) {
+    stat_known = s.skills.find(function(thing) {if(thing.name == stat) return thing}).known
+  } else if (slave_jobs.includes(stat)) {
+    stat_known = s.jobs.find(function(thing) {if(thing.name == stat) return thing}).known
+  } else {
+    stat_known = false
+  }
+  return stat_known
+}
+
+function kinkKnown(s, stat) {
+  console.log(getFuncName())
+  stat_known = s.kinks.find(function(thing) {if(thing.name == stat) return thing}).known
+  return stat_known
+}
+
+function changeStat(s, stat, amount) {
+  console.log(getFuncName())
+  if (slave_scales.includes(stat)) {
+    s.scales.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  } else if (slave_stats.includes(stat)) {
+    s.stats.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+    if (statLevel(s, stat) < 0) { setStat(s, stat, 0) }
+  } else if (slave_skills.includes(stat)) {
+    s.skills.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+    if (statLevel(s, stat) < 0) { setStat(s, stat, 0) }
+  } else if (slave_jobs.includes(stat)) {
+    s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+    if (statLevel(s, stat) < 0) { setStat(s, stat, 0) }
+  } else {
+  }
+  if (statLevel(s, stat) < -100) {setStat(s, stat, -100)}
+  else if (statLevel(s, stat) > 100) {setStat(s, stat, 100)}
+  if (stat == "Charisma") {
+    s.charisma_desc = charismaWord(s)
+  }
+  localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function changeKink(s, stat, amount) {
+  console.log(getFuncName())
+  s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level += amount
+  if (statLevel(s, stat) < -100) {setStat(s, stat, -100)}
+  else if (statLevel(s, stat) > 100) {setStat(s, stat, 100)}
+  localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function statTrue(s, stat) {
+  console.log(getFuncName())
+  if (slave_scales.includes(stat)) {
+    s.scales.find(function(thing) {if(thing.name == stat) return thing}).known = true
+  } else if (slave_stats.includes(stat)) {
+    s.stats.find(function(thing) {if(thing.name == stat) return thing}).known = true
+    if (statLevel(s, stat) < 0) { setStat(s, stat, 0) }
+  } else if (slave_skills.includes(stat)) {
+    s.skills.find(function(thing) {if(thing.name == stat) return thing}).known = true
+  } else if (slave_jobs.includes(stat)) {
+    s.jobs.find(function(thing) {if(thing.name == stat) return thing}).known = true
+  } else {
+  }
+  localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function kinkTrue(s, stat) {
+  console.log(getFuncName())
+  s.kinks.find(function(thing) {if(thing.name == stat) return thing}).known = true
+  localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function setStat(s, stat, amount) {
+  console.log(getFuncName())
+  if (slave_scales.includes(stat)) {
+    s.scales.find(function(thing) {if(thing.name == stat) return thing}).level = amount
+  } else if (slave_stats.includes(stat)) {
+    s.stats.find(function(thing) {if(thing.name == stat) return thing}).level = amount
+  } else if (slave_skills.includes(stat)) {
+    s.skills.find(function(thing) {if(thing.name == stat) return thing}).level = amount
+  } else if (slave_jobs.includes(stat)) {
+    s.jobs.find(function(thing) {if(thing.name == stat) return thing}).level = amount
+  } else {
+  }
+  if (stat == "Charisma") {
+    s.charisma_desc = charismaWord(s)
+  }
+  localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function setKink(s, stat, amount) {
+  console.log(getFuncName())
+  s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level = amount
+  localStorage.setItem("slaves", JSON.stringify(slaves))
 }

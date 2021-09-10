@@ -7,8 +7,9 @@ function punishingCollar(slave) {
         var change_these = ["Obedience", "Loyalty"]
         change_these.forEach((change_this, i) => {
           changeStat(slave, change_this, 2)
-          phrases.push(" and <span class='text-success'>grew more obedient</span> as a result")
+
         });
+        phrases.push(" and <span class='text-success'>grew more obedient</span> as a result")
       }
     });
   } else if (slave.responds_to == "kindness") {
@@ -17,8 +18,8 @@ function punishingCollar(slave) {
         var change_these = ["Love"]
         change_these.forEach((change_this, i) => {
           changeStat(slave, change_this, -2)
-          phrases.push(" and <span class='text-danger'>trusted you less</span> as a result")
         });
+        phrases.push(" and <span class='text-danger'>trusted you less</span> as a result")
       }
     });
   }

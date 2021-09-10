@@ -55,40 +55,45 @@ function defaultShop(shop_id) {
     makeSlaves(n);
   }
 
-  if (shop_id == 0) {
+  // bill: 0, finder's: 1, smart: 2, old: 3, scratch: 4, dumb: 5
+  // ["Intelligence", "Charisma", "Strength"]
+  // ["Obedience", "Love", "Loyalty", "Honesty", "Health", "Libido", "Happiness"]
+  // ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
+  if (shop_id == 0) { // bargain bill's bargain woobies
     available.forEach((slave, i) => {
-      slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level = randomNumber(-99,0)
-      slave.scales.find(function(stat) {if(stat.name == "Happiness") return stat}).level = randomNumber(-99,0)
+      setStat(slave, "Health", randomNumber(-99,0))
+      setStat(slave, "Happiness", randomNumber(-99,0))
+      setStat(slave, "Charisma", randomNumber(50,100))
     });
   }
-  if (shop_id == 1) {
-    var low = ["Health", "Happiness", "Love", "Loyalty", "Obedience"]
+  if (shop_id == 1) { // runaway trash
+    var low = ["Health", "Happiness", "Love", "Loyalty", "Obedience", "Honesty"]
     low.forEach((item, i) => {
       available.forEach((slave, i) => {
-        slave.scales.find(function(stat) {if(stat.name == item) return stat}).level = randomNumber(-99,0)
+        setStat(slave, item, randomNumber(-99,0))
       });
     });
   }
-  if (shop_id == 2) {
-    var low = ["Happiness", "Love", "Obedience"]
+  if (shop_id == 2) { // smart bitches
+    var low = ["Happiness", "Love", "Obedience", "Loyalty"]
     var high = ["Intelligence"]
     low.forEach((item, i) => {
       available.forEach((slave, i) => {
-        slave.scales.find(function(stat) {if(stat.name == item) return stat}).level = randomNumber(-99,20)
+        setStat(slave, item, randomNumber(-99,20))
       });
     });
     available.forEach((slave, i) => {
-      slave.stats.find(function(stat) {if(stat.name == "Intelligence") return stat}).level = randomNumber(60,100)
+      setStat(slave, "Intelligence", randomNumber(60,100))
       var goodjob = getRandom(slave_jobs)
-      slave.jobs.find(function(job) {if (job.name == goodjob) return job}).level = randomNumber(60,100)
+      setStat(slave, goodjob, randomNumber(70,100))
     });
 
   }
-  if (shop_id == 3) {
+  if (shop_id == 3) { // golden oldies
     var low = ["Libido", "Health"]
     low.forEach((item, i) => {
       available.forEach((slave, i) => {
-        slave.scales.find(function(stat) {if(stat.name == item) return stat}).level = randomNumber(-99,20)
+        setStat(slave, item, randomNumber(-99,20))
       });
     });
     var high = ["Jobs", "Skills"]
@@ -97,48 +102,70 @@ function defaultShop(shop_id) {
         var num_jobs = randomNumber(1,3)
         while (i < num_jobs) {
           var goodjob = getRandom(slave_jobs)
-          slave.jobs.find(function(job) {if (job.name == goodjob) return job}).level = randomNumber(40,100)
+          setStat(slave, goodjob, randomNumber(40,100))
           i++
         }
         var num_skills = randomNumber(1,5)
         while (i < num_skills) {
           var goodskill = getRandom(slave_skills)
-          slave.skills.find(function(skill) {if (skill.name == goodskill) return skill}).level = randomNumber(40,100)
+          setStat(slave, goodskill, randomNumber(40,100))
           i++
         }
       });
     });
   }
-  if (shop_id == 4) {
+  if (shop_id == 4) { // scratch n dent
     available.forEach((slave, i) => {
-      slave.scales.find(function(stat) {if(stat.name == "Health") return stat}).level = randomNumber(-99,0)
-      slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).level = randomNumber(60,100)
+      setStat(slave, "Health", randomNumber(-99,0))
+      setStat(slave, "Strength", randomNumber(60,100))
+      setStat(slave, "Guard", randomNumber(60,100))
+      console.log(slave.image)
+      thing = slave.image.find(function(thing) {if(thing.category == "mark") return thing})
+      thing.visibility = ""
     });
   }
-  if (shop_id == 4) {
-    var low = ["Intelligence", "Jobs", "Skills"]
+  if (shop_id == 5) { // dumb n pretty
     available.forEach((slave, i) => {
-      slave.stats.find(function(stat) {if(stat.name == "Intelligence") return stat}).level = randomNumber(0,10)
+      setStat(slave, "Intelligence", randomNumber(0,10))
       slave.jobs.forEach((item, i) => {
-        item.level = 0
+        setStat(slave, item, 0)
       });
       slave.skills.forEach((item, i) => {
-        item.level = randomNumber(-100,10)
+        setStat(slave, item, randomNumber(-100,10))
       });
-      slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level = randomNumber(60,100)
-      charismaWord(slave)
+      setStat(slave, "Charisma", randomNumber(70,100))
+      thing = slave.image.find(function(thing) {if(thing.category == "mark") return thing})
+      thing.visibility = "none"
     });
   }
+  available.forEach((slave, i) => {
+    calculatePrice(slave)
+    slave.charisma_desc = charismaWord(slave)
+  });
+
+
+  // available.forEach((slave, i) => {
+  //   check_these = [slave.stats, slave.skills, slave.jobs, slave.kinks]
+  //   check_these.forEach((item, i) => {
+  //     if (statLevel(slave, item.name) > 100) {
+  //       changeStat(slave, item.name, 100)
+  //     } else if (statLevel(slave, item.name) < -100) {
+  //       changeStat(slave, item.name, -100)
+  //     }
+  //   });
+
+  // });
+
   // bill: 0, finder's: 1, smart: 2, old: 3, scratch: 4, dumb: 5
   var shop_price_modifier = 0
   if (shop_id == 0 || shop_id == 3) {
-    shop_price_modifier = -0.20
+    shop_price_modifier = -0.30
   }
   if (shop_id == 1) {
-    shop_price_modifier = -0.50
+    shop_price_modifier = -0.90
   }
   if (shop_id == 5) {
-    shop_price_modifier = 0.20
+    shop_price_modifier = 0.50
   }
 
   available.forEach((slave, i) => {

@@ -1,6 +1,5 @@
 function checkExercise(slave) {
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  training_level = buildings.find(function(bldg) {if (bldg.name == "training") return bldg}).level
+  training_level = bldgLevel("training room")
   if (statLevel(slave, "Health") > 0) {
     changeStat(slave, "Strength", (5 + training_level))
     slave.end_of_week_report.push(slave.name + " exercised this week and grew stronger.")
@@ -11,24 +10,20 @@ function checkExercise(slave) {
 }
 
 function checkWhoring(slave) {
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
+  brothel_level = parseInt(bldgLevel("brothel")) || 0
+
   var customers = randomNumber(0, 5) + Math.floor(statLevel(slave, "Charisma") / 20) + brothel_level
   var skillz = 0
-  slave.skills.forEach((skill, i) => {
-    if (skill.known == true) {
-      skillz += skill.level
-      skill.level += randomNumber(0,customers)
-    } else {
-      flip = randomNumber(1,5)
-      if (flip == 1) {
-        skill.known = true
-        slave.end_of_week_report.push("While whoring this week " + slave.name + " <span class='success'>demonstrated their skill in " + lowercase(skill.name) + "</span>.")
-      } else if (flip == 2) {
-        skill.level += randomNumber(0,customers)
-      }
+
+  if (randomNumber(0,5) >= (brothel_level + 4)) {
+
+    slave.end_of_week_report.push($.i18n(slave.name + " <span class='text-danger'> was injured by a customer this week</span>, damaging {{gender:$1|his|her}} health.", slave.gender))
+    changeStat(slave, "Health", -10)
+    changeStat(slave, "Love", -5)
+    if (randomNumber(0,2) == 2) {
+      changeKink(slave, "Masochism", 5)
     }
-  });
+  }
 
   skillz_array = []
   slave.skills.forEach((skill, i) => {
@@ -37,7 +32,6 @@ function checkWhoring(slave) {
     }
   });
   skillz_array = skillz_array.sort(function(a, b){return a.level - b.level})
-
   min_skill = skillz_array[0]
 
   skillz_array = skillz_array.sort(function(a, b){return b.level - a.level})
@@ -83,6 +77,20 @@ function checkWhoring(slave) {
 
   if (customers > 0) {
     slave.end_of_week_report.push($.i18n("whore-earned-money", slave.gender, slave.name, customers, av_price, total));
+    slave.skills.forEach((skill, i) => {
+      if (skill.known == true) {
+        skillz += skill.level
+        skill.level += randomNumber(0,customers)
+      } else {
+        flip = randomNumber(1,5)
+        if (flip == 1) {
+          skill.known = true
+          slave.end_of_week_report.push("While whoring this week " + slave.name + " <span class='success'>demonstrated their skill in " + lowercase(skill.name) + "</span>.")
+        } else if (flip == 2) {
+          skill.level += randomNumber(0,customers)
+        }
+      }
+    });
     feature_kink.known = true;
     // console.log(slave.name, feature_kink)
     if (feature_kink.level >= 50) {
@@ -94,21 +102,22 @@ function checkWhoring(slave) {
     } else if (feature_kink.level <= -50) {
       fk = feature_kink.level * -1
       r = (fk + randomNumber(1,100)) * price_modifier
-      // if (r < 0) {
-      //   r = r * -1
-      // }
       r = Math.round(r)
       feature_kink.known = true
       total = total += r
       slave.end_of_week_report.push($.i18n("whore-hated-kink", slave.gender, lowercase(feature_kink.name), (r)))
     }
-    if (min_skill.level <= 10) {
+    if (min_skill === undefined) {
+
+    } else if (min_skill.level <= 10) {
       e = ((min_skill.level * -10) - randomNumber(20,100)) * price_modifier
       e = Math.round(e)
       slave.end_of_week_report.push($.i18n("whore-low-skill", slave.gender, lowercase(min_skill.name), (e * -1)))
       total = total += e
     }
-    if (max_skill.level > 50){
+    if (max_skill === undefined) {
+
+    } else if (max_skill.level > 50){
       e = (max_skill.level + randomNumber(1,50)) * price_modifier
       e = Math.round(e)
       slave.end_of_week_report.push($.i18n("whore-high-skill", slave.gender, lowercase(max_skill.name), e))
@@ -347,4 +356,84 @@ function checkConfinement(slave) {
   changeStat(slave, "Obedience", security_level)
   slave.end_of_week_report.push($.i18n("confinement", slave.gender, slave.name))
   harshAction(slave)
+}
+
+function checkJob(slave) {
+  // ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
+  pf = [{"assignment_name" : "kitchens", "stat" : "Chef", "inc_kinks": [], "dec_kinks": [], "changes": ["Health"]}, {"assignment_name" : "guardhouse", "stat" : "Guard", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating", "Sadism"], "changes": ["Obedience", "Strength"]}, {"assignment_name" : "bathhouse", "stat" : "Aesthetician", "dec_kinks": ["Dominating"], "inc_kinks": ["Submitting"], "changes": ["Libido", "Charisma", "Health"]}, {"assignment_name" : "gardens", "stat" : "Gardener", "dec_kinks": [], "inc_kinks": [], "changes": ["Health"]}, {"assignment_name" : "training room", "stat" : "Teacher", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating"], "changes": []}, {"assignment_name" : "library", "stat" : "Secretary", "dec_kinks": [], "inc_kinks": ["Dominating"], "changes": ["Intelligence"]}, {"assignment_name" : "office", "stat" : "Accountant", "dec_kinks": [], "inc_kinks": [], "changes": ["Intelligence"]}, {"assignment_name" : "workshop", "stat" : "Tailor", "dec_kinks": [], "inc_kinks": [], "changes": []}, {"assignment_name" : "clinic", "stat" : "Medic", "dec_kinks": [], "inc_kinks": ["Aftercare"], "changes": ["Intelligence", "Health"]}]
+  job = pf.filter(function(stuff) { return (stuff.assignment_name == slave.assignment.name)})[0]
+  slave.end_of_week_report.push(slave.name + " worked in the " + slave.assignment.name + " this week and improved their skills as a " + lowercase(job.stat) + ".")
+  int_bonus = Math.floor(statLevel(slave, "Intelligence") / 25)
+  luck_bonus = randomNumber(0,Math.floor(parseInt(localStorage.getItem("pc_luck")) / 20))
+  if (!slave.literacy) {
+    if (randomNumber(0,100) <= (statLevel(slave, "Intelligence") + slave.assignment_weeks + (statLevel(slave, "Obedience")* -1))) {
+      slave.literacy = true
+      if ( parseInt(localStorage.getItem("pc_int")) + parseInt(localStorage.getItem("pc_luck")) + parseInt(localStorage.getItem("xp")) >= statLevel(slave, "Intelligence") + (statLevel(slave, "Honesty")* -1)) {
+        slave.literacy_known = true
+        slave.end_of_week_report.push($.i18n("In the course of {{gender:$1|his|her}} work, {{gender:$1|he|she}} seems to have learned how to read and write. Although unfortunate, this will help {{gender:$1|him|her}} do {{gender:$1|his|her}} job better.", slave.gender))
+      } else if (parseInt(localStorage.getItem("pc_int")) >= statLevel(slave, "Intelligence")) {
+        slave.end_of_week_report.push($.i18n("Something seems different about " + slave.name + "this week, but you're not sure what."))
+      }
+    }
+  }
+  if (!slave.literacy_known) {
+    if (randomNumber(0,100) <= parseInt(localStorage.getItem("pc_int")) + randomNumber(0,parseInt(localStorage.getItem("pc_luck"))) + parseInt(localStorage.getItem("xp"))) {
+      slave.literacy_known = true
+      if (slave.literacy) {
+        slave.end_of_week_report.push($.i18n("Observing " + slave.name + " do {{gender:$1|his|her}} job this week, you realize {{gender:$1|he|she}} is literate.  This may be unfortunate.", slave.gender))
+      } else {
+        slave.end_of_week_report.push($.i18n("Observing " + slave.name + " do {{gender:$1|his|her}} job this week, you realize {{gender:$1|he|she}} does not know how to read or write.  While this is good for {{gender:$1|his|her}} obedience, it will make it more difficult for {{gender:$1|him|her}} to do {{gender:$1|his|her}} job well.", slave.gender))
+      }
+    }
+  }
+  if (slave.literacy) {
+    lit_bonus = 1
+  } else {
+    lit_bonus = 0
+  }
+  teaching_bonus = 0
+  others = []
+  thisone = [slave]
+  slaves.forEach((s, i) => {
+    if (s.assignment.name == slave.assignment.name) {
+      others.push(s)
+    }
+  });
+  not_this_one = others.filter(x => !thisone.includes(x));
+  highest = 0
+  highestteaching = 0
+  if (not_this_one.length >= 1) {
+    highskills = []
+    teachingskills = []
+    not_this_one.forEach((other, i) => {
+      highskills.push(statLevel(other, slave.assignment.name))
+      teachingskills.push(statLevel(other, "Teacher"))
+    });
+    highest = highskills.sort(function(a, b){return b - a})[0]
+    highestteaching = teachingskills.sort(function(a, b){return b - a})[0]
+  }
+  if (highest > statLevel(slave, job.stat)) {
+    teaching_bonus = Math.round(highestteaching/20) + Math.round(highest/25)
+  }
+  job_bonus = int_bonus + luck_bonus + teaching_bonus + bldgLevel(job.assignment_name) + lit_bonus
+  if (job_bonus > 0) {
+    changeStat(slave, job.stat, job_bonus)
+  } else {
+    changeStat(slave, job.stat, 1)
+  }
+  if (statLevel(slave, job.stat) >= 50) {
+    slave.end_of_week_report.push($.i18n("{{gender:$1|He|She}} seemed to enjoy {{gender:$1|his|her}} job.", slave.gender))
+    changeStat(slave, "Happiness")
+    pcKindnessChange(1)
+  }
+  job.inc_kinks.forEach((kink, i) => {
+    changeKink(slave, kink, 1)
+  });
+  job.dec_kinks.forEach((kink, i) => {
+    changeKink(slave, kink, -1)
+  });
+  job.changes.forEach((stat, i) => {
+    changeStat(slave, stat, 1)
+  });
+
 }
