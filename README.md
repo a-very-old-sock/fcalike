@@ -22,4 +22,4 @@ Things that are planned after the core priorities are complete:
 - relationships between slaves
 - slaves escaping and player interaction with former slaves
 
-[Play in browser](https://a-very-old-sock.github.io/fcalike/) NSFW text, no NSFW images.  The game will set a cookie to store your game information; this means you will not be able to access the same game on a different device.  Formatting on mobile is generally not great right now.
+[Play in browser](https://ffacities.neocities.org/) NSFW text, no NSFW images.  The game will set a cookie to store your game information; this means you will not be able to access the same game on a different device.  Formatting on mobile is generally not great right now.
