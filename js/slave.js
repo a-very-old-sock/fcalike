@@ -124,7 +124,7 @@ function makeInteractButtons(slave_id, group) {
     if (statKnown(slave, "Health") == false) {
       $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='examineButton(" + slave_id +", slaves" + ")'>Have " + slave.name + " examined by a doctor (§100)</button>");
     }
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='viewSlaveSalon(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
+    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='salonButton(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
   }
 }
 

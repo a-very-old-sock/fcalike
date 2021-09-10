@@ -1,5 +1,5 @@
-function viewSlaveSalon(slave_id, group) {
-  // showBathhouse()
+function salonButton(slave_id) {
+  viewSlaveSalon(slave_id)
 }
 
 function examineButton(slave_id, group) {

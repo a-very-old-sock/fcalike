@@ -48,11 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
   } else if (current_page == "bathhouse_tab") {
     document.getElementById("bathhouse_tab").classList.remove("hidden");
     showBathhouse();
-  } else if (current_page = "view_slave_salon") {
+  } else if (current_page == "view_slave_salon") {
     hideAll();
     document.getElementById("bathhouse_tab").classList.remove("hidden");
     current_slave_id = localStorage.getItem("current_slave_id");
     viewSlaveSalon(current_slave_id);
+  } else if (current_page == "about") {
+    document.getElementById("about").classList.remove("hidden");
+    showAbout();
   } else {
     document.getElementById("next_week").classList.remove("hidden");
   }
@@ -193,6 +196,14 @@ $(document).ready(function() {
   });
 });
 
+$(document).ready(function() {
+  $("#about").click(function(){
+    // console.log("Shop!");
+    location.reload(true);
+    showAbout();
+  });
+});
+
 // click Rules manager
 $(document).ready(function() {
   $("#rules").click(function() {
@@ -289,6 +300,15 @@ function showHomePage() {
   var current_page = "home";
   localStorage.setItem("current_page", current_page);
 };
+
+function showAbout() {
+  console.log(getFuncName())
+  // hide the main div and show the home div
+  hideAll();
+  // location.reload(true);
+  document.getElementById("about_tab").classList.remove("hidden");
+  localStorage.setItem("current_page", "about");
+}
 
 function showMoneyPage() {
   console.log(getFuncName())
