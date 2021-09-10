@@ -58,7 +58,7 @@
 
         </div>
       </nav>
-        <div class="jumbotron">
+        <div class="navigation" id="navigation">
           <!-- <h1>this is my game!</h1> -->
           <ul class="nav nav-pills nav-fill status-bar">
             <li class="nav-item">
@@ -73,15 +73,19 @@
             <li class="nav-item">
               <a class="nav-link" id="slave_counter" href="#"></a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" id="debug" href="#"></a>
-            </li>
+            </li> -->
           </ul>
+          <div id="facilities_menu">
+
+          </div>
         </div>
+
         <div id="content">
           <div id="next_week" class="hidden tab">
             <div class="row">
-              <h1 id="welcome"></h1>
+              <h1 id="welcome">Home</h1>
             </div>
             <div class="row" id="slave_list">
               <table class="table">
@@ -135,7 +139,7 @@
             <hr />
             <div class="row mt-3">
               <div class="col-md-6" id="slave_assignment">
-                <h5 class="mt-3">Note: making changes here will mean that your slave no longer has rules from the rules manager applied to them!</h5>
+                <!-- <h5 class="mt-3">Note: making changes here will mean that your slave no longer has rules from the rules manager applied to them!</h5> -->
                 <label id="rules_label" for="follows_rules">Apply rules manager:</label>
                 <select class="custom-select" id="follows_rules">
                   <option value="true">Yes</option>
@@ -168,9 +172,9 @@
                 <label id="collar_label" for="collar">With a collar:</label>
                 <select class="custom-select" id="collar">
                 </select>
-                <div id="clothing_desc">
+                <!-- <div id="clothing_desc">
                   This is where a description of the clothing will go once it's written!
-                </div>
+                </div> -->
               </div>
               <div class="col-md-6" id="slave_scales">
 
@@ -217,12 +221,80 @@
           </div>
 
           <div id="manage_tab" class="hidden tab">
+            <div class="row" id="player_manage_row">
+              <h1>Manage Your Business</h1>
+              <p>
+                Each week, you can take certain actions to improve yourself or your business.  However, the more time you spend attending to your own affairs, the less time you have to supervise and train your slaves.
+              </p>
+              <div id="player_manage_buttons">
+
+              </div>
+            </div>
+            <div class="row" id="player_manage_results">
+
+            </div>
             <div class="row">
               <h1>Manage Estate</h1>
             </div>
+            <div class="row">
+              <div id="bed-count">
+
+              </div>
+            </div>
             <div class="row" id="facilities_list">
             </div>
+            <small>Why do facility upgrade prices change? The price contractors quote to renovate your estate depends on supply prices, your past profession, and a bit of luck.  Check back another day if upgrades are out of your budget today.</small>
+          </div>
 
+          <div id="bathhouse_tab" class="hidden tab">
+            <h1>Bathhouse</h1>
+            <div class="row" id="salon">
+              <div class="col bust" id="salon_slave_bust">
+
+              </div>
+              <div class="col" id="salon_buttons">
+                <div class="row hidden-button" id="save_buttons">
+                  <button type="button" class="btn btn-primary" id="save_salon">Save</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_0">
+                  <button type="button" class="btn btn-primary hair_deco_visibility_btn" onClick="visToggle(this, 'hair_deco', 2)" data-id="0" id="hair_deco_visibility_btn">cut/allow hairstyle</button>
+                  <button type="button" class="btn btn-primary accessory-btn" onClick="newShape(this, 'accessory', 2)" data-id="0" id="accessory_btn">earring</button>
+                  <button type="button" class="btn btn-primary earring-btn" onClick="visToggle(this, 'accessory', 2)" data-id="0" id="accessory_visibility_btn">remove/add earring</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_1">
+                  <button type="button" class="btn btn-primary hair-hi-btn" onClick="newShape(this, 'hair-hi', 2)" data-id="0" id="hair_hi_btn">hair style</button>
+                  <button type="button" class="btn btn-primary hair-deco-btn" onClick="newShape(this, 'hair-deco', 2)" data-id="0" id="hair_deco_btn">hair cut</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_2">
+                  <button type="button" class="btn btn-primary hair-btn" onClick="newColor(this, 'hair', 2)" data-id="0" id="hair_color_btn">hair color</button>
+                  <button type="button" class="btn btn-primary eyeshape-btn" onClick="newShape(this, 'eyeshape', 2)" data-id="0" id="eyes_btn">eye shape</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_3">
+                  <button type="button" class="btn btn-primary eyecolor-btn" onClick="newColor(this, 'eyecolor', 2)" data-id="0" id="eyes_color_btn">eye color</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_4">
+                  <button type="button" class="btn btn-primary mark-btn" onClick="newShape(this, 'mark', 2)" data-id="0" id="mark_btn">scar</button>
+                  <button type="button" class="btn btn-primary scar-btn" onClick="visToggle(this, 'scar', 2)" data-id="0" id="mark_visibility_btn">remove/add scar</button>
+                </div>
+                <div class="row hidden-button mt-3" id="salon_buttons_5">
+                  <h6><span class="text-warning">Warning!</span> Changing your slaves' physical appearance with these options may damage their health, depending on the skill of your aestheticians and medics.</h6>
+                  <button type="button" class="btn btn-primary head-btn" onClick="newShape(this, 'head', 2)" data-id="0" id="head_btn">jaw shape</button>
+                  <button type="button" class="btn btn-primary nose-btn" onClick="newShape(this, 'nose', 2)" data-id="0" id="nose_btn">nose shape</button>
+                  <button type="button" class="btn btn-primary mouth-btn" onClick="newShape(this, 'mouth', 2)" data-id="0" id="mouth_btn">mouth shape</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row" id="bathhouse_list">
+              <h2>Attendants</h2>
+
+            </div>
+
+            <div class="row" id="slave_bathhouse_list">
+              <h2>Other slaves</h2>
+
+            </div>
           </div>
 
           <div id="money_tab" class="hidden tab">
@@ -574,5 +646,7 @@
     <script src= "js/assignment_effects.js"></script>
     <script src= "js/money.js"></script>
     <script src= "js/img.js"></script>
+    <script src= "js/interact_buttons.js"></script>
+    <script src= "js/salon.js"></script>
   </body>
 </html>
