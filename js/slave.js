@@ -116,13 +116,14 @@ function makeInteractButtons(slave_id, group) {
     slave = group.find(slave => slave.id == slave_id);
   }
   action_pts = localStorage.getItem("action_pts");
+  $("#slave_interact_buttons").append("<p>Buttons <span class='text-success'>this color</span> cost 1 action point, while buttons <span class='text-primary'>this color</span> have no cost.")
   if (action_pts > 0) {
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='talkButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
+    $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='talkButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
     if ((statLevel(slave, "Health") <= 0) && statKnown(slave, "Health")) {
-      $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='healButton(" + slave_id +", slaves" + ")'>Have a doctor heal " + slave.name + " (§1000)</button>");
+      $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='healButton(" + slave_id +", slaves" + ")'>Have a doctor heal " + slave.name + " (§1000)</button>");
     }
     if (statKnown(slave, "Health") == false) {
-      $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='examineButton(" + slave_id +", slaves" + ")'>Have " + slave.name + " examined by a doctor (§100)</button>");
+      $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='examineButton(" + slave_id +", slaves" + ")'>Have " + slave.name + " examined by a doctor (§100)</button>");
     }
     $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='salonButton(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
   }

@@ -1,4 +1,5 @@
 function modalDescription(slave, div_id) {
+  console.log(getFuncName())
   $(div_id).html($.i18n("description-intro", slave.name, slave.age, slave.eye_adj));
   if (slave.has_breasts === true) {
     $(div_id).append($.i18n("description-physical-breasts", slave.gender, slave.butt, slave.breasts));
@@ -14,6 +15,7 @@ function modalDescription(slave, div_id) {
 };
 
 function modalStatsBlock(stat_block, div_id) {
+  console.log(getFuncName())
   // console.log(stat_block);
   $(div_id).empty()
   stat_block.forEach(function(stat, i) {

@@ -41,7 +41,7 @@ function lowercase(string) {
 }
 
 function charismaAssessment(slave) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   var assessment = ""
   var adj = slave.charisma_desc;
   // console.log(slave.charisma_desc);
@@ -60,7 +60,7 @@ function charismaAssessment(slave) {
 };
 
 function listAllSlavesWithPrice(available) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   available.forEach(function(item, i) {
     $("#buy_list_start").after("<tr id='row-" + item.name + i + "'><td class='bust-5 bust' id='slave_bust_" + item.id + "'></td><td><a onclick='inspectSlave(" + item.id + ")' href='#' data-toggle='modal' data-target='#generic-modal'>" + item.name + ", " + item.age + "</a></td><td>" + charismaAssessment(item) + "</td><td><button id='btn-" + item.name + i + "' onclick='buySlave("+ i + ")' type='button' class='btn btn-sm btn-secondary" + disableBtn(item.price) + "'>Buy: $" + item.price + "</td></tr>");
     makePortrait("#slave_bust_" + item.id, item.id, 5, "available");
@@ -68,7 +68,7 @@ function listAllSlavesWithPrice(available) {
 }
 
 function disableBtn(item_price) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   var disabled = ""
   if (item_price > money) {
     disabled = "disabled"
@@ -77,23 +77,23 @@ function disableBtn(item_price) {
 }
 
 function listAllSlaves(slaves) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   //print the array to the page
   slaves.forEach(function(slave, i) {
-    $("#list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td><a onclick='viewSlave(" + slave.id + ")' href='#'>" + slave.name + ", " + slave.age + "</a></td><td>" + charismaAssessment(slave) + "</td><td>" + capitalize(slave.assignment.name) + "</td><td>"+ statBadge(slave, "Health") +"</td><td>"+ attitudeWord(slave) +"</td></tr>");
+    $("#list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td><a onclick='viewSlave(" + slave.id + ")' href='#'>" + slave.name + ", " + slave.age + "</a></td><td class=' d-none d-sm-table-cell'>" + charismaAssessment(slave) + "</td><td class=' d-none d-sm-table-cell'>" + capitalize(slave.assignment.name) + "</td><td>"+ statBadge(slave, "Health") +"</td><td>"+ attitudeWord(slave) +"</td></tr>");
     // console.log(slave.id)
     makePortrait("#slave_bust_" + slave.id, slave.id, 5, "slaves");
   });
 }
 
 function bathhouseAttendantTableHead() {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   $("#bathhouse_list").append("<h2>Attendants</h2>")
   $("#bathhouse_list").append("<table class='table'><thead><th></th><th>Name</th><th>Skill level</th></thead><tbody id='bathhouse_list_start'></tbody></table>");
 };
 
 function listAttendantsBathhouse(group) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   //print the array to the page
   group.forEach(function(slave, i) {
     $("#bathhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td>" + slave.name + ", " + slave.age + "</td><td>"+ statBadge(slave, "Aesthetician") +"</td></tr>");
@@ -103,13 +103,13 @@ function listAttendantsBathhouse(group) {
 }
 
 function bathhouseTableHead() {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   $("#slave_bathhouse_list").append("<h2>Other Slaves</h2>")
   $("#slave_bathhouse_list").append("<table class='table'><thead><th></th><th>Name</th><th>Charisma</th><th>Health</th></thead><tbody id='slave_bathhouse_list_start'></tbody></table>");
 }
 
 function listslavesBathhouse(group) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   //print the array to the page
   group.forEach(function(slave, i) {
     $("#slave_bathhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td><a onclick='viewSlaveSalon(" + slave.id + ")' href='#'>" + slave.name + ", " + slave.age + "</a></td><td>"+ statBadge(slave, "Charisma") +"</td><td>"+ statBadge(slave, "Health") +"</td></tr>");
@@ -119,19 +119,19 @@ function listslavesBathhouse(group) {
 }
 
 function shopTableHead() {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   $("#buy_slave_list").empty();
   $("#buy_slave_list").append("<table class='table'><thead><th></th><th>Name</th><th>Your assessment</th><th>Price</th></thead><tbody id='buy_list_start'></tbody></table>");
 };
 
 function homeTableHead() {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   $("#slave_list").empty();
-  $("#slave_list").append("<table class='table'><thead><th></th><th>Name</th><th>Your assessment</th><th>Current Assignment</th><th>Health</th><th>Attitude</th></thead><tbody id='list_start'></tbody></table>");
+  $("#slave_list").append("<table class='table'><thead><th></th><th>Name</th><th class='d-none d-sm-table-cell'>Your assessment</th><th class ='d-none d-sm-table-cell'>Current Assignment</th><th>Health</th><th>Attitude</th></thead><tbody id='list_start'></tbody></table>");
 };
 
 function statWord(slave, stat) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   if (statKnown(slave, stat)) {
     if (statLevel(slave, stat) <= -50) {
       word = "Very poor"
@@ -149,7 +149,7 @@ function statWord(slave, stat) {
 }
 
 function statBadge(slave, stat) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   statWord(slave, stat)
   if (statKnown(slave, stat)) {
     if (statLevel(slave, stat) <= -50) {
@@ -168,7 +168,7 @@ function statBadge(slave, stat) {
 }
 
 function attitudeWord(slave) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   if (statKnown(slave, "Loyalty") || statKnown(slave, "Obedience") || statKnown(slave, "Love" || statKnown(slave, "Happiness"))) {
     lvl = Math.floor((statLevel(slave, "Loyalty") + statLevel(slave, "Obedience") + statLevel(slave, "Love") + statLevel(slave, "Happiness")) / 4)
     if (lvl <= -50) {
@@ -201,7 +201,7 @@ function scaleColor(number) {
 };
 
 function shuffle(array) {
-  console.log(getFuncName())
+  // console.log(getFuncName())
   var currentIndex = array.length,  randomIndex;
   // While there remain elements to shuffle...
   while (currentIndex != 0) {

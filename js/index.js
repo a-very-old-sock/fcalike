@@ -58,8 +58,8 @@ if (!start) {
 }
 
 // populate header stats
-var week_div = $("#week_counter").html("<h4>Week: " + week + "</h4>");
-var money_div = $("#money_counter").html("<h4>Money: " + money + "</h4>");
-var reputation_div = $("#reputation_counter").html("<h4>Reputation: " + reputation + "</h4>");
-var slaves_div = $("#slave_counter").html("<h4>Slaves: " + slaves.length + "</h4>");
+var week_div = $("#week_counter").html("Week: " + week);
+var money_div = $("#money_counter").html("Money: " + money);
+var reputation_div = $("#reputation_counter").html("Reputation: " + reputation);
+var slaves_div = $("#slave_counter").html("Slaves: " + slaves.length);
 var debug_div = $("#debug").html("<small><h6>Debug block</h6><ul><li>PC XP:"+ xp +"</li><li>PC Int:"+ pc_int +"</li><li>PC Stamina:"+ pc_stamina +"</li><li>PC Action:"+ action_pts +"</li><li>PC Kindness:"+ pc_kindness +"</li><li>PC Luck:"+ pc_luck +"</li></ul></small>");

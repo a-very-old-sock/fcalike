@@ -1,4 +1,5 @@
 function endWeek() {
+  console.log(getFuncName())
   // location.reload(true);
   makeEvents();
   showHomePage();
@@ -33,14 +34,15 @@ function endWeek() {
 
   homeTableHead();
   listAllSlaves(slaves);
-  var week_div = $("#week_counter").html("<h2>Week: " + week + "</h2>");
-  var money_div = $("#money_counter").html("<h2>Money: " + money + "</h2>");
-  var reputation_div = $("#reputation_counter").html("<h2>Reputation: " + reputation + "</h2>");
-  var slaves_div = $("#slave_counter").html("<h2>Slaves: " + slaves.length + "</h2>");
+  var week_div = $("#week_counter").html("Week: " + week);
+  var money_div = $("#money_counter").html("Money: " + money);
+  var reputation_div = $("#reputation_counter").html("Reputation: " + reputation);
+  var slaves_div = $("#slave_counter").html("Slaves: " + slaves.length);
   modalReport();
 };
 
 function modalReport() {
+  console.log(getFuncName())
   $('#generic-modal').modal({show: true});
   $("#modalLabel").html("<h5>End of Week Report</h5>");
   $("#modal-body").html("<p>" + end_of_week_report.join('  ') + "</p>");
@@ -59,6 +61,7 @@ function modalReport() {
 };
 
 function expenses() {
+  console.log(getFuncName())
   var costs = 0
   costs += checkLivingExpenses(slaves);
   var taxes = Math.floor(money * 0.13)
@@ -69,6 +72,7 @@ function expenses() {
 }
 
 function incomeReport(old_money) {
+  console.log(getFuncName())
   income = Math.floor(money) - Math.floor(old_money)
   income_record = localStorage.getItem("income_record")
   income_array = (income_record) ? JSON.parse(income_record) : [];
@@ -78,6 +82,7 @@ function incomeReport(old_money) {
 }
 
 function checkLivingExpenses(slaves) {
+  console.log(getFuncName())
   var costs = 0
   slaves.forEach((slave, i) => {
     // console.log("before living status " + JSON.stringify(slave.scales))
@@ -129,6 +134,7 @@ function checkLivingExpenses(slaves) {
 }
 
 function checkSlaves() {
+  console.log(getFuncName())
   slaves.forEach((slave, i) => {
     var old_stats = []
     old_stats = makeOldStats(slave)
@@ -147,6 +153,7 @@ function checkSlaves() {
 }
 
 function statsInteraction(slave) {
+  console.log(getFuncName())
   var int = statLevel(slave, "Intelligence")
   var love = statLevel(slave, "Love")
   var happiness = statLevel(slave, "Happiness")
@@ -169,6 +176,7 @@ function statsInteraction(slave) {
 }
 
 function printStatChanges(slave, stat_changes) {
+  console.log(getFuncName())
   var phrases = []
   stat_changes.sort(function (a, b) {
     return a.change - b.change;
@@ -200,6 +208,7 @@ function printStatChanges(slave, stat_changes) {
 }
 
 function checkOldStats(slave, old_stats) {
+  console.log(getFuncName())
   var stat_changes = []
   old_stats.forEach((item, i) => {
     if (item.level > 100) {item.level = 100}
@@ -250,6 +259,7 @@ function checkOldStats(slave, old_stats) {
 }
 
 function checkClothing(slave) {
+  console.log(getFuncName())
   var phrases = []
   if (slave.clothing == "jeans and a tshirt" || slave.clothing == "a flattering business suit") {
     changeStat(slave, "Happiness", 5)
@@ -274,6 +284,7 @@ function checkClothing(slave) {
 }
 
 function checkCollar(slave) {
+  console.log(getFuncName())
   var phrases = []
   if (slave.collar == "none") {
     changeStat(slave, "Happiness", 5)
@@ -291,9 +302,10 @@ function checkCollar(slave) {
 }
 
 function checkAssignment(slave) {
+  console.log(getFuncName())
   slave.assignment_weeks += 1
   pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
-  if (pf.includes(slave.assignment.name)) {checkJob(slave)} 
+  if (pf.includes(slave.assignment.name)) {checkJob(slave)}
   else if (slave.assignment.name == "whore") {checkWhoring(slave);}
   else if (slave.assignment.name == "work a gloryhole") {checkGloryHole(slave);}
   else if (slave.assignment.name == "public use") {checkPublicUse(slave);}
@@ -305,6 +317,7 @@ function checkAssignment(slave) {
 }
 
 function aptitudeFor(stat_name) {
+  console.log(getFuncName())
   var word = ""
   if (stat_name == "Charisma") {word = "skill for seduction"}
   else if (stat_name == "Strength") { word = "skill for hard physical work" }
@@ -313,6 +326,7 @@ function aptitudeFor(stat_name) {
 }
 
 function kindnessAction(slave) {
+  console.log(getFuncName())
   var slave_stats = ["Love", "Loyalty", "Obedience", "Happiness"]
   if (slave.responds_to == "kindness") {
     slave_stats.forEach((thing, i) => {
@@ -332,6 +346,7 @@ function kindnessAction(slave) {
 }
 
 function harshAction(slave) {
+  console.log(getFuncName())
   var slave_stats = ["Love", "Loyalty", "Happiness", "Obedience"]
   if (slave.responds_to == "severity") {
     slave_stats.forEach((thing, i) => {
@@ -351,6 +366,7 @@ function harshAction(slave) {
 }
 
 function passageOfTime(){
+  console.log(getFuncName())
   week = Math.floor(week);
   week += 1;
   localStorage.setItem("week", week);
@@ -365,6 +381,7 @@ function passageOfTime(){
 }
 
 function healthCheck(slave) {
+  console.log(getFuncName())
   var slave_health = statLevel(slave, "Health")
   if (slave_health < -100) {
     slave.status = "dead";
@@ -382,6 +399,7 @@ function healthCheck(slave) {
 }
 
 function interest() {
+  console.log(getFuncName())
 //   if (money <= 5000) {
 //     var gains = money * 0.04;
 //     gains = Math.round(gains);
@@ -399,6 +417,7 @@ function interest() {
 }
 
 function reputationChange() {
+  console.log(getFuncName())
   change = 0
   slaves.forEach((slave, i) => {
     slave.stats.forEach((item, i) => {
@@ -424,6 +443,7 @@ function reputationChange() {
 
 // check effect of pc's stats on slaves
 function pcStatCheck() {
+  console.log(getFuncName())
   money = Math.floor(localStorage.getItem("money"))
   pcProfession = localStorage.getItem("pcProfession")
   var invest = 0
@@ -490,6 +510,7 @@ function pcStatCheck() {
 }
 
 function averageChange(thing) {
+  console.log(getFuncName())
   var average = 0
   var change = 0
   slaves.forEach((slave, i) => {
@@ -511,6 +532,7 @@ function averageChange(thing) {
 }
 
 function checkNumBeds() {
+  console.log(getFuncName())
   lvl = bldgLevel("dormitories")
   if (lvl == 0) {
     beds = 5
@@ -531,6 +553,7 @@ function checkNumBeds() {
 }
 
 function checkBeds() {
+  console.log(getFuncName())
   checkNumBeds()
   if (slaves.length > beds) {
     // var effect = Math.floor(slaves.length / beds) * 4
@@ -542,6 +565,7 @@ function checkBeds() {
 }
 
 function incrementWeeks(slave) {
+  console.log(getFuncName())
   slave.living_weeks = Math.floor(slave.living_weeks) + 1
   slave.clothing_weeks = Math.floor(slave.clothing_weeks) + 1
   slave.collar_weeks = Math.floor(slave.collar_weeks) + 1
@@ -549,6 +573,7 @@ function incrementWeeks(slave) {
 }
 
 function makeOldStats(slave) {
+  console.log(getFuncName())
   var old_stats = []
   slave.stats.forEach((item, i) => {
     old_stats.push({"name": item.name, "level": item.level, "type": "stat"})
@@ -570,6 +595,7 @@ function makeOldStats(slave) {
 
 // make sure slave stats aren't over or under 100
 function checkStats(slave) {
+  console.log(getFuncName())
   var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks, slave.jobs]
   check_these.forEach((thing, i) => {
     thing.forEach((stat, i) => {

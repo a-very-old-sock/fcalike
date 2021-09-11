@@ -108,3 +108,16 @@
   position: absolute;
   top: 137px;
 }
+
+.media-body {
+  margin-left: 130px !important;
+}
+
+.second-event-bust {
+  top: 150px;
+  position: absolute;
+}
+
+.media {
+  min-height: 150px !important;
+}

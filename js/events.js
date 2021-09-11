@@ -1,4 +1,5 @@
 function makeEvents(){
+  console.log(getFuncName())
   var events = new Array()
 
   truth_array = []

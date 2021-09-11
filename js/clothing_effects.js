@@ -1,4 +1,5 @@
 function nakedClothing(slave) {
+  console.log(getFuncName())
   // console.log("nakedClothing")
   var phrases = []
   var naked_clothing = ["nothing", "nothing but jewelry", "nothing but body oil"]
@@ -39,6 +40,7 @@ function nakedClothing(slave) {
 }
 
 function domClothing(slave) {
+  console.log(getFuncName())
   var phrases = []
   var dom_clothing = ["a bondage harness and leather pants", "a latex catsuit"]
   var d = slave.kinks.find(function(stat) {if(stat.name == "Dominating") return stat}).level
@@ -72,6 +74,7 @@ function domClothing(slave) {
 }
 
 function liveryClothing(slave) {
+  console.log(getFuncName())
   var phrases = []
   var livery_clothing = ["the livery of your estate"]
   var love = statLevel(slave, "Love")
@@ -99,6 +102,7 @@ function liveryClothing(slave) {
 }
 
 function punishingClothing(slave) {
+  console.log(getFuncName())
   var phrases = []
   var punishing_clothing = ["nothing but chains", "rags"]
   if (slave.responds_to == "severity") {
@@ -115,6 +119,7 @@ function punishingClothing(slave) {
 }
 
 function otherClothing(slave) {
+  console.log(getFuncName())
   var phrases = []
   var other = ["delicate lingerie", "a string bikini", "cutoffs and a slutty croptop", "harem gauze", "a skimpy maid outfit", "a minidress"]
   var change_these = ["Libido", "Loyalty", "Obedience"]

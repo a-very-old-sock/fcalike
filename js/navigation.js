@@ -11,12 +11,20 @@ function hideAll() {
     $(item).empty()
   });
 
-  // "kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic", "brothel"
+  pf = [{"name": "kitchens", "fnc": "showSorry()"}, {"name": "guardhouse", "fnc": "showSorry()"}, {"name": "bathhouse", "fnc": "showBathhouse()"}, {"name": "gardens", "fnc": "showSorry()"}, {"name": "training room", "fnc": "showSorry()"}, {"name": "library", "fnc": "showSorry()"}, {"name": "office", "fnc": "showSorry()"}, {"name": "workshop", "fnc": "showSorry()"}, {"name": "clinic", "fnc": "showSorry()"}, {"name": "brothel", "fnc": "showSorry()"}]
   show_facilities_menu = localStorage.getItem("show_facilities_menu") || false
   if (show_facilities_menu) {
-    $("#facilities_menu").append('<ul class="nav nav-pills nav-fill status-bar"><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Kitchens</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Guardhouse</h5></a></li><li class="nav-item"><a class="nav-link" id="salon" href="#" onclick="showBathhouse()"><h5>Bathhouse</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Gardens</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Training</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Library</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Office</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Workshop</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Clinic</h5></a></li><li class="nav-item"><a class="nav-link disabled" id="salon" href="#" onclick=""><h5>Brothel</h5></a></li></ul>')
+    pf.forEach((bldg, i) => {
+      if (bldgLevel(bldg.name) >= 1) {
+        $("#facilities_menu").append('<h6><li class="nav-item"><a class="nav-link" id="' + bldg.name + '_link" href="#" onclick="' + bldg.fnc +'"><h6>' + capitalize(bldg.name) + '</h6></a></li>')
+      }
+    });
   }
 };
+
+function showSorry() {
+  alert("Sorry, that part of the game hasn't been built yet!")
+}
 
 // hide and show different tabs on refresh
 document.addEventListener('DOMContentLoaded', function() {

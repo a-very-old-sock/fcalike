@@ -61,6 +61,7 @@ var chart = new Chart(ctx, {
 });
 
 function showSlaveSaleList() {
+  console.log(getFuncName())
   $("#slave_price_list").empty();
   $("#slave_price_list").append("<table class='table'><thead><th>Name</th><th>Purchase Price</th><th>Estimated Sale Price</th><th></th></thead><tbody id='sale_list_start'></tbody></table>");
   var slaves = JSON.parse(localStorage.getItem("slaves"))

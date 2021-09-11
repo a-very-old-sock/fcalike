@@ -1,10 +1,11 @@
-var shops = [{id: "0", name: "Bargain Bill's Bargain Woobies", tag: "Tragic backstory guaranteed."}, {id: "1", name: "Finder's Keepers", tag: "Runaways and other miscellaneous refuse.  One man's trash is another man's treasure?"}, {id: "2", name: "Smart Bitches", tag: "They're not nice, they're not happy to see you, but they are smart."}, {id: "3", name: "Golden Oldies", tag: "So good at their jobs, it almost makes up for how old they are.  If you're into that sort of thing."}, {id: "4", name: "Scratch 'n Dent", tag: "Former gladiators and bodyguards, only a little injured."}, {id: "5", name: "Box of Rocks", tag: "Beautiful and charming, but not good at much."}]
+var shops = [{id: "0", name: "Bargain Bill's Bargain Woobies", tag: "Tragic backstory guaranteed."}, {id: "1", name: "Bargain Dumpster", tag: "Runaways and other miscellaneous refuse.  One man's trash is another man's treasure?"}, {id: "2", name: "Smart Bitches", tag: "They're not nice, they're not happy to see you, but they are smart."}, {id: "3", name: "Golden Oldies", tag: "So good at their jobs, it almost makes up for how old they are.  If you're into that sort of thing."}, {id: "4", name: "Scratch 'n Dent", tag: "Former gladiators and bodyguards, only a little injured."}, {id: "5", name: "Box of Rocks", tag: "Beautiful and charming, but not good at much."}]
 
 var reputation_shops = [{id: 6, name: "Erotique Exotique", tag: "A bit of adventure."}, {id: 7, name: "Maid to Measure", tag: "Custom order to your exacting specifications."}]
 
 var shop_btns = ["btn-outline-primary", "btn-outline-success", "btn-outline-info", "btn-outline-warning", "btn-outline-danger", "btn-outline-primary", "btn-outline-success", "btn-outline-info", "btn-outline-warning", "btn-outline-danger"]
 
 function visitShop(shop_id) {
+  console.log(getFuncName())
   hideAll()
   // hide the main div and show the buy div
   document.getElementById("buy_tab").classList.remove("hidden");
@@ -17,6 +18,7 @@ function visitShop(shop_id) {
 }
 
 function defaultShop(shop_id) {
+  console.log(getFuncName())
   shopTableHead();
 
   //make the array

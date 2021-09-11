@@ -24,7 +24,7 @@ $.i18n().load({
 
     "whore-low-skill": "One customer was <span class='text-danger'>put off by {{GENDER:$1|his|her}} lack of skill in $2</span> and <span class='text-danger'>demanded a §$3 refund</span> as a result.",
     "whore-high-skill": "One customer was <span class='text-success'>enthusiastic about {{GENDER:$1|his|her}} expertise in $2</span> and <span class='text-success'>tipped §$3 more</span> as a result.",
-    "whore-earned-money": "$2 worked as a whore and saw an average of $3 customers per day this week.  {{GENDER:$1|He|She}} made about §$4 per customer, earning you <span class='text-success'>§$5 total</span>.",
+    "whore-earned-money": "$2 worked as a whore and saw $3 customers this week.  {{GENDER:$1|He|She}} made about §$4 per customer, earning you <span class='text-success'>§$5 total</span>.",
     "whore-no-customers": "$2 worked as a whore but was so unattractive that {{GENDER:$1|he|she}} <span class='text-danger'>failed to attract any customers</span>.",
     "whore-liked-kink":"One customer <span class='text-success'>enjoyed {{GENDER:$1|his|her}} love of $2</span> and <span class='text-success'>tipped §$3 more</span>.",
     "whore-hated-kink":"One customer <span class='text-success'>enjoyed {{GENDER:$1|his|her}} hatred of $2</span> and <span class='text-success'>tipped §$3 more</span>.",

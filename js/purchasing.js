@@ -1,5 +1,6 @@
 // actually buy the slave
 function buySlave(n) {
+  console.log(getFuncName())
   // console.log("Buy!");
   available = JSON.parse(localStorage.getItem("available") || "[]");
   if (n.toString().length > 5) {
@@ -26,8 +27,8 @@ function buySlave(n) {
 
     //print the array to the page
     listAllSlavesWithPrice(available);
-    $("#slave_counter").html("<h2>Slaves: " + slaves.length + "</h2>");
-    $("#money_counter").html("<h2>Money: " + money + "</h2>");
+    $("#slave_counter").html("Slaves: " + slaves.length);
+    $("#money_counter").html("Money: " + money);
   } else {
     alert("Sorry, you don't have enough money to buy this one!");
   }
@@ -36,13 +37,12 @@ function buySlave(n) {
 };
 
 function sellSlave(n) {
+  console.log(getFuncName())
   // console.log("Buy!");
   slaves = JSON.parse(localStorage.getItem("slaves") || "[]");
   var soldSlave = slaves.find(slave => slave.id === n);
   // console.log(money + " + " + soldSlave.price)
-  money = Math.floor(money)
-  money += Math.floor(soldSlave.price);
-  localStorage.setItem("money", money);
+  pcMoneyChange(soldSlave.price)
 
   // add purchasedSlave to player's slaves
   former_slaves.push(soldSlave);
@@ -55,6 +55,6 @@ function sellSlave(n) {
   localStorage.setItem("slaves", JSON.stringify(slaves));
   //print the array to the page
   showSlaveSaleList()
-  $("#slave_counter").html("<h2>Slaves: " + slaves.length + "</h2>");
-  $("#money_counter").html("<h2>Money: " + money + "</h2>");
+  $("#slave_counter").html("Slaves: " + slaves.length);
+  $("#money_counter").html("Money: " + money);
 };

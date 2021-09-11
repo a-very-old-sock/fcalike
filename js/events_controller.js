@@ -1,4 +1,5 @@
 function getEvents() {
+  console.log(getFuncName())
   var events = localStorage.getItem("events");
   events = JSON.parse(events)
   var this_one = events[Math.floor(Math.random() * events.length)]
@@ -17,16 +18,20 @@ function getEvents() {
   // console.log("after get other " +slave.name, other_slave.name)
   // console.log(other_slave)
   $("#event-row").empty()
-  $("#event-row").prepend("<div class='col bust-5' id='event-bust'></div>")
+  $("#event-row").append('<div class="media"><div class="ml-3 mr-3" id="event-bust"><h6 class="event-name">' + slave.name + '</h6><div class="media-body" id="event-body"></div></div>')
+  // $("#event-row").prepend("<div class='col bust-5' id='event-bust'></div>")
   makePortrait("#event-bust", slave.id, 5, "slaves")
-  $("#event-bust").append("<h6 class='event-name'>"+slave.name+"</h6>")
-  $("#event-row").append('<div class="col-9" id="event-body"></div>')
+  // $("#event-bust").append("<h6 class='event-name'>"+slave.name+"</h6>")
+  // $("#event-row").append('<div class="col" id="event-body"></div>')
+  // if (this_one.tags.includes("two")) {
+  //   // console.log("if tags include two " +slave.name, other_slave.name)
+  //   $("#event-row").append("<div class='col bust-5' id='other-event-bust'></div>")
   if (this_one.tags.includes("two")) {
-    // console.log("if tags include two " +slave.name, other_slave.name)
-    $("#event-row").append("<div class='col bust-5' id='other-event-bust'></div>")
+    $("#event-row").append('<div class="media second-portrait"><div class="ml-3 second-event-bust" id="other-event-bust"><h6 class="event-name">' + other_slave.name + '</h6><div class="media-body" id=""></div></div>')
     makePortrait("#other-event-bust", other_slave.id, 5, "slaves")
-    $("#other-event-bust").append("<h6 class='event-name'>"+other_slave.name+"</h6>")
   }
+  //   $("#other-event-bust").append("<h6 class='event-name'>"+other_slave.name+"</h6>")
+  // }
   // console.log("before event body " + slave.name, other_slave.name)
   $("#event-body").html(checkText(this_one.text, slave.id, other_slave.id, this_one.textvar));
   $("#event-body").append("</br>")
@@ -38,6 +43,7 @@ function getEvents() {
 }
 
 function checkText(text, slave_id, other_slave_id, textvar) {
+  console.log(getFuncName())
   if (text.includes("$")) {
     // console.log(text)
     slave = slaves.filter(function(slave) { return slave.id == slave_id; })[0]
@@ -60,12 +66,14 @@ function checkText(text, slave_id, other_slave_id, textvar) {
 }
 
 function showResponse(result) {
+  console.log(getFuncName())
   // console.log(result)
   $("#event-body").html(checkText(result));
   $("#event-body").append("<div class='modal-footer'><button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button></div>")
 }
 
 function responseEffects(effects) {
+  console.log(getFuncName())
   pcXpChange(1)
   a = effects.split(",")
   // console.log(a)
@@ -75,44 +83,48 @@ function responseEffects(effects) {
 }
 
 function pcXpChange(amount) {
+  console.log(getFuncName())
   xp = Math.floor(localStorage.getItem("xp"))
   xp += amount
   localStorage.setItem("xp", xp)
 }
 
 function pcRepChange(amount) {
+  console.log(getFuncName())
   reputation = Math.floor(localStorage.getItem("reputation"))
   reputation += amount
   localStorage.setItem("reputation", reputation)
-  $("#reputation_counter").html("<h2>Reputation: " + reputation + "</h2>");
+  $("#reputation_counter").html("Reputation: " + reputation);
 }
 
 function pcMoneyChange(amount) {
+  console.log(getFuncName())
   money = Math.floor(localStorage.getItem("money"))
   money += amount
   localStorage.setItem("money", money)
-  $("#money_counter").html("<h2>Money: " + money + "</h2>");
+  $("#money_counter").html("Money: " + money);
 }
 
 function pcKindnessChange(amount) {
+  console.log(getFuncName())
   kindness = Math.floor(localStorage.getItem("pc_kindness"))
   kindness += amount
   localStorage.setItem("pc_kindness", kindness)
 }
 
 function pcActionChange(amount) {
+  console.log(getFuncName())
   ac = Math.floor(localStorage.getItem("action_pts"))
   ac += amount
   localStorage.setItem("action_pts", ac)
 }
 
 function getOtherSlave(slave) {
+  console.log(getFuncName())
   newone = getRandom(slaves)
-  // console.log(random.name + " and " + slave.name)
+  // console.log(slave.name, newone.name)
   if (newone.id === slave.id) {
-    // console.log("else")
     index = slaves.findIndex(s => s.id == slave.id)
-    // console.log(index)
     if (index < slaves.length) {
       other_slave = slaves[index + 1]
     } else {
@@ -121,20 +133,29 @@ function getOtherSlave(slave) {
   } else {
     other_slave = newone
   }
-  if (typeof other_slave == null) {
-    newone = getRandom(slaves)
-    if (newone.id !== slave.id) {
-      other_slave = newone
+  // console.log(slave.name, other_slave.name)
+  if (other_slave === undefined) {
+    index = slaves.findIndex(s => s.id == slave.id)
+    if (index < slaves.length) {
+      other_slave = slaves[index + 1]
     } else {
-      // console.log("else")
-      index = slaves.findIndex(s => s.id == slave.id)
-      // console.log(index)
-      if (index < slaves.length) {
-        other_slave = slaves[index + 1]
-      } else {
-        other_slave = slaves[index - 1]
-      }
+      other_slave = slaves[index - 1]
     }
   }
+  // if (typeof other_slave == null) {
+  //   newone = getRandom(slaves)
+  //   if (newone.id !== slave.id) {
+  //     other_slave = newone
+  //   } else {
+  //     // console.log("else")
+  //     index = slaves.findIndex(s => s.id == slave.id)
+  //     // console.log(index)
+  //     if (index < slaves.length) {
+  //       other_slave = slaves[index + 1]
+  //     } else {
+  //       other_slave = slaves[index - 1]
+  //     }
+  //   }
+  // }
   return other_slave
 }

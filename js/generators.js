@@ -23,7 +23,7 @@ function randomLevel(level) {
 function charismaWord(slave) {
   var adjective = ""
   // console.log(adjective);
-  var charisma = slave.stats.find(function(stat) {if(stat.name == "Charisma") return stat}).level
+  var charisma = statLevel(slave, "Charisma")
   // console.log(charisma);
   if (charisma <= 20) {
     adjectives = revolting;

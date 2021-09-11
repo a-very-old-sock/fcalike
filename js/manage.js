@@ -1,4 +1,5 @@
 function showManageEstate() {
+  console.log(getFuncName())
   hideAll();
   localStorage.setItem("current_page", "manage_estate")
   $('#facilities_list').empty()
@@ -8,11 +9,14 @@ function showManageEstate() {
 }
 
 function playerManageButtons() {
+  console.log(getFuncName())
   $("#player_manage_buttons").empty()
   action = parseInt(localStorage.getItem("action_pts"))
   luck = parseInt(localStorage.getItem("pc_luck"))
   stamina = parseInt(localStorage.getItem("pc_stamina"))
   int = parseInt(localStorage.getItem("pc_int"))
+  $("#player_manage_buttons").append('<ul class="center list-group list-group-horizontal mx-auto"><li class="list-group-item">Stamina:' + stamina + '</li><li class="list-group-item">Action points: ' + action + '</li><li class="list-group-item">Intelligence:' + int + '</li><li class="list-group-item">Luck:' + luck + '</li></ul>')
+  $("#player_manage_buttons").append('<br/>')
   if (action >= 5) {
     five_pt_buttons.forEach((item, i) => {
       truth_array = []
@@ -22,7 +26,7 @@ function playerManageButtons() {
         }
       });
       if (truth_array.every(Boolean)) {
-        $("#player_manage_buttons").append("<button type='button' class='btn btn-primary' onclick='fivePtAction(" + item.id + ")'>" + item.text + "</button>")
+        $("#player_manage_buttons").append("<button type='button' class='btn btn-info' onclick='fivePtAction(" + item.id + ")'>" + item.text + "</button>")
       }
     });
   } else {
@@ -31,6 +35,7 @@ function playerManageButtons() {
 }
 
 function fivePtAction(id) {
+  console.log(getFuncName())
   pts = parseInt(localStorage.getItem("action_pts"))
   localStorage.setItem("action_pts", action - 5)
   thing = five_pt_buttons.find(function(thing) {if (thing.id == id) return thing})
@@ -44,6 +49,7 @@ function fivePtAction(id) {
 var five_pt_buttons = [{"id": 1, "text": "Exercise (raise stamina)", "effects": ["pcStatChange(1, 'pc_stamina')"], "prereqs": ["pc_stamina < 100"], "results": ["After a hard workout, you feel tired but stronger."]}, {"id": 2, "text": "Study (raise intelligence)", "effects": ["pcStatChange(1, 'pc_int')"], "prereqs": ["pc_int < 100"], "results": ["After long hours of study, you feel better prepared to manage your business and your slaves."]}, {"id": 3, "text": "Gamble (raise luck, cost §500)", "effects": ["pcStatChange(1, 'pc_luck')", "pcMoneyChange(-500)", "pcRepChange(-10)", "pcMoneyChange(randomNumber(-100,5000) + luck)"], "prereqs": ["pc_luck < 100", "money >= 500"], "results": ["After a long night of gambling, you feel a bit more spring in your step."]}]
 
 function pcStatChange(amount, stat) {
+  console.log(getFuncName())
   prev = parseInt(localStorage.getItem(stat))
   newamt = prev += amount
   if (newamt > 100) {
@@ -55,6 +61,7 @@ function pcStatChange(amount, stat) {
 }
 
 function printFacilities() {
+  console.log(getFuncName())
   $("#bed-count").empty()
   $("#bed-count").append("<h5>" + (beds - slaves.length) + " beds open, " + beds + " beds total</h5>")
   var descriptions = [dorm_descriptions, kitchen_descriptions, security_descriptions, bathhouse_descriptions, garden_descriptions, training_descriptions, library_descriptions, office_descriptions, workshop_descriptions, clinic_descriptions, brothel_descriptions]
@@ -64,7 +71,7 @@ function printFacilities() {
   pc_profession = localStorage.getItem("pc_profession")
   pc_facilities = JSON.parse(localStorage.getItem("pc_facilities"))
   pc_facilities.forEach((item, i) => {
-    var item_price = (Math.floor(item.level) * 5000) + Math.floor(money * 0.05) + randomNumber(0,5000) - randomNumber(0,luck)
+    var item_price = (Math.floor(item.level) * 5000) + 1000 - randomNumber(0,luck) + (randomNumber(-500,500))
     if (pc_profession == "military" && item.name == "guardhouse") {
       item_price = item_price - (item_price * 0.2)
     } else if (pc_profession == "whore" && item.name == "brothel") {
@@ -103,8 +110,9 @@ var clinic_descriptions = ["There's no appropriate space, so there's not much yo
 var brothel_descriptions = ["Without a brothel attached to your estate, your slaves have to walk the streets to sell themselves and get fucked in back alleys where anything can happen.", "It's not pretty, but it's a place to make sure your slaves don't get abused too badly.", "A few clean beds and some dingy curtains are all a brothel really needs.", "Real walls, doors that close, and moderately clean beds.  That's all the advertisement you need, given the competition.", "A luxurious brothel with soft lighting, warm beds, and good clean fun.", "The fanciest little whorehouse in town."]
 
 function upgradeFacility(facility_index, item_price) {
+  console.log(getFuncName())
   pcMoneyChange(item_price * -1)
-  $("#money_counter").html("<h2>Money: " + money + "</h2>");
+  $("#money_counter").html("Money: " + money);
 
   if (pc_facilities[facility_index].name == "guardhouse") {
     pcKindnessChange(-10)
@@ -119,12 +127,14 @@ function upgradeFacility(facility_index, item_price) {
 }
 
 function bldgLevel(bldg) {
+  console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   bldg_level = parseInt(buildings.find(function(thing) {if (thing.name == bldg) return thing}).level)
   return bldg_level
 }
 
 function facilityMaker(name, level) {
+  console.log(getFuncName())
   var fac_constructor = function Facility(){
     this.name = Facility.defaultName;
     this.level = Facility.defaultLevel;
@@ -138,6 +148,7 @@ function facilityMaker(name, level) {
 };
 
 function makeFacilities() {
+  console.log(getFuncName())
   facilities.forEach((item, i) => {
     var NewFacility = facilityMaker(item, 0)
     pc_facilities.push(new NewFacility)

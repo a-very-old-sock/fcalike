@@ -1,4 +1,5 @@
 function punishingCollar(slave) {
+  console.log(getFuncName())
   var phrases = []
   var bad_collars = ["uncomfortable leather", "tight steel", "shock punishment", "leather with cowbell"]
   if (slave.responds_to == "severity") {
@@ -27,6 +28,7 @@ function punishingCollar(slave) {
 }
 
 function humiliatingCollar(slave) {
+  console.log(getFuncName())
   var s = statLevel(slave, "Submitting")
   var h = statLevel(slave, "Humiliation")
   var phrases = []

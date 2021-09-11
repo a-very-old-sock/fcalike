@@ -1,4 +1,5 @@
 function checkExercise(slave) {
+  console.log(getFuncName())
   training_level = bldgLevel("training room")
   if (statLevel(slave, "Health") > 0) {
     changeStat(slave, "Strength", (5 + training_level))
@@ -10,6 +11,7 @@ function checkExercise(slave) {
 }
 
 function checkWhoring(slave) {
+  console.log(getFuncName())
   brothel_level = parseInt(bldgLevel("brothel")) || 0
 
   var customers = randomNumber(0, 5) + Math.floor(statLevel(slave, "Charisma") / 20) + brothel_level
@@ -133,6 +135,7 @@ function checkWhoring(slave) {
 }
 
 function checkResting(slave) {
+  console.log(getFuncName())
   slave_health = statLevel(slave, "Health")
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   bathhouse_level = buildings.find(function(bldg) {if (bldg.name == "bathhouse") return bldg}).level
@@ -168,6 +171,7 @@ function checkResting(slave) {
 }
 
 function checkGloryHole(slave) {
+  console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
   var customers = randomNumber(0, 20) + brothel_level
@@ -184,6 +188,7 @@ function checkGloryHole(slave) {
 }
 
 function checkPublicUse(slave) {
+  console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
   var customers = randomNumber(0, 5) + Math.round(statLevel(slave, "Charisma")/ 20) + brothel_level
@@ -205,6 +210,7 @@ function checkPublicUse(slave) {
 }
 
 function checkServeHousehold(slave) {
+  console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   kitchen_level = buildings.find(function(bldg) {if (bldg.name == "kitchens") return bldg}).level
   var cooking = 0
@@ -242,6 +248,7 @@ function checkServeHousehold(slave) {
 }
 
 function checkPleaseYou(slave) {
+  console.log(getFuncName())
   var charisma = Math.floor(statLevel(slave, "Charisma") / 2)
   var attraction = 0
   var pcGender = localStorage.getItem("pcGender");
@@ -297,6 +304,7 @@ function checkPleaseYou(slave) {
 }
 
 function discoverThings(slave) {
+  console.log(getFuncName())
   var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks]
   var discoveries = []
   slave_honesty = statLevel(slave, "Honest")
@@ -349,6 +357,7 @@ function discoverThings(slave) {
 }
 
 function checkConfinement(slave) {
+  console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
   security_level = buildings.find(function(bldg) {if (bldg.name == "security") return bldg}).level
   effect = 10 + security_level
@@ -359,6 +368,7 @@ function checkConfinement(slave) {
 }
 
 function checkJob(slave) {
+  console.log(getFuncName())
   // ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
   pf = [{"assignment_name" : "kitchens", "stat" : "Chef", "inc_kinks": [], "dec_kinks": [], "changes": ["Health"]}, {"assignment_name" : "guardhouse", "stat" : "Guard", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating", "Sadism"], "changes": ["Obedience", "Strength"]}, {"assignment_name" : "bathhouse", "stat" : "Aesthetician", "dec_kinks": ["Dominating"], "inc_kinks": ["Submitting"], "changes": ["Libido", "Charisma", "Health"]}, {"assignment_name" : "gardens", "stat" : "Gardener", "dec_kinks": [], "inc_kinks": [], "changes": ["Health"]}, {"assignment_name" : "training room", "stat" : "Teacher", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating"], "changes": []}, {"assignment_name" : "library", "stat" : "Secretary", "dec_kinks": [], "inc_kinks": ["Dominating"], "changes": ["Intelligence"]}, {"assignment_name" : "office", "stat" : "Accountant", "dec_kinks": [], "inc_kinks": [], "changes": ["Intelligence"]}, {"assignment_name" : "workshop", "stat" : "Tailor", "dec_kinks": [], "inc_kinks": [], "changes": []}, {"assignment_name" : "clinic", "stat" : "Medic", "dec_kinks": [], "inc_kinks": ["Aftercare"], "changes": ["Intelligence", "Health"]}]
   job = pf.filter(function(stuff) { return (stuff.assignment_name == slave.assignment.name)})[0]

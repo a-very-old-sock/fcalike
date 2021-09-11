@@ -1,4 +1,5 @@
 function showRulesManager() {
+  console.log(getFuncName())
   hideAll();
   var ids = ["assig_name", "living_name", "clothing_name", "collar_name"]
   ids.forEach((id, i) => {
@@ -58,6 +59,7 @@ function showRulesManager() {
 }
 
 function printRules(rules) {
+  console.log(getFuncName())
   rules.forEach((rule, i) => {
     if (rule.assignment.length > 0 || rule.clothing.length > 0 || rule.collar.length > 0 || rule.living.length > 0) {
       var changes = printRuleChanges(rule)
@@ -80,6 +82,7 @@ function printRules(rules) {
 }
 
 function printRuleChanges(rule) {
+  console.log(getFuncName())
   var changes = []
   if (rule.assignment.length > 0) {
     changes.push("change assignment to " + rule.assignment)
@@ -137,7 +140,7 @@ $(document).ready(function() {
     if (new_rule != null) {
       // console.log(new_rule)
       if (new_rule.assignment === "" && new_rule.clothing === "" && new_rule.collar === "" && new_rule.living === "") {
-        $('#rule-notif').append("Sorry, that's not a valid rule!  Check your settings and try again.")
+        $('#rule-notif').append("Sorry, that's not a valid rule!  A rule needs to have at least one condition and one effect.  Check your settings and try again.")
         // console.log("empty rule!")
       } else {
         // console.log(new_rule)
@@ -148,9 +151,10 @@ $(document).ready(function() {
       }
     } else {
       // console.log(new_rule)
-      $('#rule-notif').append("Sorry, that's not a valid rule!  Check your settings and try again.")
+      $('#rule-notif').append("Sorry, that's not a valid rule!  A rule needs to have at least one condition and one effect. Check your settings and try again.")
       // console.log("empty rule!")
     }
+    location.reload()
     saveButton("save_rules");
     $('#rules_list_start').empty()
     printRules(rules);
@@ -158,6 +162,7 @@ $(document).ready(function() {
 });
 
 function removeRule(rule_id) {
+  console.log(getFuncName())
   rules = JSON.parse(localStorage.getItem("rules"))
   var remove_this = rules.find(function(rule) {if(rule.id == rule_id) return rule})
   rules.splice(rules.indexOf(remove_this), 1)
@@ -168,6 +173,7 @@ function removeRule(rule_id) {
 
 // apply rules at end of week
 function applyRules() {
+  console.log(getFuncName())
   rules = JSON.parse(localStorage.getItem("rules") || "[]")
   slaves = JSON.parse(localStorage.getItem("slaves") || "[]")
   rules.forEach((rule, i) => {
@@ -196,6 +202,7 @@ function applyRules() {
 }
 
 function applyConditionalRule(rule) {
+  console.log(getFuncName())
   if (rule.condition == "more than") {
     slaves.forEach((slave, i) => {
       if (slave.scales.find(function(stat) {if(stat.name == rule.stat_name) return stat}).level >= rule.level && slave.scales.find(function(stat) {if(stat.name == rule.stat_name) return stat}).known == true) {
@@ -212,6 +219,7 @@ function applyConditionalRule(rule) {
 }
 
 function applyOneRule(rule, slave) {
+  console.log(getFuncName())
   // console.log(slave.name)
   if (slave.follows_rules == true) {
     // console.log(slave.name)

@@ -1,8 +1,10 @@
 function salonButton(slave_id) {
+  console.log(getFuncName())
   viewSlaveSalon(slave_id)
 }
 
 function examineButton(slave_id, group) {
+  console.log(getFuncName())
   $("#slave_interact_buttons").empty()
   // slave = group.find(slave => slave.id == slave_id);
   $("#slave_interact_log").append(examineSlave(slave_id, group))
@@ -14,6 +16,7 @@ function examineButton(slave_id, group) {
 }
 
 function healButton(slave_id, group) {
+  console.log(getFuncName())
   $("#slave_interact_buttons").empty()
   // slave = group.find(slave => slave.id == slave_id);
   $("#slave_interact_log").append(healSlave(slave_id, group))
@@ -25,6 +28,7 @@ function healButton(slave_id, group) {
 }
 
 function talkButton(slave_id, group) {
+  console.log(getFuncName())
   $("#slave_interact_buttons").empty()
   // slave = group.find(slave => slave.id == slave_id);
   $("#slave_interact_log").append(talkWith(slave_id, group))
@@ -35,6 +39,7 @@ function talkButton(slave_id, group) {
 }
 
 function examineSlave(slave_id, group) {
+  console.log(getFuncName())
   slave = group.find(slave => slave.id == slave_id);
   statTrue(slave, "Health")
   modalStatsBlock(slave.scales,"#slave_scales");
@@ -50,6 +55,7 @@ function examineSlave(slave_id, group) {
 }
 
 function healSlave(slave_id, group) {
+  console.log(getFuncName())
   pcKindnessChange(10)
   luck = parseInt(localStorage.getItem("pc_luck"))
   slave = group.find(slave => slave.id == slave_id);
@@ -67,6 +73,7 @@ function healSlave(slave_id, group) {
 }
 
 function talkWith(slave_id, group) {
+  console.log(getFuncName())
   pcKindnessChange(1)
   slave = group.find(slave => slave.id == slave_id);
   int = parseInt(localStorage.getItem("pc_int")) || 0;
@@ -95,6 +102,7 @@ function talkWith(slave_id, group) {
 }
 
 function discoverOneThing(slave) {
+  console.log(getFuncName())
   phrase = ""
   var check_these = ["Intelligence", "Charisma", "Strength", "Obedience", "Love", "Loyalty", "Honesty", "Health", "Libido", "Happiness", "Getting fucked", "Anal", "Fucking", "Licking pussy", "Sucking dick", "Eating ass", "Attraction to Women", "Attraction to Men", "Receiving oral", "Getting rimmed", "Dominating", "Submitting", "Sadism", "Masochism", "Humiliation", "Aftercare"]
   var check_kinks = ["Getting fucked", "Anal", "Fucking", "Licking pussy", "Sucking dick", "Eating ass", "Attraction to Women", "Attraction to Men", "Receiving oral", "Getting rimmed", "Dominating", "Submitting", "Sadism", "Masochism", "Humiliation", "Aftercare"]
