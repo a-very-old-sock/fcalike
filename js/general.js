@@ -96,7 +96,7 @@ function listAttendantsBathhouse(group) {
   // console.log(getFuncName())
   //print the array to the page
   group.forEach(function(slave, i) {
-    $("#bathhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td>" + slave.name + ", " + slave.age + "</td><td>"+ statBadge(slave, "Aesthetician") +"</td></tr>");
+    $("#bathhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td><a onclick='viewSlaveSalon(" + slave.id + ")' href='#'>" + slave.name + ", " + slave.age + "</a></td><td>"+ statBadge(slave, "Aesthetician") +"</td></tr>");
     // console.log(slave.id)
     makePortrait("#slave_bust_" + slave.id, slave.id, 5, "slaves");
   });
@@ -181,7 +181,7 @@ function attitudeWord(slave) {
       word = "<span class='badge badge-success'>Good</span>"
     }
   } else {
-    word = "<span class='badge'>UNKNOWN</span>"
+    word = "<span class='badge'>Unknown</span>"
   }
   return word
 }

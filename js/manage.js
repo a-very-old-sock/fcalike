@@ -15,7 +15,7 @@ function playerManageButtons() {
   luck = parseInt(localStorage.getItem("pc_luck"))
   stamina = parseInt(localStorage.getItem("pc_stamina"))
   int = parseInt(localStorage.getItem("pc_int"))
-  $("#player_manage_buttons").append('<ul class="center list-group list-group-horizontal mx-auto"><li class="list-group-item">Stamina:' + stamina + '</li><li class="list-group-item">Action points: ' + action + '</li><li class="list-group-item">Intelligence:' + int + '</li><li class="list-group-item">Luck:' + luck + '</li></ul>')
+  $("#player_manage_buttons").append('<ul class="center list-group list-group-horizontal mx-auto"><li class="list-group-item">Stamina: ' + stamina + '</li><li class="list-group-item">Action points: ' + action + '</li><li class="list-group-item">Intelligence: ' + int + '</li><li class="list-group-item">Luck: ' + luck + '</li></ul>')
   $("#player_manage_buttons").append('<br/>')
   if (action >= 5) {
     five_pt_buttons.forEach((item, i) => {
@@ -129,7 +129,8 @@ function upgradeFacility(facility_index, item_price) {
 function bldgLevel(bldg) {
   console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  bldg_level = parseInt(buildings.find(function(thing) {if (thing.name == bldg) return thing}).level)
+  console.log(bldg)
+  bldg_level = parseInt(buildings.find(function(thing) {if (thing.name == bldg) return thing}).level) || 0
   return bldg_level
 }
 

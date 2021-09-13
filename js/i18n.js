@@ -7,7 +7,7 @@ $.i18n().load({
     "description-intro": "$1 is $2 years old with a $3 look.  ", // name, age, eye_adj
     "description-physical-breasts": "{{GENDER:$1|He|She}} has a $2 ass and $3 breasts, while ", //gender, butt, breasts
     "description-physical-chest": "{{GENDER:$1|He|She}} has a $2 ass and a $3 chest, while ", //gender, butt, chest
-    "description-physical-cock": "{{GENDER:$1|his|her}} $2 cock is surrounded by $3 pubic hair.  ",
+    "description-physical-cock": "{{GENDER:$1|his|her}} $2 cock and $3 balls are surrounded by $4 pubic hair.  ",
     "description-physical-pubic": "{{GENDER:$1|his|her}} pubic hair is $2.  ",
     "description-assessment": "Overall you find {{GENDER:$1|him|her}} $2.",
     "description-responds": "In your experience, $1 responds best to $2.",

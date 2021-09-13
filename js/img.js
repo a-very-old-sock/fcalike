@@ -59,6 +59,9 @@ function createPortrait(gender, accessories, scarProb) {
     if (item.category == "mark" && getRnd(0,scarProb) == scarProb) {
       visibility == "none"
     }
+    // if (item.category == "flowers" || item.category == "glasses" || item.category == "shirt" || item.category == coat) {
+    //   visibility = "none"
+    // }
     // console.log(item.category, visibility)
 
     individual_portrait.push({"category": thisone[0].category, "id": thisone[0].id, "visibility": visibility})
@@ -222,9 +225,9 @@ function getRnd(min, max) {
 }
 
 function makePortrait(elem, slave_id, resize, group) {
-  console.log(getFuncName())
+  console.log(getFuncName(), slave_id)
   // console.log(slave_id)
-  portrait_array = ["hair_deco", "head", "mark", "nose", "mouth", "brow", "eyes", "beard", "hair_hi", "ear", "shirt", "coat", "necklace", "accessory", "flowers", "glasses"]
+  portrait_array = ["hair_deco", "head", "mark", "nose", "mouth", "brow", "eyes", "beard", "hair_hi", "ear", "necklace", "accessory"]
   // console.log(elem)
   portrait_array.forEach((item, i) => {
     var img = document.createElement('img');
@@ -239,7 +242,7 @@ function makePortrait(elem, slave_id, resize, group) {
 }
 
 function drawPortrait(elem, slave_id, resize, group) {
-  console.log(getFuncName())
+  console.log(getFuncName(), slave_id)
   // console.log("drawPortrait")
 
   group = JSON.parse(localStorage.getItem(group) || "[]");
@@ -261,7 +264,7 @@ function drawPortrait(elem, slave_id, resize, group) {
   });
 }
 
-function visToggle(elem, type) {
+function visToggle(elem) {
   console.log(getFuncName())
   dataId = $(elem).attr("data-id")
 
@@ -273,8 +276,8 @@ function visToggle(elem, type) {
 }
 
 function newShape(elem, type, resize) {
-  console.log(getFuncName(), type)
-  dataId = $(elem).attr("data-id")
+  dataId = $(elem).attr("data-id");
+  console.log(getFuncName(), type, dataId);
 
   get_it = portrait_data.filter(function(stuff) { return stuff.id == dataId; })
   // console.log(elem)
@@ -366,7 +369,9 @@ function newColor(elem, type, resize){
     }
 }
 
-var portrait = [{"category":"head", "count":39}, {"category":"eyes", "count":53}, {"category":"ear", "count":7}, {"category":"hair_hi", "count":161}, {"category":"hair_deco", "count":152}, {"category":"mouth", "count":35}, {"category":"nose", "count":8}, {"category":"brow", "count":7}, {"category":"accessory", "count":17}, {"category":"necklace", "count":11}, {"category":"beard", "count":26}, {"category":"shirt", "count":19}, {"category":"coat", "count":44}, {"category":"flowers", "count":5}, {"category":"glasses", "count":5}, {"category":"mark", "count":19}]
+var portrait = [{"category":"head", "count":39}, {"category":"eyes", "count":53}, {"category":"ear", "count":7}, {"category":"hair_hi", "count":161}, {"category":"hair_deco", "count":152}, {"category":"mouth", "count":35}, {"category":"nose", "count":8}, {"category":"brow", "count":7}, {"category":"accessory", "count":17}, {"category":"necklace", "count":11}, {"category":"beard", "count":26}, {"category":"mark", "count":19}]
+
+//{"category":"shirt", "count":19}, {"category":"coat", "count":44}, {"category":"flowers", "count":5}, {"category":"glasses", "count":5},
 
 var portrait_data = [
   {

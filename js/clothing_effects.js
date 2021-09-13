@@ -3,12 +3,12 @@ function nakedClothing(slave) {
   // console.log("nakedClothing")
   var phrases = []
   var naked_clothing = ["nothing", "nothing but jewelry", "nothing but body oil"]
-  var s = slave.kinks.find(function(stat) {if(stat.name == "Submitting") return stat}).level
-  var h = slave.kinks.find(function(stat) {if(stat.name == "Humiliation") return stat}).level
+  var s = kinkLevel(slave, "Submitting")
+  var h = kinkLevel(slave, "Humiliation")
   var flaunt = []
   if (slave.has_breasts == true) {
     flaunt.push(slave.breasts + " tits")
-  } else {
+  } else if (slave.has_penis == true) {
     flaunt.push(slave.penis + " cock")
   }
   flaunt.push(slave.butt + " ass")
@@ -30,7 +30,7 @@ function nakedClothing(slave) {
     } else if (slave.clothing == item) {
       var change_these = ["Submitting", "Humiliation"]
       change_these.forEach((item, i) => {
-        changeStat(slave, item, 2)
+        changeKink(slave, item, 2)
       });
       phrases.push(slave.name + " obediently wore " + slave.clothing + " this week")
     }
@@ -43,7 +43,7 @@ function domClothing(slave) {
   console.log(getFuncName())
   var phrases = []
   var dom_clothing = ["a bondage harness and leather pants", "a latex catsuit"]
-  var d = slave.kinks.find(function(stat) {if(stat.name == "Dominating") return stat}).level
+  var d = kinkLevel(slave, "Dominating")
   // var h = slave.kinks.find(function(stat) {if(stat.name == "Humiliation") return stat}).level
   var flaunt = []
   if (slave.has_breasts == true) {
@@ -54,17 +54,17 @@ function domClothing(slave) {
   flaunt.push(slave.butt + " ass")
   dom_clothing.forEach((item, i) => {
     if (slave.clothing == item && d >= 40) {
-      changeStat(slave, "Dominating", 5)
+      changeKink(slave, "Dominating", 5)
       changeStat(slave, "Libido", 5)
       report = slave.name + " was <span class='text-success'>more assertive</span> this week wearing " + slave.clothing
       phrases.push($.i18n(report, slave.gender))
     } else if (slave.clothing == item && d <= -40) {
-      changeStat(slave, "Dominating", -5)
+      changeKink(slave, "Dominating", -5)
       changeStat(slave, "Libido", -5)
       report = slave.name + " seemed <span class='text-danger'>awkward and embarassed</span> wearing " + slave.clothing + " this week"
       phrases.push($.i18n(report, slave.gender))
     } else if (slave.clothing == item) {
-      changeStat(slave, "Dominating", 1)
+      changeKink(slave, "Dominating", 1)
       changeStat(slave, "Libido", 1)
       phrases.push(slave.name + " obediently wore " + slave.clothing + " this week")
     }
@@ -105,24 +105,22 @@ function punishingClothing(slave) {
   console.log(getFuncName())
   var phrases = []
   var punishing_clothing = ["nothing but chains", "rags"]
-  if (slave.responds_to == "severity") {
-    changeStat(slave, "Obedience", 5)
-    changeStat(slave, "Loyalty", 5)
-    phrases.push(slave.name + " submitted to wearing " + slave.clothing + " this week and <span class='text-success'>learned obedience</span>")
-  } else if (slave.clothing == punishing_clothing[0] || slave.clothing == punishing_clothing[1]) {
-    var change_these = ["Love", "Loyalty", "Happiness", "Obedience"]
-    change_these.forEach((item, i) => {
-      changeStat(slave, item, -2)
-    });
-    phrases.push(slave.name + " was <span class='text-danger'>miserable</span> wearing " + slave.clothing + " this week")
+  if (punishing_clothing.includes(slave.clothing)) {
+    harshAction(slave)
+    if (slave.responds_to == "severity") {
+      phrases.push(slave.name + " submitted to wearing " + slave.clothing + " this week and <span class='text-success'>learned obedience</span>")
+    } else {
+      phrases.push(slave.name + " was <span class='text-danger'>miserable</span> wearing " + slave.clothing + " this week")
+    }
   }
+  return phrases
 }
 
 function otherClothing(slave) {
   console.log(getFuncName())
   var phrases = []
   var other = ["delicate lingerie", "a string bikini", "cutoffs and a slutty croptop", "harem gauze", "a skimpy maid outfit", "a minidress"]
-  var change_these = ["Libido", "Loyalty", "Obedience"]
+  var change_these = ["Libido", "Obedience"]
   other.forEach((item, i) => {
     if (slave.clothing == item) {
       change_these.forEach((item, i) => {

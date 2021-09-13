@@ -4,6 +4,7 @@ function viewSlave(id){
   console.log(getFuncName())
   $(".save_slave").attr("id", id);
   $("#slave_bust").empty()
+  $("#slave_name_input").attr("placeholder", "Change name here").val("");
   clearthese = document.getElementsByClassName("bust");
   a = [...clearthese]
   a.forEach((item, i) => {
@@ -72,12 +73,12 @@ function viewSlave(id){
   $("#slave_interact_log").empty()
   makeInteractButtons(inspected.id, "slaves")
 
-  $("#slave_skills").append("<hr>");
-  $("#slave_skills").append("<h5>Skills</h5>");
+  // $("#slave_skills").append("<hr>");
   modalStatsBlock(inspected.skills,"#slave_skills");
-  $("#slave_kinks").append("<hr>");
-  $("#slave_kinks").append("<h5>Kinks</h5>");
+  $("#slave_skills").prepend("<h5>Skills</h5>");
+  // $("#slave_kinks").append("<hr>");
   modalStatsBlock(inspected.kinks,"#slave_kinks");
+  $("#slave_kinks").prepend("<h5>Kinks</h5>");
   $("#slave_history").append(inspected.end_of_week_report.join('  '))
 
   pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic", "brothel"]
@@ -89,8 +90,8 @@ function viewSlave(id){
 
   if (levels >= 1) {
     $("#slave_jobs").append("<hr>");
-    $("#slave_jobs").append("<h5>Job Skills</h5>");
     modalStatsBlock(inspected.jobs,"#slave_jobs");
+    $("#slave_jobs").prepend("<h5>Job Skills</h5>");
   }
 };
 
@@ -173,10 +174,26 @@ $(document).ready(function() {
     setThing(slave_id, "clothing");
     setThing(slave_id, "collar");
     setThing(slave_id, "follows_rules")
+    new_name = $.trim( $('#slave_name_input').val() );
+    if (new_name.length >=1) {
+      console.log("change name")
+      changeName(slave_id, new_name)
+      location.reload()
+    }
     saveButton(slave_id)
     // document.getElementById(slave_id).classList.add("fade-primary");
   });
 });
+
+function changeName(slave_id, new_name) {
+  var these_ones = JSON.parse(localStorage.getItem("slaves") || "[]");
+  var objIndex = these_ones.findIndex((obj => obj.id == slave_id));
+  these_ones[objIndex].name = new_name
+  localStorage.setItem("slaves", JSON.stringify(these_ones))
+  // $("#slave_name").empty()
+  // $("#slave_name").append(new_name)
+  // $("#slave_name_input").attr("placeholder", "Change name here").val("");
+}
 
 function setThing(id, div_id) {
   console.log(getFuncName())
@@ -363,4 +380,23 @@ function setKink(s, stat, amount) {
   console.log(getFuncName())
   s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level = amount
   localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function jobSkillDesc(s, job) {
+  lvl = statLevel(s, job)
+  word = ""
+  if (between(lvl, 0, 25)) {
+    word = "unskilled"
+  } else if (between(lvl, 26, 50)) {
+    word = "decently competent"
+  } else if (between(lvl, 51, 75)) {
+    word = "skilled"
+  } else if (between(lvl, 76, 100)) {
+    word = "exceptionally skilled"
+  }
+  return word
+}
+
+function between(x, min, max) {
+  return x >= min && x <= max;
 }

@@ -18,7 +18,7 @@ function endWeek() {
   money = Math.floor(money);
   old_money = money
   money += interest();
-  money -= expenses();
+  expenses();
   localStorage.setItem("money", money);
   if (slaves.length > 1) {
     slave_scales.forEach((item, i) => {
@@ -64,11 +64,30 @@ function expenses() {
   console.log(getFuncName())
   var costs = 0
   costs += checkLivingExpenses(slaves);
-  var taxes = Math.floor(money * 0.13)
+  money = parseInt(localStorage.getItem("money"))
+  var taxes = Math.floor(money * taxRate())
   pcMoneyChange((taxes + costs) * -1)
   end_of_week_report.push($.i18n("report-maintaining", slaves.length, costs));
   end_of_week_report.push($.i18n("report-taxes", taxes));
-  return costs
+}
+
+function taxRate() {
+  taxed = parseInt(localStorage.getItem("money"))
+  tax_rate = 0
+  if (taxed <= 0) {
+    tax_rate = 0
+  } else if (between(taxed, 0, 10000)) {
+    tax_rate = 0.02
+  } else if (between(taxed, 10001, 50000)) {
+    tax_rate = 0.05
+  } else if (between(taxed, 50001, 200000)) {
+    tax_rate = 0.8
+  } else if (between(taxed, 200001, 1000000)) {
+    tax_rate = 0.12
+  } else if (taxed >= 1000001) {
+    tax_rate = 0.18
+  }
+  return tax_rate
 }
 
 function incomeReport(old_money) {
@@ -144,12 +163,23 @@ function checkSlaves() {
     checkCollar(slave);
     checkClothing(slave);
     statsInteraction(slave);
-    // console.log("check slaves:" + i)
+    checkNames(slave);
     checkStats(slave);
     var stat_changes = checkOldStats(slave, old_stats)
     printStatChanges(slave, stat_changes)
   });
   localStorage.setItem("slaves", JSON.stringify(slaves))
+}
+
+function checkNames(slave) {
+  console.log(getFuncName())
+  if (slave.name != slave.true_name && ( statLevel(slave, "Loyalty") < 20 || statLevel(slave, "Obedience") < 20) ) {
+    changeStat(slave, "Happiness", -1)
+    if (randomNumber(-200,20) > statLevel(slave, "Obedience")) {
+      slave.end_of_week_report.push($.i18n(slave.name + " has <span class='text-danger'>disobeyed you</span> and changed {{gender:$1|his|her}} name back to " + slave.true_name + ".", slave.gender))
+      slave.name = slave.true_name
+    }
+  }
 }
 
 function statsInteraction(slave) {
@@ -158,20 +188,51 @@ function statsInteraction(slave) {
   var love = statLevel(slave, "Love")
   var happiness = statLevel(slave, "Happiness")
   var health = statLevel(slave, "Health")
+  var libido = statLevel(slave, "Libido")
+  if (libido >= 50 && randomNumber(1,5) == 1) {
+    kink = getRandom(slave_kinks)
+    if (kinkLevel(slave, kink) >= 0) {
+      change = 20
+    } else {
+      change = kinkLevel(slave, kink) * -1
+    }
+    changeKink(slave, kink, change)
+  } else if (libido <= -50 && randomNumber(1,5) == 1) {
+    kink = getRandom(slave_kinks)
+    changeKink(slave, kink, -2)
+  }
   if (int >= 50 && love < 0) {
     changeStat(slave, "Obedience", (Math.floor(int/50) * -1))
   } else if (int > 50) {
-    changeStat(slave, "Obedience", randomNumber(0,1))
+    changeStat(slave, "Obedience", randomNumber(-3, -1))
   }
   if (happiness >= 50 || happiness <= -50) {
-    changeStat(slave, "Happiness", Math.floor(happiness/50))
+    changeStat(slave, "Obedience", Math.floor(happiness/50))
+    changeStat(slave, "Loyalty", Math.floor(happiness/50))
     changeStat(slave, "Libido", Math.floor(happiness/50))
+  }
+  weeks = slave.weeks_owned
+  luck = parseInt(localStorage.getItem("pc_luck"))
+  if (happiness >= 80 && slave.responds_to == "kindness") {
+    if (randomNumber(1,100) + luck < weeks) {
+      slave.responds_to = "severity";
+      slave.responds_known = false
+    }
+  } else if (happiness <= -80 && slave.responds_to == "severity") {
+    if (randomNumber(1,100) + luck < weeks) {
+      slave.responds_to = "kindness";
+      slave.responds_known = false
+    }
   }
   if (love >= 50 || love <= -50) {
     changeStat(slave, "Obedience", Math.floor(love/50))
+    changeStat(slave, "Loyalty", Math.floor(love/50))
+    changeStat(slave, "Happiness", Math.floor(love/50))
   }
   if (happiness >= 50 && health >= 50) {
     changeStat(slave, "Love", Math.floor(happiness/50))
+    changeStat(slave, "Loyalty", Math.floor(happiness/50))
+    changeStat(slave, "Libido", Math.floor(happiness/50))
   }
 }
 
@@ -273,6 +334,7 @@ function checkClothing(slave) {
     phrases.push(domClothing(slave))
     phrases.push(liveryClothing(slave))
     phrases.push(otherClothing(slave))
+    phrases.push(punishingClothing(slave))
   }
   var report = phrases.join("") + "."
 
@@ -289,6 +351,7 @@ function checkCollar(slave) {
   if (slave.collar == "none") {
     changeStat(slave, "Happiness", 5)
     changeStat(slave, "Obedience", -10)
+    changeKink(slave, "Dominating", 1)
     phrases.push(" was <span class='text-success'>overjoyed</span> to go without a collar this week")
   } else {
     phrases.push(humiliatingCollar(slave))
@@ -302,7 +365,7 @@ function checkCollar(slave) {
 }
 
 function checkAssignment(slave) {
-  console.log(getFuncName())
+  console.log(getFuncName(), slave.assignment.name)
   slave.assignment_weeks += 1
   pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
   if (pf.includes(slave.assignment.name)) {checkJob(slave)}

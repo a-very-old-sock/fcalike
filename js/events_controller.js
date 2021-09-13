@@ -11,7 +11,7 @@ function getEvents() {
   } else {
     other_slave = getOtherSlave(slave)
   }
-  if (other_slave == null) {
+  if (other_slave === null || other_slave === undefined || typeof other_slave === 'undefined') {
     console.log("null")
     getOtherSlave(slave)
   }
@@ -19,20 +19,14 @@ function getEvents() {
   // console.log(other_slave)
   $("#event-row").empty()
   $("#event-row").append('<div class="media"><div class="ml-3 mr-3" id="event-bust"><h6 class="event-name">' + slave.name + '</h6><div class="media-body" id="event-body"></div></div>')
-  // $("#event-row").prepend("<div class='col bust-5' id='event-bust'></div>")
+
   makePortrait("#event-bust", slave.id, 5, "slaves")
-  // $("#event-bust").append("<h6 class='event-name'>"+slave.name+"</h6>")
-  // $("#event-row").append('<div class="col" id="event-body"></div>')
-  // if (this_one.tags.includes("two")) {
-  //   // console.log("if tags include two " +slave.name, other_slave.name)
-  //   $("#event-row").append("<div class='col bust-5' id='other-event-bust'></div>")
+
   if (this_one.tags.includes("two")) {
     $("#event-row").append('<div class="media second-portrait"><div class="ml-3 second-event-bust" id="other-event-bust"><h6 class="event-name">' + other_slave.name + '</h6><div class="media-body" id=""></div></div>')
     makePortrait("#other-event-bust", other_slave.id, 5, "slaves")
   }
-  //   $("#other-event-bust").append("<h6 class='event-name'>"+other_slave.name+"</h6>")
-  // }
-  // console.log("before event body " + slave.name, other_slave.name)
+
   $("#event-body").html(checkText(this_one.text, slave.id, other_slave.id, this_one.textvar));
   $("#event-body").append("</br>")
 
@@ -99,8 +93,10 @@ function pcRepChange(amount) {
 
 function pcMoneyChange(amount) {
   console.log(getFuncName())
-  money = Math.floor(localStorage.getItem("money"))
+  money = parseInt(localStorage.getItem("money"))
+  console.log("original money", money)
   money += amount
+  console.log("money changed to", money)
   localStorage.setItem("money", money)
   $("#money_counter").html("Money: " + money);
 }

@@ -40,6 +40,9 @@
               <a class="nav-link" id="about" onclick="showAbout()" href="#">About</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" id="wiki" onclick="showWiki()" href="#">Wiki</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" id="reset" href="#">Reset</a>
             </li>
           </ul>
@@ -118,8 +121,9 @@
 
             <div class="row">
               <div class="col-sm">
-                <h4 id="slave_name">Name goes here</h4>
-                <div class="bust-2 bust" id="slave_bust">
+                  <h4 id="slave_name">Slave</h4>
+                  <input type="slave_name" class="form-control" id="slave_name_input" placeholder="Change name here">
+                <div class="bust-2 bust mt-5" id="slave_bust">
                 </div>
                 <hr />
                 <button type="button" class="btn btn-primary save_slave" id="">Save</button>
@@ -221,7 +225,8 @@
 
           <div id="buy_tab" class="hidden tab">
             <div class="row">
-              <h1 id="shop_name">Buy!</h1><button type="button" class="btn btn-secondary btn-sm btn-home home" id="home">Go home</button> <button type="button" class="btn btn-primary btn-sm btn-home hidden tab" id="keep_shopping">Keep shopping</button>
+              <div id="shop_name">Buy!</div>
+              <button type="button" class="btn btn-secondary btn-sm btn-home home" id="home">Go home</button> <button type="button" class="btn btn-primary btn-sm btn-home hidden tab" id="keep_shopping">Keep shopping</button>
             </div>
             <div class="row" id="buy_slave_list">
               <table class="table">
@@ -264,10 +269,15 @@
           <div id="bathhouse_tab" class="hidden tab">
             <h1>Bathhouse</h1>
             <div class="row" id="salon">
-              <div class="col bust" id="salon_slave_bust">
+              <div class="col-sm">
+                <div id="salon_slave_bust">
 
+                </div>
+                <div id="salon_slave_name">
+
+                </div>
               </div>
-              <div class="col" id="salon_buttons">
+              <div class="col-sm" id="salon_buttons">
                 <div class="row hidden-button" id="save_buttons">
                   <button type="button" class="btn btn-primary" id="save_salon">Save</button>
                 </div>
@@ -275,10 +285,24 @@
                   <button type="button" class="btn btn-primary hair_deco_visibility_btn" onClick="visToggle(this, 'hair_deco', 2)" data-id="0" id="hair_deco_visibility_btn">cut/allow hairstyle</button>
                   <button type="button" class="btn btn-primary accessory-btn" onClick="newShape(this, 'accessory', 2)" data-id="0" id="accessory_btn">earring</button>
                   <button type="button" class="btn btn-primary earring-btn" onClick="visToggle(this, 'accessory', 2)" data-id="0" id="accessory_visibility_btn">remove/add earring</button>
+                  <p class="hidden-button mt-2" id="salon-warning">Without a bathhouse or aestheticians, you can't change your slaves' appearances further.  Upgrade your bathhouse and employ an aesthetician to gain more options.</p>
                 </div>
                 <div class="row hidden-button mt-3" id="salon_buttons_1">
                   <button type="button" class="btn btn-primary hair-hi-btn" onClick="newShape(this, 'hair-hi', 2)" data-id="0" id="hair_hi_btn">hair style</button>
                   <button type="button" class="btn btn-primary hair-deco-btn" onClick="newShape(this, 'hair-deco', 2)" data-id="0" id="hair_deco_btn">hair cut</button>
+
+                  <p>
+                    Customize the descriptions of your slave here.  Your new description can be long or short, but should work in the phrase shown to make sense elsewhere in the game.
+                  </p>
+                  <div class="input-group mb-2" id="pubic_group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Has </span>
+                    </div>
+                    <input type="pubic" class="form-control" id="pubic_input" placeholder="">
+                    <div class="input-group-append">
+                      <span class="input-group-text">pubic hair</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="row hidden-button mt-3" id="salon_buttons_2">
                   <button type="button" class="btn btn-primary hair-btn" onClick="newColor(this, 'hair', 2)" data-id="0" id="hair_color_btn">hair color</button>
@@ -293,10 +317,79 @@
                 </div>
                 <div class="row hidden-button mt-3" id="salon_buttons_5">
                   <h6><span class="text-warning">Warning!</span> Changing your slaves' physical appearance with these options may damage their health, depending on the skill of your aestheticians and medics.</h6>
-                  <button type="button" class="btn btn-primary head-btn" onClick="newShape(this, 'head', 2)" data-id="0" id="head_btn">jaw shape</button>
-                  <button type="button" class="btn btn-primary nose-btn" onClick="newShape(this, 'nose', 2)" data-id="0" id="nose_btn">nose shape</button>
-                  <button type="button" class="btn btn-primary mouth-btn" onClick="newShape(this, 'mouth', 2)" data-id="0" id="mouth_btn">mouth shape</button>
+                  <div class="row">
+                    <button type="button" class="btn btn-primary head-btn" onClick="newShape(this, 'head', 2)" data-id="0" id="head_btn">jaw shape</button>
+                    <button type="button" class="btn btn-primary nose-btn" onClick="newShape(this, 'nose', 2)" data-id="0" id="nose_btn">nose shape</button>
+                    <button type="button" class="btn btn-primary mouth-btn" onClick="newShape(this, 'mouth', 2)" data-id="0" id="mouth_btn">mouth shape</button>
+
+                    <div class="row">
+                      <p>
+                        Customize the descriptions of your slave here.  Your new description can be long or short, but should work in the phrase shown to make sense elsewhere in the game.
+                      </p>
+                      <div class="input-group mb-2" id="eye_adj_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">With a </span>
+                        </div>
+                        <input type="eye_adj" class="form-control" id="eye_adj_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">look</span>
+                        </div>
+                      </div>
+
+                      <div class="input-group mb-2" id="butt_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">has a </span>
+                        </div>
+                        <input type="butt" class="form-control" id="butt_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">ass</span>
+                        </div>
+                      </div>
+
+                      <div class="input-group mb-2 hidden-button" id="breasts_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">has</span>
+                        </div>
+                        <input type="breasts" class="form-control hidden-button" id="breasts_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">breasts</span>
+                        </div>
+                      </div>
+
+                      <div class="input-group mb-2 hidden-button" id="vagina_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">has a </span>
+                        </div>
+                        <input type="vagina" class="form-control hidden-button" id="vagina_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">pussy</span>
+                        </div>
+                      </div>
+
+                      <div class="input-group mb-2 hidden-button" id="penis_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">has a </span>
+                        </div>
+                        <input type="penis" class="form-control hidden-button" id="penis_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">cock</span>
+                        </div>
+                      </div>
+
+                      <div class="input-group mb-2 hidden-button" id="balls_group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">has</span>
+                        </div>
+                        <input type="balls" class="form-control hidden-button" id="balls_input" placeholder="">
+                        <div class="input-group-append">
+                          <span class="input-group-text">balls</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
+
               </div>
 
             </div>
@@ -592,6 +685,20 @@
               </div>
           </div>
         </div>
+
+        <div id="wiki_tab" class="hidden tab">
+          <div class="row">
+            <h1>Wiki</h1>
+          </div>
+          <div class="row">
+            <ul class="list-group" id="wiki_toc">
+
+            </ul>
+          </div>
+          <div class="row" id="wiki_contents">
+
+          </div>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -663,5 +770,6 @@
     <script src= "js/img.js"></script>
     <script src= "js/interact_buttons.js"></script>
     <script src= "js/salon.js"></script>
+    <script src= "js/wiki.js"></script>
   </body>
 </html>

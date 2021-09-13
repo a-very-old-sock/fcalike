@@ -13,23 +13,26 @@ function checkExercise(slave) {
 function checkWhoring(slave) {
   console.log(getFuncName())
   brothel_level = parseInt(bldgLevel("brothel")) || 0
+  console.log("brothel_level", brothel_level)
 
-  var customers = randomNumber(0, 5) + Math.floor(statLevel(slave, "Charisma") / 20) + brothel_level
+  var customers = randomNumber(0, 5) + Math.floor(statLevel(slave, "Charisma") / 10) + brothel_level
+  console.log("customers", customers)
   var skillz = 0
 
-  if (randomNumber(0,5) >= (brothel_level + 4)) {
-
+  if (randomNumber(0,(brothel_level + 5)) == 0) {
     slave.end_of_week_report.push($.i18n(slave.name + " <span class='text-danger'> was injured by a customer this week</span>, damaging {{gender:$1|his|her}} health.", slave.gender))
     changeStat(slave, "Health", -10)
     changeStat(slave, "Love", -5)
     if (randomNumber(0,2) == 2) {
       changeKink(slave, "Masochism", 5)
     }
+    console.log("injury")
   }
 
   skillz_array = []
   slave.skills.forEach((skill, i) => {
     if (skill.known == true) {
+      skillz += skill.level
       skillz_array.push(skill)
     }
   });
@@ -39,16 +42,17 @@ function checkWhoring(slave) {
   skillz_array = skillz_array.sort(function(a, b){return b.level - a.level})
   max_skill = skillz_array[0]
 
-  var whore_skill = 0
-  function getSkill(slave) {
-    if (slave.jobs.find(function(stat) {if(stat.name == "Whore" && stat.known == true) return stat})) {
-      var get_skill = Math.floor(statLevel(slave, "Whore") / 10)
-    } else {
-      var get_skill = 1
+  if (statKnown(slave, "Whore")) {
+    var whore_skill = Math.floor(statLevel(slave, "Whore") / 10)
+  } else {
+    var whore_skill = 1
+    if (randomNumber(1,3) == 1) {
+      statTrue(slave, "Whore")
+      slave.end_of_week_report.push($.i18n("You learned that " + slave.name + " is " + jobSkillDesc(statLevel(slave, "Whore")) + " as a whore."))
     }
-    return get_skill
   }
-  whore_skill = getSkill(slave);
+  console.log("whore_skill", whore_skill)
+
   if (brothel_level == 0) {
     price_modifier = 0.2
   } else if (brothel_level == 1) {
@@ -60,10 +64,12 @@ function checkWhoring(slave) {
   } else if (brothel_level >= 4) {
     price_modifier = 1.4
   }
-  var av_price = 0 + Math.floor(whore_skill) + Math.floor(skillz / 10) * (price_modifier)
+  console.log("price_modifier", price_modifier)
+  var av_price = whore_skill + brothel_level + Math.round(whore_skill) + Math.round(skillz / 10) * (price_modifier)
   var e = 0
-  av_price = Math.round(av_price)
+  av_price = Math.round(av_price + 1)
   var total = Math.round(customers * av_price)
+  console.log("av_price", av_price, "customers", customers, "total", total)
 
   var kinks_array = []
   slave.kinks.forEach((kink, i) => {
@@ -79,48 +85,48 @@ function checkWhoring(slave) {
 
   if (customers > 0) {
     slave.end_of_week_report.push($.i18n("whore-earned-money", slave.gender, slave.name, customers, av_price, total));
+    skill_mod = Math.round(customers/4)
     slave.skills.forEach((skill, i) => {
       if (skill.known == true) {
-        skillz += skill.level
-        skill.level += randomNumber(0,customers)
+        if (randomNumber(1,5) + whore_skill >= 5) {skill.level += randomNumber(0,skill_mod)}
       } else {
         flip = randomNumber(1,5)
         if (flip == 1) {
           skill.known = true
-          slave.end_of_week_report.push("While whoring this week " + slave.name + " <span class='success'>demonstrated their skill in " + lowercase(skill.name) + "</span>.")
+          slave.end_of_week_report.push($.i18n(slave.name + " <span class='success'>demonstrated that {{gender:$1|he|she}} is " + jobSkillDesc(slave, skill.name)+ " at " + lowercase(skill.name) + "</span>.", slave.gender))
         } else if (flip == 2) {
-          skill.level += randomNumber(0,customers)
+          skill.level += randomNumber(1,skill_mod)
         }
       }
     });
     feature_kink.known = true;
     // console.log(slave.name, feature_kink)
-    if (feature_kink.level >= 50) {
-      r = (feature_kink.level + randomNumber(1,100)) * price_modifier
+    luck_mod = Math.round(parseInt(localStorage.getItem("pc_luck"))/50)
+    if (feature_kink.level >= 50 && (randomNumber(1,3) + luck_mod >= 3)) {
+      r = (whore_skill + feature_kink.level + brothel_level) * price_modifier
       r = Math.round(r)
-      feature_kink.known = true
       total = total += r
       slave.end_of_week_report.push($.i18n("whore-liked-kink", slave.gender, lowercase(feature_kink.name), (r)))
-    } else if (feature_kink.level <= -50) {
+    } else if (feature_kink.level <= -50 && (randomNumber(1,3) + luck_mod >= 3)) {
       fk = feature_kink.level * -1
-      r = (fk + randomNumber(1,100)) * price_modifier
+      r = (fk + brothel_level) * price_modifier
       r = Math.round(r)
-      feature_kink.known = true
       total = total += r
       slave.end_of_week_report.push($.i18n("whore-hated-kink", slave.gender, lowercase(feature_kink.name), (r)))
     }
     if (min_skill === undefined) {
 
     } else if (min_skill.level <= 10) {
-      e = ((min_skill.level * -10) - randomNumber(20,100)) * price_modifier
+      e = ((min_skill.level * -10) - brothel_level) * price_modifier
       e = Math.round(e)
       slave.end_of_week_report.push($.i18n("whore-low-skill", slave.gender, lowercase(min_skill.name), (e * -1)))
       total = total += e
     }
     if (max_skill === undefined) {
 
-    } else if (max_skill.level > 50){
-      e = (max_skill.level + randomNumber(1,50)) * price_modifier
+    } else if (max_skill.level > 50 && (randomNumber(1,3) + luck_mod >= 3)){
+      e = (whore_skill + max_skill.level + brothel_level) * price_modifier
+      console.log("high skill", e)
       e = Math.round(e)
       slave.end_of_week_report.push($.i18n("whore-high-skill", slave.gender, lowercase(max_skill.name), e))
       total = total += e
@@ -129,16 +135,13 @@ function checkWhoring(slave) {
     slave.end_of_week_report.push($.i18n("whore-no-customers", slave.gender, slave.name));
   }
   localStorage.setItem("slaves", slaves)
-  money = Math.floor(localStorage.getItem("money"))
-  money += total
-  localStorage.setItem("money", money)
+  pcMoneyChange(total)
 }
 
 function checkResting(slave) {
   console.log(getFuncName())
   slave_health = statLevel(slave, "Health")
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  bathhouse_level = buildings.find(function(bldg) {if (bldg.name == "bathhouse") return bldg}).level
+  bathhouse_level = bldgLevel("bathhouse")
   if (slave.living == "luxurious") {
     slave_cost = 10
   } else if (slave.living == "comfortable") {
@@ -172,8 +175,7 @@ function checkResting(slave) {
 
 function checkGloryHole(slave) {
   console.log(getFuncName())
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
+  brothel_level = bldgLevel("brothel")
   var customers = randomNumber(0, 20) + brothel_level
   var av_price = randomNumber(1,10) + brothel_level
   var total = (customers * av_price) * 6
@@ -189,8 +191,7 @@ function checkGloryHole(slave) {
 
 function checkPublicUse(slave) {
   console.log(getFuncName())
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  brothel_level = buildings.find(function(bldg) {if (bldg.name == "brothel") return bldg}).level
+  brothel_level = bldgLevel("brothel")
   var customers = randomNumber(0, 5) + Math.round(statLevel(slave, "Charisma")/ 20) + brothel_level
   var av_price = randomNumber(0, 2) + Math.round(statLevel(slave, "Charisma") / 50) + brothel_level
   var e = 0
@@ -211,20 +212,20 @@ function checkPublicUse(slave) {
 
 function checkServeHousehold(slave) {
   console.log(getFuncName())
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  kitchen_level = buildings.find(function(bldg) {if (bldg.name == "kitchens") return bldg}).level
-  var cooking = 0
+  jobs = [{"name": "Chef", "bldg": "kitchens"}, {"name": "Guard", "bldg": "guardhouse"}, {"name": "Aesthetician", "bldg": "bathhouse"}, {"name": "Gardener", "bldg": "gardens"}, {"name": "Teacher", "bldg": "training room"}, {"name": "Secretary", "bldg": "library"}, {"name": "Accountant", "bldg": "office"}, {"name": "Tailor", "bldg": "workshop"}, {"name": "Medic", "bldg": "clinic"}, {"name": "Whore", "bldg": "brothel"}]
   var strength = 0
-  if (slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).known == true) {
-    cooking = Math.round(statLevel(slave, "Chef") / 10) + kitchen_level
-  } else {
-    var roll = randomNumber(0,100)
-    if (roll > 50) {
-      slave.jobs.find(function(stat) {if(stat.name == "Chef") return stat}).known = true
-      cooking = Math.round(statLevel(slave, "Chef") / 10)
-      slave.end_of_week_report.push($.i18n("new-job", slave.gender, slave.name, "chef"));
+  job_mod = 0
+  jobs.forEach((job, i) => {
+    console.log(job.name, bldgLevel(job.bldg))
+    if (statKnown(slave, job.name)) {
+      job_mod += Math.round((statLevel(slave, job.name)/ 25) + bldgLevel(job.bldg)) + 1
+    } else if (randomNumber(0,50) > 50) {
+      statTrue(slave, job.name)
+      job_mod += Math.round((statLevel(slave, job.name)/ 50) + bldgLevel(job.bldg)) + 1
+      slave.end_of_week_report.push($.i18n("new-job", slave.gender, slave.name, lowercase(job.name)));
     }
-  }
+  });
+
   if (slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).known == true) {
     strength = Math.round(statLevel(slave, "Strength") / 10)
   } else {
@@ -232,11 +233,11 @@ function checkServeHousehold(slave) {
     if (roll > 50) {
       slave.stats.find(function(stat) {if(stat.name == "Strength") return stat}).known = true
       strength = Math.round(statLevel(slave, "Strength") / 10)
-      slave.end_of_week_report.push($.i18n("new-talent", slave.gender, slave.name, aptitudeFor("Strength")));
+      slave.end_of_week_report.push($.i18n("$2's hard work this week revealed {{gender:$1|his|her}} $3.", slave.gender, slave.name, aptitudeFor("Strength")));
     }
   }
   var slave_int = Math.round(statLevel(slave, "Intelligence") / 10)
-  var money_saved = (cooking + strength + slave_int) * 6
+  var money_saved = (job_mod + strength + slave_int) * 6
   if (money_saved > 0) {
     slave.end_of_week_report.push($.i18n("servant-money", slave.gender, slave.name, money_saved));
     kindnessAction(slave);
@@ -358,11 +359,10 @@ function discoverThings(slave) {
 
 function checkConfinement(slave) {
   console.log(getFuncName())
-  buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  security_level = buildings.find(function(bldg) {if (bldg.name == "security") return bldg}).level
-  effect = 10 + security_level
+  security_level = bldgLevel("guardhouse")
+  effect = randomNumber(0,5) + security_level
   changeStat(slave, "Health", -5)
-  changeStat(slave, "Obedience", security_level)
+  changeStat(slave, "Obedience", effect)
   slave.end_of_week_report.push($.i18n("confinement", slave.gender, slave.name))
   harshAction(slave)
 }
@@ -370,7 +370,7 @@ function checkConfinement(slave) {
 function checkJob(slave) {
   console.log(getFuncName())
   // ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
-  pf = [{"assignment_name" : "kitchens", "stat" : "Chef", "inc_kinks": [], "dec_kinks": [], "changes": ["Health"]}, {"assignment_name" : "guardhouse", "stat" : "Guard", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating", "Sadism"], "changes": ["Obedience", "Strength"]}, {"assignment_name" : "bathhouse", "stat" : "Aesthetician", "dec_kinks": ["Dominating"], "inc_kinks": ["Submitting"], "changes": ["Libido", "Charisma", "Health"]}, {"assignment_name" : "gardens", "stat" : "Gardener", "dec_kinks": [], "inc_kinks": [], "changes": ["Health"]}, {"assignment_name" : "training room", "stat" : "Teacher", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating"], "changes": []}, {"assignment_name" : "library", "stat" : "Secretary", "dec_kinks": [], "inc_kinks": ["Dominating"], "changes": ["Intelligence"]}, {"assignment_name" : "office", "stat" : "Accountant", "dec_kinks": [], "inc_kinks": [], "changes": ["Intelligence"]}, {"assignment_name" : "workshop", "stat" : "Tailor", "dec_kinks": [], "inc_kinks": [], "changes": []}, {"assignment_name" : "clinic", "stat" : "Medic", "dec_kinks": [], "inc_kinks": ["Aftercare"], "changes": ["Intelligence", "Health"]}]
+  pf = [{"assignment_name" : "kitchens", "stat" : "Chef", "inc_kinks": [], "dec_kinks": [], "changes": ["Health"]}, {"assignment_name" : "guardhouse", "stat" : "Guard", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating", "Sadism"], "changes": ["Obedience", "Strength"]}, {"assignment_name" : "bathhouse", "stat" : "Aesthetician", "dec_kinks": ["Dominating"], "inc_kinks": ["Submitting"], "changes": ["Libido", "Charisma", "Health"]}, {"assignment_name" : "gardens", "stat" : "Gardener", "dec_kinks": [], "inc_kinks": [], "changes": ["Health"]}, {"assignment_name" : "training room", "stat" : "Teacher", "dec_kinks": ["Submitting"], "inc_kinks": ["Dominating"], "changes": []}, {"assignment_name" : "library", "stat" : "Secretary", "dec_kinks": [], "inc_kinks": [""], "changes": ["Intelligence"]}, {"assignment_name" : "office", "stat" : "Accountant", "dec_kinks": [], "inc_kinks": [], "changes": ["Intelligence"]}, {"assignment_name" : "workshop", "stat" : "Tailor", "dec_kinks": [], "inc_kinks": [], "changes": []}, {"assignment_name" : "clinic", "stat" : "Medic", "dec_kinks": [], "inc_kinks": ["Aftercare"], "changes": ["Intelligence", "Health"]}]
   job = pf.filter(function(stuff) { return (stuff.assignment_name == slave.assignment.name)})[0]
   slave.end_of_week_report.push(slave.name + " worked in the " + slave.assignment.name + " this week and improved their skills as a " + lowercase(job.stat) + ".")
   int_bonus = Math.floor(statLevel(slave, "Intelligence") / 25)

@@ -6,7 +6,7 @@ function hideAll() {
   }
   clearShowSlave();
   $("#facilities_menu").empty()
-  clear = ["#slave_list", "#buy_slave_list", "#bathhouse_list", "#slave_bathhouse_list"]
+  clear = ["#slave_list", "#buy_slave_list", "#bathhouse_list", "#slave_bathhouse_list", "#salon_slave_name", "#salon_slave_bust", "#slave_bust"]
   clear.forEach((item, i) => {
     $(item).empty()
   });
@@ -62,8 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
     current_slave_id = localStorage.getItem("current_slave_id");
     viewSlaveSalon(current_slave_id);
   } else if (current_page == "about") {
-    document.getElementById("about").classList.remove("hidden");
+    document.getElementById("about_tab").classList.remove("hidden");
     showAbout();
+  } else if (current_page == "wiki") {
+    document.getElementById("wiki_tab").classList.remove("hidden");
+    showWiki();
   } else {
     document.getElementById("next_week").classList.remove("hidden");
   }
@@ -212,6 +215,14 @@ $(document).ready(function() {
   });
 });
 
+$(document).ready(function() {
+  $("#wiki").click(function(){
+    // console.log("Shop!");
+    location.reload(true);
+    showWiki();
+  });
+});
+
 // click Rules manager
 $(document).ready(function() {
   $("#rules").click(function() {
@@ -318,6 +329,16 @@ function showAbout() {
   localStorage.setItem("current_page", "about");
 }
 
+function showWiki() {
+  console.log(getFuncName())
+  // hide the main div and show the home div
+  hideAll();
+  // location.reload(true);
+  document.getElementById("wiki_tab").classList.remove("hidden");
+  localStorage.setItem("current_page", "wiki");
+  makeWiki();
+}
+
 function showMoneyPage() {
   console.log(getFuncName())
   // hide the main div and show the money div
@@ -337,6 +358,8 @@ function showBathhouse() {
   // hide the main div and show the bathhouse div
   hideAll();
   $("#salon_slave_bust").empty()
+  $("#salon_slave_bust").removeClass("bust-2")
+  $("#salon_slave_name").empty()
   $("#salon_buttons").addClass("hidden-button")
   $("#bathhouse_list").empty()
   $("#slave_bathhouse_list").empty()
@@ -346,8 +369,12 @@ function showBathhouse() {
 
   attendants = getAttendants("bathhouse")[0]
   others = getAttendants("bathhouse")[1]
-  bathhouseAttendantTableHead()
-  listAttendantsBathhouse(attendants)
+  if (attendants.length >= 1) {
+    bathhouseAttendantTableHead()
+    listAttendantsBathhouse(attendants)
+  } else {
+    $("#bathhouse_list").append("You have a very nice bathhouse, but without slaves employed as aestheticians you can't make use of it.  Assign at least one slave to work in the bathhouse to make full use of this facility.")
+  }
   bathhouseTableHead()
   listslavesBathhouse(others)
 };

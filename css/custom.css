@@ -6,6 +6,7 @@
 .hidden-button {
   visibility: hidden;
   height: 0px;
+  margin: 0px !important;
 }
 
 .btn-home {
@@ -120,4 +121,8 @@
 
 .media {
   min-height: 150px !important;
+}
+
+.wiki_subitem {
+  border-bottom: 0.5px solid gray;
 }

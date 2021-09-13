@@ -137,6 +137,20 @@ var event_directory = [
 				]
 			},
 		]
+	},
+  {
+		"id": 5,
+		"tags": ["no-slaves"],
+		"prereqs":[""],
+		"text":"A placeholder event.",
+		"options": [
+			{
+				"text": "This is a placeholder.",
+				"results":[
+					{ "text": "This doesn`t do anything.", "effects":[] }
+				]
+			}
+		]
 	}
 ]
 

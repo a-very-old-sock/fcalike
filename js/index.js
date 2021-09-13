@@ -22,7 +22,7 @@ if (!start) {
   var pc_luck = 0;
   var pc_hasDick = true;
   var pc_hasVagina = false;
-  var pc_hasBreasts = true;
+  var pc_hasBreasts = false;
   var beds = 5;
   var rules = [];
   var pc_facilities = []

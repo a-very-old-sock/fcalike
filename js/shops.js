@@ -11,7 +11,8 @@ function visitShop(shop_id) {
   document.getElementById("buy_tab").classList.remove("hidden");
   shop = shops.find(function(shop) {if(shop.id == shop_id) return shop})
   $("#buy_slave_list").empty();
-  $("#shop_name").html("<h1>"+ shop.name +"</h1><small>"+ shop.tag +"</small>");
+  $("#shop_name").html("<h2>" + shop.name + "</h2>");
+  $("#shop_name").append("<h6>"+ shop.tag +"</h6>")
   var el = document.getElementById("keep_shopping");
   el.classList.remove("hidden");
   defaultShop(shop_id)

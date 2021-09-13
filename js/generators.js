@@ -90,19 +90,23 @@ function slaveMaker(age, gender, known_mod) {
   var slave_constructor = function Slave(){
     this.id = Slave.defaultID;
     this.name = Slave.defaultName;
-    this.old_name = Slave.defaultOldName;
+    this.true_name = Slave.defaultTrueName;
     this.age = Slave.defaultAge;
     this.gender = Slave.defaultGender;
+    this.true_gender = Slave.defaultTrueGender;
+    this.abo_status = Slave.defaultAboStatus;
+    this.dysphoria = Slave.defaultDysphoria;
+    this.dysphoria_known = Slave.defaultDysphoriaKnown;
     this.weeks_owned = Slave.defaultWeeksOwned;
     this.responds_to = Slave.defaultResponds;
     this.responds_known = Slave.defaultRespondsKnown;
     this.charisma_desc = Slave.defaultDesc;
-    this.skin = Slave.defaultSkin;
+    // this.skin = Slave.defaultSkin;
     this.eye_adj = Slave.defaultEyeAdj;
-    this.eye_color = Slave.defaultEye;
-    this.face = Slave.defaultFace;
-    this.hair_color = Slave.defaultHair;
-    this.hair_style = Slave.defaultHairStyle;
+    // this.eye_color = Slave.defaultEye;
+    // this.face = Slave.defaultFace;
+    // this.hair_color = Slave.defaultHair;
+    // this.hair_style = Slave.defaultHairStyle;
     this.butt = Slave.defaultButt;
     this.pubic_hair = Slave.defaultPubic;
     this.has_breasts = Slave.defaultHasBreasts;
@@ -111,6 +115,8 @@ function slaveMaker(age, gender, known_mod) {
     this.chest = Slave.defaultChest;
     this.has_penis = Slave.defaultHasPenis;
     this.penis = Slave.defaultPenis;
+    this.has_balls = Slave.defaultHasBalls;
+    this.balls = Slave.defaultBalls;
     this.has_vagina = Slave.defaultHasVagina;
     this.vagina = Slave.defaultVagina;
     this.price = Slave.defaultPrice;
@@ -138,7 +144,6 @@ function slaveMaker(age, gender, known_mod) {
   };
 
   slave_constructor.defaultID = Date.now() + randomNumber(0,10000);
-  slave_constructor.defaultOldName = "";
   slave_constructor.defaultAge = randomAge(age);
   slave_constructor.defaultResponds = getRandom(responds_to);
   var roll = randomNumber(0,100)
@@ -160,12 +165,12 @@ function slaveMaker(age, gender, known_mod) {
   slave_constructor.defaultCollarWeeks = 0
   slave_constructor.defaultFollows = true;
 
-  slave_constructor.defaultSkin = getRandom(skin_color);
+  // slave_constructor.defaultSkin = getRandom(skin_color);
   slave_constructor.defaultEyeAdj = getRandom(eye_adj);
-  slave_constructor.defaultEye = getRandom(eye_color);
-  slave_constructor.defaultFace = getRandom(face);
-  slave_constructor.defaultHair = getRandom(hair_color);
-  slave_constructor.defaultHairStyle = getRandom(hair_style);
+  // slave_constructor.defaultEye = getRandom(eye_color);
+  // slave_constructor.defaultFace = getRandom(face);
+  // slave_constructor.defaultHair = getRandom(hair_color);
+  // slave_constructor.defaultHairStyle = getRandom(hair_style);
   slave_constructor.defaultButt = getRandom(butt);
   slave_constructor.defaultPubic = getRandom(pubic_hair);
 
@@ -202,6 +207,8 @@ function slaveMaker(age, gender, known_mod) {
   slave_constructor.defaultPrice = 0;
   slave_constructor.defaultPurchased = 0;
 
+  slave_constructor.defaultAboStatus = "beta";
+
   if (gender == "u") {
     var genders = ["male", "female"];
     slave_constructor.defaultGender = getRandom(genders);
@@ -213,6 +220,7 @@ function slaveMaker(age, gender, known_mod) {
   // console.log(slave_constructor.defaultImage)
 
   if (slave_constructor.defaultGender == "male") {
+    slave_constructor.defaultTrueGender = "male"
     slave_constructor.defaultName = getRandom(male_names);
     slave_constructor.defaultHasBreasts = false;
     slave_constructor.defaultBreasts = "";
@@ -220,9 +228,15 @@ function slaveMaker(age, gender, known_mod) {
     slave_constructor.defaultChest = getRandom(chest);
     slave_constructor.defaultHasPenis = true;
     slave_constructor.defaultPenis = getRandom(penis);
+    slave_constructor.defaultHasBalls = true;
+    slave_constructor.defaultBalls = getRandom(balls);
     slave_constructor.defaultHasVagina = false;
     slave_constructor.defaultVagina = "";
+    if (randomNumber(0,10) == 10) {
+      slave_constructor.defaultTrueGender = "female"
+    }
   } else {
+    slave_constructor.defaultTrueGender = "female"
     slave_constructor.defaultName = getRandom(female_names);
     slave_constructor.defaultHasBreasts = true;
     slave_constructor.defaultBreasts = getRandom(breasts);
@@ -230,9 +244,23 @@ function slaveMaker(age, gender, known_mod) {
     slave_constructor.defaultChest = "";
     slave_constructor.defaultHasPenis = false;
     slave_constructor.defaultPenis = "";
+    slave_constructor.defaultHasBalls = false;
+    slave_constructor.defaultBalls = "";
     slave_constructor.defaultHasVagina = true;
     slave_constructor.defaultVagina = getRandom(vagina);
+    if (randomNumber(0,10) == 10) {
+      slave_constructor.defaultTrueGender = "male"
+    }
   }
+
+  if (slave_constructor.defaultTrueGender == slave_constructor.defaultGender) {
+    slave_constructor.defaultDysphoria = 0
+  } else {
+    slave_constructor.defaultDysphoria = randomNumber(30,100)
+  }
+  slave_constructor.defaultDysphoriaKnown = false;
+
+  slave_constructor.defaultTrueName = slave_constructor.defaultName;
 
   var NewAssignment = assignmentMaker("rest", "rest", "none");
   var new_assignment = new NewAssignment;
