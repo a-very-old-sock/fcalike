@@ -165,6 +165,7 @@ function checkSlaves() {
     statsInteraction(slave);
     checkNames(slave);
     checkStats(slave);
+    checkLiteracy(slave);
     var stat_changes = checkOldStats(slave, old_stats)
     printStatChanges(slave, stat_changes)
   });
@@ -456,7 +457,7 @@ function healthCheck(slave) {
     localStorage.setItem("slaves", JSON.stringify(slaves));
     pcKindnessChange(-10)
     pcMoneyChange(-50)
-    pcRepChange(-50)
+    pcRepChange(-5)
     end_of_week_report.push($.i18n("warning-died", slave.name));
   }
 }
@@ -526,6 +527,14 @@ function pcStatCheck() {
   } else if (pc_kindness < -100) {
     pc_kindness = -100
   }
+  if (pc_kindness >= 51) {
+    end_of_week_report.push("Your neighbors have been gossiping about how much you coddle your slaves, <span class='text-danger=>damaging your reputation</span>.")
+    pcRepChange(Math.round(pc_kindness/50))
+  } else if (pc_kindness <= -51) {
+    end_of_week_report.push("Your neighbors have been gossiping about how harshly you treat your slaves, <span class='text-danger=>damaging your reputation</span>.")
+    pcRepChange(Math.round(pc_kindness/50))
+  }
+
   var modifier = Math.floor(pc_kindness / 20)
 
   slaves = JSON.parse(localStorage.getItem("slaves"))
@@ -671,4 +680,10 @@ function checkStats(slave) {
       stat.level
     });
   });
+}
+
+function checkLiteracy(slave) {
+  if (slave.literacy == true) {
+    changeStat(slave, "Obedience", -1)
+  }
 }

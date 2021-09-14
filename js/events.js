@@ -36,7 +36,7 @@ var event_directory = [
 			{
 				"text": "Do the chores yourself and damage your reputation.",
 				"results":[
-					{ "text": "Forced to do all your mundane household tasks yourself, you spend the week on your knees scrubbing floors and hauling laundry.  When your neighbors see you down on your knees like a common slave, they laugh behind your back, damaging your reputation.", "effects":["pcRepChange(-100)","pcMoneyChange(-0)"] }
+					{ "text": "Forced to do all your mundane household tasks yourself, you spend the week on your knees scrubbing floors and hauling laundry.  When your neighbors see you down on your knees like a common slave, they laugh behind your back, damaging your reputation.", "effects":["pcRepChange(-1)","pcMoneyChange(0)"] }
 				]
 			},
 			{

@@ -1,7 +1,7 @@
 function makeWiki() {
   $("#wiki_contents").empty();
   wiki.forEach((item, i) => {
-    $("#wiki_toc").append("<li class='list-group-item'><a href='#" + lowercase(item.section_title.replaceAll(' ', '_')) + "'>" + item.section_title + "</a></li>");
+    $("#wiki_toc").append("<li class='list-group-item'><a href='#" + lowercase(item.section_title.replaceAll(' ', '_')) + "_wiki'>" + item.section_title + "</a></li>");
   });
 
   wiki.forEach((item, i) => {
@@ -108,13 +108,17 @@ var wiki = [
           {
             "title": "Domination and Submission",
             "contents": "<p>Going without a collar will make a slave more dominating, while wearing any collar will make a slave enjoy submitting more over time.  Domination and submission kinks are independent of obedience.  Some jobs, such as being a guard or teacher, will increase a slave's domination kink over time, while working as an aesthetician will make a slave more submissive.</p>"
+          },
+          {
+            "title": "Getting fucked, fucking, and anal",
+            "contents": "The getting fucked skill and kink describe how much a slave enjoys and is good at being penetrated vaginally or anally.  If a slave enjoys getting fucked but dislike anal (or vice versa), they will physically enjoy being fucked anally and have their libido raised but become unhappy.  The fucking skill and kink describe how much a slave enjoys and is good at penetrating someone else with a penis or strapon."
           }
         ]
       }
     ]
   },
   {
-    "section_title": "Slave job skills",
+    "section_title": "Slave jobs and job skills",
     "section_contents": [
       {
         "overview": "<p>Job skills determine how well a slave does the corresponding job.  If a slave is highly skilled at a job, they will be happier when assigned to that job.  Job skills can be discovered by assigning the slave to that job, or to serve your household.  Because they work independently and interact with free people outside of your supervision, slaves employed in jobs are likely to become literate.  Slaves with high intelligence will acquire job skills when assigned to a job.  Slaves with high teaching skills will teach job skills to other slaves they are assigned to the same job with.</p>",
@@ -157,7 +161,31 @@ var wiki = [
           },
           {
             "title": "Whore",
-            "contents": "<p>Whores do <strong>not</strong> require a brothel to work in, but skilled Whores will command higher prices when assigned to whore.</p>"
+            "contents": "<p>Whores do <strong>not</strong> require a brothel to work in, but skilled Whores will command higher prices when assigned to whore and your estate has a brothel.  Slaves with high charisma and sexual skills attract more customers and command higher prices.  Slaves assigned to whore will be available for your guests' use when you throw parties.</p>"
+          },
+          {
+            "title": "Rest",
+            "contents": "<p>A slave who is assigned to rest will grow more healthy, but may grow less obedient.  Slaves who respond to kindness will respond more positively to resting, while slaves who respond to severity will become more disloyal.</p>"
+          },
+          {
+            "title": "Work a gloryhole",
+            "contents": "<p>A slave assigned to work a gloryhole serves a random number of customers depending on the level of your brothel, and their prices are not affected by their charisma or skills.  Slaves who respond to kindness will become unhappy and disobedient, while slaves who respond to severity will become more obedient.  Slaves assigned to a gloryhole will be available for your guests' use when you throw parties.</p>"
+          },
+          {
+            "title": "Please you",
+            "contents": "<p>A slave assigned to please you adds to your reputation based on their charisma.  If a slave is attracted to your gender, it will gradually increase their libido.  If a slave is not attracted to your gender, the longer they are assigned to please you, there is an increasing chance they will become attracted to your gender.  Assigning a slave to please you makes it more likely you will discover things about them.  Slaves assigned to please you will be available for your guests' use when you throw parties.</p>"
+          },
+          {
+            "title": "Public use",
+            "contents": "<p>A slave assigned to public use is offered for free use by your neighbors and increases your reputation based on their charisma.  A slave who responds to severity will become more obedient when assigned to public use, and a slave who responds to kindness will become unhappy and disobedient.  Slaves assigned to public use will be available for your guests' use when you throw parties.</p>"
+          },
+          {
+            "title": "Stay confined",
+            "contents": "<p>A slave who is confined for the week will become more obedient.  A staffed guardhouse will increase the effect.  A slave who responds to severity will become obedient more quickly than a slave who responds to kindness.  Punishing a slave with confinement will make them more obedient, but it also risks damaging their intelligence, charisma, strength, sexual skills and job skills.</p>"
+          },
+          {
+            "title": "Serve the household",
+            "contents": "<p>A slave assigned to serve your household does general work as a servant and save your household money based on their strength, intelligence, and job skills.  A slave who responds to kindness will become more obedient and loyal, while a slave who responds to severity will become disobedient.  Assigning a slave to serve your household gives a chance to discover their job skills.  Slaves assigned to serve your household will be available for your guests' use when you throw parties.</p>"
           }
         ]
       }

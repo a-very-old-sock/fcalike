@@ -118,6 +118,38 @@ function listslavesBathhouse(group) {
   });
 }
 
+function guardhouseAttendantTableHead() {
+  // console.log(getFuncName())
+  $("#guardhouse_list").append("<h2>Guards</h2>")
+  $("#guardhouse_list").append("<table class='table'><thead><th></th><th>Name</th><th>Skill level</th><th>Obedience</th><th>Loyalty</th></thead><tbody id='guardhouse_list_start'></tbody></table>");
+};
+
+function listAttendantsGuardhouse(group) {
+  // console.log(getFuncName())
+  //print the array to the page
+  group.forEach(function(slave, i) {
+    $("#guardhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td>" + slave.name + ", " + slave.age + "</td><td>"+ statBadge(slave, "Guard") +"</td><td>"+ statBadge(slave, "Obedience") +"</td><td>"+ statBadge(slave, "Loyalty") +"</td></tr>");
+    // console.log(slave.id)
+    makePortrait("#slave_bust_" + slave.id, slave.id, 5, "slaves");
+  });
+}
+
+function guardhouseTableHead() {
+  // console.log(getFuncName())
+  $("#slave_guardhouse_list").append("<h2>Other Slaves</h2>")
+  $("#slave_guardhouse_list").append("<table class='table'><thead><th></th><th>Name</th><th>Love</th><th>Obedience</th><th>Loyalty</th></thead><tbody id='slave_guardhouse_list_start'></tbody></table>");
+}
+
+function listSlavesGuardhouse(group) {
+  // console.log(getFuncName())
+  //print the array to the page
+  group.forEach(function(slave, i) {
+    $("#slave_guardhouse_list_start").after("<tr id='row-" + slave.name + i + "'><td class='bust-5 bust' id='slave_bust_" + slave.id + "'></td><td><a onclick='viewPunish(" + slave.id + ")' href='#'>" + slave.name + ", " + slave.age + "</a></td><td>"+ statBadge(slave, "Love") +"</td><td>"+ statBadge(slave, "Obedience") +"</td><td>"+ statBadge(slave, "Loyalty") +"</td></tr>");
+    // console.log(slave.id)
+    makePortrait("#slave_bust_" + slave.id, slave.id, 5, "slaves");
+  });
+}
+
 function shopTableHead() {
   // console.log(getFuncName())
   $("#buy_slave_list").empty();
@@ -131,20 +163,32 @@ function homeTableHead() {
 };
 
 function statWord(slave, stat) {
-  // console.log(getFuncName())
   if (statKnown(slave, stat)) {
-    if (statLevel(slave, stat) <= -50) {
-      word = "Very poor"
-    } else if (statLevel(slave, stat) > -50 && statLevel(slave, stat) <= 0) {
-      word = "Poor"
-    } else if (statLevel(slave, stat) > 0 && statLevel(slave, stat) <= 50) {
-      word = "Fine"
-    } else if (statLevel(slave, stat) >= 50) {
-      word = "Good"
+    if (slave_jobs.includes(stat) || slave_skills.includes(stat) || slave_stats.includes(stat)) {
+      if (statLevel(slave, stat) <= 25) {
+        word = "Poor"
+      } else if (statLevel(slave, stat) > 25 && statLevel(slave, stat) <= 50) {
+        word = "Fine"
+      } else if (statLevel(slave, stat) > 51 && statLevel(slave, stat) <= 75) {
+        word = "Good"
+      } else if (statLevel(slave, stat) >= 76) {
+        word = "Very good"
+      }
+    } else {
+      if (statLevel(slave, stat) <= -50) {
+        word = "Very poor"
+      } else if (statLevel(slave, stat) > -50 && statLevel(slave, stat) <= 0) {
+        word = "Poor"
+      } else if (statLevel(slave, stat) > 0 && statLevel(slave, stat) <= 50) {
+        word = "Fine"
+      } else if (statLevel(slave, stat) >= 50) {
+        word = "Good"
+      }
     }
   } else {
     word = "Unknown"
   }
+
   return word
 }
 

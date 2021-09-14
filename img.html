@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/custom.css" />
+  <link rel="stylesheet" href="css/img.css"/ />
+  <script src="js/i18n/jquery-3.4.1.js"></script>
+  <script src="js/i18n/CLDRPluralRuleParser.js"></script>
+  <script src="js/i18n/jquery.i18n.js"></script>
+  <script src="js/i18n/jquery.i18n.messagestore.js"></script>
+  <script src="js/i18n/jquery.i18n.fallbacks.js"></script>
+  <script src="js/i18n/jquery.i18n.language.js"></script>
+  <script src="js/i18n/jquery.i18n.parser.js"></script>
+  <script src="js/i18n/jquery.i18n.emitter.js"></script>
+  <script src="js/i18n/jquery.i18n.emitter.bidi.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="row mb-3">
+      <div class="col-sm">
+        <button type="button" class="btn btn-primary" onClick="newPortrait('F', false, 3, 3)" data-id="0" id="next">next</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm">
+        <div class="bust">
+          <img class="hair_deco" data-id="0"/>
+          <img class="head" data-id="0"/>
+          <img class="mark" data-id="0"/>
+          <img class="nose" data-id="0"/>
+          <img class="mouth" data-id="0"/>
+          <img class="brow" data-id="0"/>
+          <img class="eyes"data-id="0"/>
+          <img class="beard" data-id="0"/>
+          <img class="hair_hi" data-id="0"/>
+          <img class="ear" data-id="0"/>
+          <img class="shirt" data-id="0"/>
+          <img class="coat" data-id="0"/>
+          <img class="necklace" data-id="0"/>
+          <img class="accessory" data-id="0"/>
+          <img class="flowers" data-id="0"/>
+          <img class="glasses" data-id="0"/>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary hair-btn" onClick="newColor(this, 'hair', 3)" data-id="0" id="haircolor">hair color</button>
+          <button type="button" class="btn btn-primary hair-hi-btn" onClick="newShape(this, 'hair-hi', 3)" data-id="0" id="haircut">hair style</button>
+          <button type="button" class="btn btn-primary hair-deco-btn" onClick="newShape(this, 'hair-deco', 3)" data-id="0" id="hairpony">hair length</button>
+        </div>
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary beardcolor-btn" onClick="newColor(this, 'beardcolor', 3)" data-id="0" id="beardcolor">beard color</button>
+          <button type="button" class="btn btn-primary beardstyle-btn" onClick="newShape(this, 'beardstyle', 3)" data-id="0" id="beardstyle">beard style</button>
+          <button type="button" class="btn btn-primary beardvisibility-btn" onClick="visibility(this, 'beard', 3)" data-id="0" id="beardvisibility">remove/add facial hair</button>
+        </div>
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary eyecolor-btn" onClick="newColor(this, 'eyecolor', 3)" data-id="0" id="eyecolor">eye color</button>
+          <button type="button" class="btn btn-primary eyeshape-btn" onClick="newShape(this, 'eyeshape', 3)" data-id="0" id="eyeshape">eye shape</button>
+        </div>
+        <div class = "row mb-3">
+            <button type="button" class="btn btn-primary accessory-btn" onClick="newShape(this, 'accessory', 3)" data-id="0" id="accessory">earring</button>
+            <button type="button" class="btn btn-primary earring-btn" onClick="visToggle(this, 'accessory', 3)" data-id="0" id="earring">remove/add earring</button>
+        </div>
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary collar-btn" onClick="newShape(this, 'collar', 3)" data-id="0" id="collar">collar</button>
+          <button type="button" class="btn btn-primary collarvisibility-btn" onClick="visToggle(this, 'collar', 3)" data-id="0" id="collarvisibility">remove/add collar</button>
+        </div>
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary head-btn" onClick="newShape(this, 'head', 3)" data-id="0" id="headshape">jaw shape</button>
+          <button type="button" class="btn btn-primary nose-btn" onClick="newShape(this, 'nose', 3)" data-id="0" id="noseshape">nose shape</button>
+          <button type="button" class="btn btn-primary mouth-btn" onClick="newShape(this, 'mouth', 3)" data-id="0" id="mouthshape">mouth shape</button>
+        </div>
+        <div class="row mb-3">
+          <button type="button" class="btn btn-primary mark-btn" onClick="newShape(this, 'mark', 3)" data-id="0" id="mark">scar</button>
+          <button type="button" class="btn btn-primary scar-btn" onClick="visToggle(this, 'scar', 3)" data-id="0" id="scarvisibility">remove/add scar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="img/portrait.js"></script>
+</body>

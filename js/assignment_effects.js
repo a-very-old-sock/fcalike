@@ -23,9 +23,7 @@ function checkWhoring(slave) {
     slave.end_of_week_report.push($.i18n(slave.name + " <span class='text-danger'> was injured by a customer this week</span>, damaging {{gender:$1|his|her}} health.", slave.gender))
     changeStat(slave, "Health", -10)
     changeStat(slave, "Love", -5)
-    if (randomNumber(0,2) == 2) {
-      changeKink(slave, "Masochism", 5)
-    }
+    flipKink(slave, "Masochism", 3)
     console.log("injury")
   }
 
@@ -107,12 +105,16 @@ function checkWhoring(slave) {
       r = Math.round(r)
       total = total += r
       slave.end_of_week_report.push($.i18n("whore-liked-kink", slave.gender, lowercase(feature_kink.name), (r)))
+      libidoEffect(slave)
+      flipKink(slave, feature_kink.name, 10)
     } else if (feature_kink.level <= -50 && (randomNumber(1,3) + luck_mod >= 3)) {
       fk = feature_kink.level * -1
       r = (fk + brothel_level) * price_modifier
       r = Math.round(r)
       total = total += r
       slave.end_of_week_report.push($.i18n("whore-hated-kink", slave.gender, lowercase(feature_kink.name), (r)))
+      libidoEffect(slave)
+      flipKink(slave, feature_kink.name, 10)
     }
     if (min_skill === undefined) {
 
@@ -130,6 +132,7 @@ function checkWhoring(slave) {
       e = Math.round(e)
       slave.end_of_week_report.push($.i18n("whore-high-skill", slave.gender, lowercase(max_skill.name), e))
       total = total += e
+      libidoEffect(slave)
     }
   } else {
     slave.end_of_week_report.push($.i18n("whore-no-customers", slave.gender, slave.name));
@@ -169,6 +172,11 @@ function checkResting(slave) {
     changeStat(slave, "Obedience", (bathhouse_level * -1))
     slave.end_of_week_report.push(slave.name + " lazed around this week and did nothing.")
   }
+  flip_kinks = ["Aftercare", "Dominating", "Submitting", "Masochism", "Sadism"]
+  flip_kinks.forEach((item, i) => {
+    flipKink(slave, item, 100)
+  });
+
   changeStat(slave, "Health", hc)
   kindnessAction(slave);
 }
@@ -179,11 +187,15 @@ function checkGloryHole(slave) {
   var customers = randomNumber(0, 20) + brothel_level
   var av_price = randomNumber(1,10) + brothel_level
   var total = (customers * av_price) * 6
-  money = Math.round(localStorage.getItem("money"))
-  money += total
+  pcMoneyChange(total)
+  libidoEffect(slave)
   if (customers > 0) {
     slave.end_of_week_report.push($.i18n("gloryhole-customers", slave.name, customers, av_price, total));
     harshAction(slave);
+    flip_kinks = ["Aftercare", "Dominating", "Submitting", "Masochism", "Sadism"]
+    flip_kinks.forEach((item, i) => {
+      flipKink(slave, item, 100)
+    });
   } else {
     slave.end_of_week_report.push($.i18n("gloryhole-no-customers", slave.gender, slave.name));
   }
@@ -192,22 +204,26 @@ function checkGloryHole(slave) {
 function checkPublicUse(slave) {
   console.log(getFuncName())
   brothel_level = bldgLevel("brothel")
-  var customers = randomNumber(0, 5) + Math.round(statLevel(slave, "Charisma")/ 20) + brothel_level
+  var customers = randomNumber(0, 5) + Math.round(statLevel(slave, "Charisma")/ 50) + brothel_level
   var av_price = randomNumber(0, 2) + Math.round(statLevel(slave, "Charisma") / 50) + brothel_level
+  if (av_price <= 0) { av_price = 1}
   var e = 0
-  var total = (customers * av_price) * 6
+  var total = (customers * av_price)
   if (customers > 0) {
     if (total < 1) {
       total = 1
     }
+    libidoEffect(slave)
     slave.end_of_week_report.push($.i18n("publicuse-reputation", slave.name, customers, total));
     harshAction(slave);
+    flip_kinks = ["Aftercare", "Dominating", "Submitting", "Masochism", "Sadism"]
+    flip_kinks.forEach((item, i) => {
+      flipKink(slave, item, 100)
+    });
   } else {
     slave.end_of_week_report.push($.i18n("publicuse-no-customers", slave.gender, slave.name));
   }
-  reputation = Math.round(localStorage.getItem("reputation"))
-  reputation += total
-  localStorage.setItem("reputation", reputation)
+  pcRepChange(total)
 }
 
 function checkServeHousehold(slave) {
@@ -250,21 +266,22 @@ function checkServeHousehold(slave) {
 
 function checkPleaseYou(slave) {
   console.log(getFuncName())
-  var charisma = Math.floor(statLevel(slave, "Charisma") / 2)
+  var charisma = Math.floor(statLevel(slave, "Charisma") / 50)
   var attraction = 0
   var pcGender = localStorage.getItem("pcGender");
   if (statLevel(slave, "Attraction to Men") > 0 && pcGender == "male") {
-    attraction = Math.floor(statLevel(slave, "Attraction to Men") / 2)
+    attraction = Math.floor(statLevel(slave, "Attraction to Men") / 50)
   } else if (statLevel(slave, "Attraction to Women") > 0 && pcGender == "female") {
-    attraction = Math.floor(statLevel(slave, "Attraction to Women") / 2)
+    attraction = Math.floor(statLevel(slave, "Attraction to Women") / 50)
   }
   if (attraction > 0) {
+    libidoEffect(slave)
     changeStat(slave, "Libido", randomNumber(1,attraction))
   } else if (attraction < 0 && slave.assignment_weeks >= 3) {
     if (randomNumber(1,100) < slave.assignment_weeks) {
       if (pcGender == "male") {
         changeStat(slave, "Attraction to Men", randomNumber(50,100))
-      } else {
+      } else if (pcGender == "female") {
         changeStat(slave, "Attraction to Women", randomNumber(50,100))
       }
     }
@@ -277,10 +294,10 @@ function checkPleaseYou(slave) {
   changeStat(slave, "Health", randomNumber(1,5))
 
   //discover things
-  var together_time = discoverThings(slave)
-  if (together_time.length > 0) {
+  var together_time = discoverOneThing(slave)
+  if (together_time !== undefined) {
     // console.log(together_time)
-    slave.end_of_week_report.push($.i18n("please-you-skill-discovery", slave.gender, slave.name, together_time.join(", ")))
+    slave.end_of_week_report.push($.i18n("please-you-skill-discovery", slave.gender, slave.name, together_time))
   }
 
   if (slave.responds_known == false) {
@@ -304,6 +321,7 @@ function checkPleaseYou(slave) {
   }
 }
 
+// not currently used
 function discoverThings(slave) {
   console.log(getFuncName())
   var check_these = [slave.stats, slave.scales, slave.skills, slave.kinks]
@@ -360,11 +378,32 @@ function discoverThings(slave) {
 function checkConfinement(slave) {
   console.log(getFuncName())
   security_level = bldgLevel("guardhouse")
+  risk = ["slave_stats", "slave_jobs", "slave_skills"]
+  risk.forEach((item, i) => {
+    effect = (randomNumber(0,5) + security_level) * -1
+    down = eval(item)
+    stat_damaged = getRandom(down)
+    changeStat(slave, stat_damaged, effect)
+  });
   effect = randomNumber(0,5) + security_level
   changeStat(slave, "Health", -5)
   changeStat(slave, "Obedience", effect)
+  changeKink(slave, "Dominating", effect * -1)
+  flip_kinks = ["Sadism", "Masochism", "Submitting", "Humiliation"]
+  flip_kinks.forEach((item, i) => {
+    flipKink(slave, item, 5)
+  });
+
   slave.end_of_week_report.push($.i18n("confinement", slave.gender, slave.name))
   harshAction(slave)
+}
+
+function flipKink(s, kink, chance) {
+  console.log(s.name)
+  if (randomNumber(1,chance) == 1) {
+    kinklvl = kinkLevel(s, kink)
+    changeKink(s, kink, kinklvl * -1)
+  }
 }
 
 function checkJob(slave) {
@@ -446,4 +485,9 @@ function checkJob(slave) {
     changeStat(slave, stat, 1)
   });
 
+}
+
+function libidoEffect(slave) {
+  lc = Math.round(statLevel(slave, "Libido")/25)
+  changeStat(slave, "Happiness", lc)
 }

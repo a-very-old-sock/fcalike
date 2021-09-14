@@ -71,7 +71,7 @@ function viewSlave(id){
 
   $("#slave_interact_buttons").empty()
   $("#slave_interact_log").empty()
-  makeInteractButtons(inspected.id, "slaves")
+  makeInteractButtons(inspected.id, "slaves", "view")
 
   // $("#slave_skills").append("<hr>");
   modalStatsBlock(inspected.skills,"#slave_skills");
@@ -97,6 +97,11 @@ function viewSlave(id){
 
 function checkFacilities() {
   console.log(getFuncName())
+  basic_assignments.forEach((item, i) => {
+    option = document.createElement("option")
+    option.text = item
+    document.getElementById("assignment").add(option)
+  });
   pf = ["kitchens", "guardhouse", "bathhouse", "gardens", "training room", "library", "office", "workshop", "clinic"]
   pf.forEach((bldg, i) => {
     if (bldgLevel(bldg) >= 1) {
@@ -108,7 +113,7 @@ function checkFacilities() {
   });
 }
 
-function makeInteractButtons(slave_id, group) {
+function makeInteractButtons(slave_id, group, prefix) {
   console.log(getFuncName())
   if (Array.isArray(group)) {
     slave = group.find(slave => slave.id == slave_id);
@@ -117,16 +122,17 @@ function makeInteractButtons(slave_id, group) {
     slave = group.find(slave => slave.id == slave_id);
   }
   action_pts = localStorage.getItem("action_pts");
-  $("#slave_interact_buttons").append("<p>Buttons <span class='text-success'>this color</span> cost 1 action point, while buttons <span class='text-primary'>this color</span> have no cost.")
+  $("#" + prefix + "_interact_buttons").append("<p>Buttons <span class='text-success'>this color</span> cost 1 action point, while buttons <span class='text-primary'>this color</span> have no cost.")
+  btn_group = eval(prefix + "_buttons")
   if (action_pts > 0) {
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='talkButton(" + slave_id +", slaves" + ")'>Talk with " + slave.name + "</button>");
-    if ((statLevel(slave, "Health") <= 0) && statKnown(slave, "Health")) {
-      $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='healButton(" + slave_id +", slaves" + ")'>Have a doctor heal " + slave.name + " (§1000)</button>");
-    }
-    if (statKnown(slave, "Health") == false) {
-      $("#slave_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='examineButton(" + slave_id +", slaves" + ")'>Have " + slave.name + " examined by a doctor (§100)</button>");
-    }
-    $("#slave_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='salonButton(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
+    btn_group.forEach((item, i) => {
+      if (eval(item.prereqs)) {
+        $("#" + prefix + "_interact_buttons").append("<button type='button' class='btn btn-success mt-2' onclick='doButton(\""+ item.name +"\", " + slave_id +", slaves, \"" + prefix + "\")'>" + eval(item.btn_txt) + "</button>");
+      }
+    });
+  }
+  if (prefix == "view") {
+    $("#" + prefix + "_interact_buttons").append("<button type='button' class='btn btn-primary mt-2' onclick='viewSlaveSalon(" + slave_id + ")'>Change " + slave.name + "'s appearance</button>");
   }
 }
 
@@ -305,6 +311,10 @@ function kinkKnown(s, stat) {
   return stat_known
 }
 
+// slave_stats = ["Intelligence", "Charisma", "Strength"]
+// slave_scales = ["Obedience", "Love", "Loyalty", "Honesty", "Health", "Libido", "Happiness"]
+// slave_skills = ["Getting fucked", "Anal", "Fucking", "Licking pussy", "Sucking dick", "Eating ass"]
+// slave_jobs = ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
 function changeStat(s, stat, amount) {
   console.log(getFuncName())
   if (slave_scales.includes(stat)) {
@@ -330,6 +340,7 @@ function changeStat(s, stat, amount) {
 
 function changeKink(s, stat, amount) {
   console.log(getFuncName())
+  console.log(s.name, stat)
   s.kinks.find(function(thing) {if(thing.name == stat) return thing}).level += amount
   if (statLevel(s, stat) < -100) {setStat(s, stat, -100)}
   else if (statLevel(s, stat) > 100) {setStat(s, stat, 100)}

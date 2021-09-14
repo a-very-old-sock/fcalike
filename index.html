@@ -134,10 +134,10 @@
                 <div id="slave_stats">
 
                 </div>
-                <div id="slave_interact_buttons">
+                <div id="view_interact_buttons">
 
                 </div>
-                <div id="slave_interact_log">
+                <div id="view_interact_log">
 
                 </div>
 
@@ -401,6 +401,42 @@
 
             <div class="row" id="slave_bathhouse_list">
               <h2>Other slaves</h2>
+              <h6>Select a slave to see more beautification options.</h6>
+
+            </div>
+          </div>
+
+          <div id="guardhouse_tab" class="hidden tab">
+            <h1>Guardhouse</h1>
+            <div class="row" id="punish">
+              <div class="col-sm">
+                <div id="guardhouse_slave_bust">
+
+                </div>
+              </div>
+              <div class="col-sm" id="guardhouse_buttons">
+                <div id="guardhouse_interact_buttons">
+
+                </div>
+                <div id="guardhouse_interact_log">
+
+                </div>
+
+                <!-- <div class="row hidden-button mt-3" id="guardhouse_buttons_0">
+                  <p class="hidden-button mt-2" id="guardhouse-warning">Without a bathhouse or aestheticians, you can't change your slaves' appearances further.  Upgrade your bathhouse and employ an aesthetician to gain more options.</p>
+                </div> -->
+              </div>
+            </div>
+
+
+            <div class="row" id="guardhouse_list">
+              <h2>Guards</h2>
+
+            </div>
+
+            <div class="row" id="slave_guardhouse_list">
+              <h2>Other slaves</h2>
+              <h6>Select a slave to see more punishment options.</h6>
 
             </div>
           </div>
@@ -560,7 +596,7 @@
                   <div class="form-group">
                     <h5>What you've got <small class="text-muted">(Used for description only, does not affect game stats)</small></h5>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="pc_hasDick">
+                      <input class="form-check-input" type="checkbox" value="true" id="pc_hasDick">
                       <label class="form-check-label" for="defaultCheck1">
                         Penis
                       </label>
@@ -771,5 +807,6 @@
     <script src= "js/interact_buttons.js"></script>
     <script src= "js/salon.js"></script>
     <script src= "js/wiki.js"></script>
+    <script src= "js/guardhouse.js"></script>
   </body>
 </html>

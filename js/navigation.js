@@ -6,12 +6,12 @@ function hideAll() {
   }
   clearShowSlave();
   $("#facilities_menu").empty()
-  clear = ["#slave_list", "#buy_slave_list", "#bathhouse_list", "#slave_bathhouse_list", "#salon_slave_name", "#salon_slave_bust", "#slave_bust"]
+  clear = ["#slave_list", "#buy_slave_list", "#bathhouse_list", "#slave_bathhouse_list", "#salon_slave_name", "#salon_slave_bust", "#slave_bust", "#guardhouse_slave_bust", "#guardhouse_list", "#slave_guardhouse_list", "#guardhouse_interact_buttons", "#guardhouse_interact_log", "#view_interact_buttons"]
   clear.forEach((item, i) => {
     $(item).empty()
   });
 
-  pf = [{"name": "kitchens", "fnc": "showSorry()"}, {"name": "guardhouse", "fnc": "showSorry()"}, {"name": "bathhouse", "fnc": "showBathhouse()"}, {"name": "gardens", "fnc": "showSorry()"}, {"name": "training room", "fnc": "showSorry()"}, {"name": "library", "fnc": "showSorry()"}, {"name": "office", "fnc": "showSorry()"}, {"name": "workshop", "fnc": "showSorry()"}, {"name": "clinic", "fnc": "showSorry()"}, {"name": "brothel", "fnc": "showSorry()"}]
+  pf = [{"name": "kitchens", "fnc": "showSorry()"}, {"name": "guardhouse", "fnc": "showGuardhouse()"}, {"name": "bathhouse", "fnc": "showBathhouse()"}, {"name": "gardens", "fnc": "showSorry()"}, {"name": "training room", "fnc": "showSorry()"}, {"name": "library", "fnc": "showSorry()"}, {"name": "office", "fnc": "showSorry()"}, {"name": "workshop", "fnc": "showSorry()"}, {"name": "clinic", "fnc": "showSorry()"}, {"name": "brothel", "fnc": "showSorry()"}]
   show_facilities_menu = localStorage.getItem("show_facilities_menu") || false
   if (show_facilities_menu) {
     pf.forEach((bldg, i) => {
@@ -56,11 +56,19 @@ document.addEventListener('DOMContentLoaded', function() {
   } else if (current_page == "bathhouse_tab") {
     document.getElementById("bathhouse_tab").classList.remove("hidden");
     showBathhouse();
+  } else if (current_page == "guardhouse_tab") {
+    document.getElementById("guardhouse_tab").classList.remove("hidden");
+    showGuardhouse();
   } else if (current_page == "view_slave_salon") {
     hideAll();
     document.getElementById("bathhouse_tab").classList.remove("hidden");
     current_slave_id = localStorage.getItem("current_slave_id");
     viewSlaveSalon(current_slave_id);
+  } else if (current_page == "view_punish") {
+    hideAll();
+    document.getElementById("guardhouse_tab").classList.remove("hidden");
+    current_slave_id = localStorage.getItem("current_slave_id");
+    viewPunish(current_slave_id);
   } else if (current_page == "about") {
     document.getElementById("about_tab").classList.remove("hidden");
     showAbout();
@@ -70,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     document.getElementById("next_week").classList.remove("hidden");
   }
-  // alert("Ready!");
 }, false);
 
 // click the go home button to start the game
@@ -93,16 +100,19 @@ $(document).ready(function() {
     localStorage.setItem("pcTitle", pcTitle)
 
     var pcGender = $('input[name=PCPronouns]:checked').val();
+    if (pcGender === undefined) {
+      pcGender = "male"
+    }
     var pcAge = $('input[name=PCAge]:checked').val();
     if (pcAge == "young") {
       var pc_stamina = 100;
       var action_pts = 25;
-      reputation -= 50;
+      reputation -= 20;
     } else if (pcAge == "old") {
       var pc_stamina = 20;
       var action_pts = 5;
       pc_int += 10;
-      reputation += 50
+      reputation += 20
     } else {
       var pc_stamina = 60;
       var action_pts = 15;
@@ -115,7 +125,7 @@ $(document).ready(function() {
       money += 10000;
       pc_luck += 50;
     } else if (pcProfession == "celebrity") {
-      reputation += 1000;
+      reputation += 50;
       pc_luck += 10;
     } else if (pcProfession == "tech") {
       money += 5000
@@ -123,10 +133,10 @@ $(document).ready(function() {
     } else if (pcProfession == "banker") {
 
     } else if (pcProfession == "whore") {
-      reputation -= 100
+      reputation -= 20
       pc_luck += 20;
     } else if (pcProfession == "slave") {
-      reputation -= 1000
+      reputation -= 50
       pc_kindness += 50
       pc_int += 10;
       pc_luck += 10;
@@ -145,12 +155,16 @@ $(document).ready(function() {
     localStorage.setItem("pc_luck", pc_luck)
     localStorage.setItem("xp", xp)
 
-    var pc_hasDick = $('input[id=pc_hasDick]:checked').val();
+    var pc_hasDick = $('#pc_hasDick').is(":checked");
     localStorage.setItem("pc_hasDick", pc_hasDick)
-    var pc_hasBreasts = $('input[id=pc_hasBreasts]:checked').val();
+    var pc_hasBreasts = $('#pc_hasBreasts').is(":checked");
     localStorage.setItem("pc_hasBreasts", pc_hasBreasts)
-    var pc_hasVagina = $('input[id=pc_hasVagina]:checked').val();
+    var pc_hasVagina = $('#pc_hasVagina').is(":checked");
     localStorage.setItem("pc_hasVagina", pc_hasVagina)
+    if (pc_hasVagina === undefined && pc_hasDick === undefined) {
+      pc_hasDick = true
+      localStorage.setItem("pc_hasDick", true)
+    }
 
     var pc_Attitude = $('input[name=PCAttitude]:checked').val();
     pc_kindness += pc_Attitude
@@ -173,6 +187,7 @@ $(document).ready(function() {
     localStorage.setItem("current_page", "home");
     localStorage.setItem("rules", rules)
     location.reload(true);
+    console.log("pcjunk", pcGender, pc_hasDick, pc_hasVagina, pc_hasBreasts)
   });
 
 });
@@ -186,14 +201,12 @@ $(document).ready(function() {
 // click the "Shop" button
 $(document).ready(function() {
   $("#shop").click(function(){
-    // console.log("Shop!");
     showBuyPage();
   });
 });
 
 $(document).ready(function() {
   $("#keep_shopping").click(function(){
-    // console.log("Shop!");
     showBuyPage();
     localStorage.setItem("available", "")
   });
@@ -201,7 +214,6 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   $("#money_counter").click(function(){
-    // console.log("Shop!");
     location.reload(true);
     showMoneyPage();
   });
@@ -209,7 +221,6 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   $("#about").click(function(){
-    // console.log("Shop!");
     location.reload(true);
     showAbout();
   });
@@ -217,7 +228,6 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   $("#wiki").click(function(){
-    // console.log("Shop!");
     location.reload(true);
     showWiki();
   });
@@ -262,17 +272,13 @@ $(document).ready(function() {
   $("#next_slave").click(function(){
     var slaves = JSON.parse(localStorage.getItem("slaves") || "[]");
     current_slave_id = localStorage.getItem("current_slave_id")
-    // var current_slave = these_ones.find(slave => slave.id == current_slave_id);
     var c_index = slaves.findIndex(slave => slave.id == current_slave_id);
-    // console.log(c_index)
     if (c_index == slaves.length - 1) {
       var next = 0;
     } else {
       var next = c_index + 1
     }
-    // console.log("next index: " + next)
     var next_slave = slaves[next]
-    // console.log(next_slave)
     viewSlave(next_slave.id);
   });
 });
@@ -281,13 +287,15 @@ $(document).ready(function() {
 function showBuyPage() {
   console.log(getFuncName())
   hideAll()
-  // hide the main div and show the buy div
   document.getElementById("buy_tab").classList.remove("hidden");
   $("#shop_name").html("");
   $("#buy_slave_list").empty();
   $("#buy_slave_list").append("<table class='table'><thead><th>Shop</th><th></th></thead><tbody id='buy_list_start'></tbody></table>");
+  rep = parseInt(localStorage.getItem("reputation"))
   shops.forEach((shop, i) => {
-    $("#buy_list_start").append("<tr><td><button id='btn-" + shop.id + "' onclick='visitShop("+ shop.id + ")' type='button' class='btn btn-sm " + shop_btns[i] + "'>" + shop.name + "</td><td>" + shop.tag + "</td></tr>");
+    if (rep >= parseInt(shop.rep)) {
+      $("#buy_list_start").append("<tr><td><button id='btn-" + shop.id + "' onclick='visitShop("+ shop.id + ")' type='button' class='btn btn-sm " + shop_btns[i] + "'>" + shop.name + "</td><td>" + shop.tag + "</td></tr>");
+    }
   });
 };
 
@@ -349,13 +357,29 @@ function showMoneyPage() {
   showSlaveSaleList()
 };
 
+function showGuardhouse() {
+  console.log(getFuncName())
+  hideAll();
+  $("#guardhouse_list").empty()
+  $("#slave_guardhouse_list").empty()
+  document.getElementById("guardhouse_tab").classList.remove("hidden");
+  var current_page = "guardhouse_tab";
+  localStorage.setItem("current_page", current_page);
+
+  attendants = getAttendants("guardhouse")[0]
+  others = getAttendants("guardhouse")[1]
+  if (attendants.length >= 1) {
+    guardhouseAttendantTableHead()
+    listAttendantsGuardhouse(attendants)
+  } else {
+    $("#guardhouse_list").append("You have a very nice guardhouse, but without slaves employed as guards you can't make use of it.  Assign at least one slave to work in the guardhouse to make full use of this facility.")
+  }
+  guardhouseTableHead()
+  listSlavesGuardhouse(others)
+};
+
 function showBathhouse() {
   console.log(getFuncName())
-  // btns = ["#save_buttons", "#salon_buttons_0", "#salon_buttons_1", "#salon_buttons_2", "#salon_buttons_3", "#salon_buttons_4", "#salon_buttons_5"]
-  // btns.forEach((item, i) => {
-  //   $(item).addClass("hidden-button")
-  // });
-  // hide the main div and show the bathhouse div
   hideAll();
   $("#salon_slave_bust").empty()
   $("#salon_slave_bust").removeClass("bust-2")
@@ -402,6 +426,7 @@ function clearShowSlave() {
   });
   removeOptions(document.getElementById('clothing'))
   removeOptions(document.getElementById('collar'))
+  removeOptions(document.getElementById('assignment'))
   // $(".save_slave").classList.add("btn-primary");
   var save_button = document.getElementsByClassName('save_slave')
   save_button[0].classList.remove("fade-success");

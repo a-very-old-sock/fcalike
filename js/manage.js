@@ -46,7 +46,7 @@ function fivePtAction(id) {
   playerManageButtons()
 }
 
-var five_pt_buttons = [{"id": 1, "text": "Exercise (raise stamina)", "effects": ["pcStatChange(1, 'pc_stamina')"], "prereqs": ["pc_stamina < 100"], "results": ["After a hard workout, you feel tired but stronger."]}, {"id": 2, "text": "Study (raise intelligence)", "effects": ["pcStatChange(1, 'pc_int')"], "prereqs": ["pc_int < 100"], "results": ["After long hours of study, you feel better prepared to manage your business and your slaves."]}, {"id": 3, "text": "Gamble (raise luck, cost §500)", "effects": ["pcStatChange(1, 'pc_luck')", "pcMoneyChange(-500)", "pcRepChange(-10)", "pcMoneyChange(randomNumber(-100,5000) + luck)"], "prereqs": ["pc_luck < 100", "money >= 500"], "results": ["After a long night of gambling, you feel a bit more spring in your step."]}]
+var five_pt_buttons = [{"id": 1, "text": "Exercise (raise stamina)", "effects": ["pcStatChange(1, 'pc_stamina')"], "prereqs": ["pc_stamina < 100"], "results": ["After a hard workout, you feel tired but stronger."]}, {"id": 2, "text": "Study (raise intelligence)", "effects": ["pcStatChange(1, 'pc_int')"], "prereqs": ["pc_int < 100"], "results": ["After long hours of study, you feel better prepared to manage your business and your slaves."]}, {"id": 3, "text": "Gamble (raise luck, cost §500)", "effects": ["pcStatChange(1, 'pc_luck')", "pcMoneyChange(-500)", "pcRepChange(-1)", "pcMoneyChange(randomNumber(-100,5000) + luck)"], "prereqs": ["pc_luck < 100", "money >= 500"], "results": ["After a long night of gambling, you feel a bit more spring in your step."]}]
 
 function pcStatChange(amount, stat) {
   console.log(getFuncName())
@@ -129,7 +129,6 @@ function upgradeFacility(facility_index, item_price) {
 function bldgLevel(bldg) {
   console.log(getFuncName())
   buildings = JSON.parse(localStorage.getItem("pc_facilities"))
-  console.log(bldg)
   bldg_level = parseInt(buildings.find(function(thing) {if (thing.name == bldg) return thing}).level) || 0
   return bldg_level
 }

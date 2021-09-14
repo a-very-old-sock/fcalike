@@ -87,6 +87,11 @@ function pcRepChange(amount) {
   console.log(getFuncName())
   reputation = Math.floor(localStorage.getItem("reputation"))
   reputation += amount
+  if (reputation > 100) {
+    reputation = 100
+  } else if (reputation < -100) {
+    reputation = -100
+  }
   localStorage.setItem("reputation", reputation)
   $("#reputation_counter").html("Reputation: " + reputation);
 }

@@ -4,6 +4,12 @@ var acceptable = ["acceptable", "plain", "boring", "blah", "satisfactory", "pret
 var good = ["quite pretty", "very good", "above average"];
 var superb = ["excellent", "stunning", "supberb", "exquisite"];
 
+// verbs
+var fuck = ["rail", "fuck", "breed", "pound"]
+var fucking = ["railing", "fucking", "breeding", "pounding"]
+var pussy_fuck = ["fuck", "grind into", "ride"]
+var pussy_fucking = ["fucking", "grinding into", "riding"]
+
 // things everyone has
 // var skin_color = ["tanned", "pale", "fair", "white", "dark", "olive", "black", "brown", "light brown", "light", "extremely pale"];
 var eye_adj = ["cat-like", "clear", "tired", "watery", "angry", "anxious", "beautiful", "beseeching", "bewildered", "blank", "blazing", "bright", "burning", "chilly", "cold", "commanding", "dazzling", "disdainful", "dull", "emotionless", "fierce", "fiery", "flashing", "flat", "frightened", "gleaming", "glinting", "guileless", "hard", "hooded", "impassive", "imploring", "innocent", "intelligent", "intense", "intent", "inviting", "liquid", "magnetic", "mellow", "piercing", "sharp", "shining", "shrewd", "skeptical", "sleepy", "soft", "sparkling", "steely", "striking", "twinkling", "unreadable", "warm", "wild", "animated", "boyish", "bright", "careworn", "clear", "delicate", "dull", "elfin", "emotionless", "expressionless", "expressive", "placid", "radiant", "refined", "rough", "soft", "watchful", "youthful"];
@@ -23,10 +29,10 @@ var vagina = ["tight", "amazing", "dry", "wet", "sloppy", "average", "beautiful"
 
 // things everyone has levels in
 var slave_stats = ["Intelligence", "Charisma", "Strength"];
-var slave_scales = ["Obedience", "Love", "Loyalty", "Honesty", "Health", "Libido", "Happiness"].sort();
+var slave_scales = ["Obedience", "Love", "Loyalty", "Honesty", "Health", "Libido", "Happiness"];
 var slave_kinks = ["Getting fucked", "Anal", "Fucking", "Licking pussy", "Sucking dick", "Eating ass", "Attraction to Women", "Attraction to Men", "Receiving oral", "Getting rimmed", "Dominating", "Submitting", "Sadism", "Masochism", "Humiliation", "Aftercare"];
 var slave_skills = ["Getting fucked", "Anal", "Fucking", "Licking pussy", "Sucking dick", "Eating ass"];
-var slave_jobs = ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"].sort()
+var slave_jobs = ["Gardener", "Tailor", "Secretary", "Teacher", "Medic", "Chef", "Whore", "Accountant", "Aesthetician", "Guard"]
 var responds_to = ["kindness", "severity"];
 
 // assignments
